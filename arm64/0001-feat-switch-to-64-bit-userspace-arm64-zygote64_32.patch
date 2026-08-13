@@ -1,0 +1,32 @@
+From cabbed2e7c991809cd66ad1535689b46b476bbae Mon Sep 17 00:00:00 2001
+From: gao <gao@local>
+Date: Tue, 11 Aug 2026 11:03:00 +0800
+Subject: [PATCH 1/5] feat: switch to 64-bit userspace (arm64 + zygote64_32)
+
+Switch TARGET_ARCH from arm to arm64 so that the pre-existing
+apollo_64_bit.mk takes effect: ro.zygote=zygote64_32, arm64-v8a
+primary ABI, armeabi-v7a secondary. 32-bit HALs that depend on
+Allwinner private blobs (libcedarc, libawhdr10p, libawplayer, ...)
+stay 32-bit; the 64-bit framework reaches them over Binder, which
+is exactly what Android does when only 32-bit blobs are available
+for some HALs.
+---
+ device/softwinner/apollo/common/system/config.mk | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/device/softwinner/apollo/common/system/config.mk b/device/softwinner/apollo/common/system/config.mk
+index e94fc93ea9..cfe726ad5a 100644
+--- a/device/softwinner/apollo/common/system/config.mk
++++ b/device/softwinner/apollo/common/system/config.mk
+@@ -120,7 +120,7 @@ PRODUCT_PACKAGES += \
+ # call other makefile
+ # 32bit android,you should define TARGET_ARCH := arm
+ # 64bit android,you should define TARGET_ARCH := arm64
+-TARGET_ARCH ?= arm
++TARGET_ARCH ?= arm64
+ ifeq ($(TARGET_ARCH),arm)
+ $(call inherit-product, $(LOCAL_MODULE_PATH)/apollo_32_bit.mk)
+ else ifeq ($(TARGET_ARCH),arm64)
+-- 
+2.34.1
+

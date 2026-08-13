@@ -1,0 +1,773 @@
+From a4e15caa2951097ee82dcb762b7f35fe656729f0 Mon Sep 17 00:00:00 2001
+From: gao <gao@local>
+Date: Tue, 11 Aug 2026 11:03:25 +0800
+Subject: [PATCH 2/5] feat: lock cedarx/codec2/mediaplayerservice/widevine
+ stack to 32-bit
+
+Allwinner ships these libraries only as 32-bit Android (bionic)
+prebuilts. The aarch64 blobs under library/toolchain-sunxi-* link
+against glibc/musl for Tina Linux, not Android, so they cannot be
+used here. Pin the whole media stack 32-bit; their 64-bit framework
+consumers reach them over Binder/HIDL.
+
+- libcedarc/library: 27 prebuilt blobs (libVE, libvideoengine,
+  libvdecoder, libvencoder, libcdc_base, libOmxVdec, libOmxVenc,
+  libscaledown, libvenc_*, libawh264/265, libawvp9, ...) collapsed
+  to a single androideabi_32 src and compile_multilib:32. The
+  bogus 'arm64: srcs: androideabi_64/X.so' blocks that pointed
+  arm64 at the (nonexistent) 64-bit directory are removed.
+- libcedarc/config: root cc_defaults pinned to compile_multilib:32;
+  the inherited libcdc_config_defaults covers the source-tree
+  modules (base, memory, ve, vdecoder, vencoder, openmax, demo).
+- libcedarx/config: same via libcdx_config_defaults; the ~68
+  cedarx modules (libcore/*, android_adapter/*, stream/*, parser/*,
+  demo/*) all inherit this.
+- libcodec2/components: pinned compile_multilib:32 (the -mfpu=neon
+  flag in libcodec2_hw-defaults is 32-bit ARM only; the impl
+  links libVE/libvideoengine/libcdc_base).
+- libmediaplayerservice + its two test modules: MediaPlayerFactory.cpp
+  hard-links AwPlayer/AwMetadataRetriever from libcedarx; mediaserver
+  is already prefer32 upstream.
+- hardware/aw/widevine/Android.mk: dropped the 64-bit blocks that
+  referenced lib64/ which does not exist; the 32-bit prebuilts and
+  the prebuilt liboemcrypto (level-1 gated, level 3 here) remain.
+
+Three source-level fixes that were caught by -Werror=format once the
+64-bit build started type-checking:
+
+- audio_hw.c:2140 - %d -> %zu for size_t bytes argument.
+- trans_info.c:181 - %d -> %ld for the pointer difference (size_t
+  on the display side).
+- rtt.cpp:699 - %lld -> %" PRId64 " with <inttypes.h> for
+  wifi_timespan (int64_t).
+---
+ .../av/media/libcedarc/config/Android.bp      |   7 +-
+ .../libcedarc/demo/vdecoderDemo/Android.bp    |   2 +
+ .../av/media/libcedarc/library/Android.bp     | 299 ++++--------------
+ .../av/media/libcedarx/config/Android.bp      |   5 +
+ .../av/media/libmediaplayerservice/Android.bp |   7 +
+ .../libmediaplayerservice/tests/Android.bp    |   3 +
+ .../tests/stagefrightRecorder/Android.bp      |   3 +
+ hardware/aw/audio/homlet/h618/audio_hw.c      |   2 +-
+ hardware/aw/display/pq/trans_info.c           |   2 +-
+ hardware/aw/libcodec2/components/Android.bp   |   8 +
+ hardware/aw/widevine/Android.mk               |  43 +--
+ hardware/sprd/wlan/wifi_hal/lowi/rtt.cpp      |   3 +-
+ 12 files changed, 96 insertions(+), 288 deletions(-)
+
+diff --git a/frameworks/av/media/libcedarc/config/Android.bp b/frameworks/av/media/libcedarc/config/Android.bp
+index bd1a1268da..15f09c4a8f 100755
+--- a/frameworks/av/media/libcedarc/config/Android.bp
++++ b/frameworks/av/media/libcedarc/config/Android.bp
+@@ -38,7 +38,12 @@ cc_defaults {
+         "-Wno-error=return-type",
+     ],
+ 
+-    compile_multilib: "both",
++    // Allwinner VE/codec prebuilts only ship as 32-bit Android (bionic) blobs
++    // in library/androideabi_32. The aarch64 blobs under library/toolchain-sunxi-*
++    // link against glibc/musl and are for Tina Linux, not Android. Keep the whole
++    // cedarc stack 32-bit; the codec2 HAL service is already compile_multilib: "32"
++    // and is reached from 64-bit clients over Binder.
++    compile_multilib: "32",
+ 
+     shared_libs: [
+         "liblog",
+diff --git a/frameworks/av/media/libcedarc/demo/vdecoderDemo/Android.bp b/frameworks/av/media/libcedarc/demo/vdecoderDemo/Android.bp
+index d848cbe910..d650a4f984 100644
+--- a/frameworks/av/media/libcedarc/demo/vdecoderDemo/Android.bp
++++ b/frameworks/av/media/libcedarc/demo/vdecoderDemo/Android.bp
+@@ -40,4 +40,6 @@ cc_binary {
+         "libcedarc_headers",
+     ],
+ 
++    // Links against the 32-bit-only cedarc VE prebuilts.
++    compile_multilib: "32",
+ }
+diff --git a/frameworks/av/media/libcedarc/library/Android.bp b/frameworks/av/media/libcedarc/library/Android.bp
+index 27443671b6..9573f9cd15 100644
+--- a/frameworks/av/media/libcedarc/library/Android.bp
++++ b/frameworks/av/media/libcedarc/library/Android.bp
+@@ -1,16 +1,9 @@
+ cc_prebuilt_library_shared {
+     name: "libVE",
+     vendor_available: true,
+-    arch: {
+-        arm: {
+-            srcs: ["androideabi_32/libVE.so"],
+-        },
+-        arm64: {
+-            srcs: ["androideabi_64/libVE.so"],
+-        },
+-    },
+-
+-    compile_multilib: "both",
++    srcs: ["androideabi_32/libVE.so"],
++
++    compile_multilib: "32",
+     shared_libs: ["libc++", "libc", "libcdc_base", "libcutils", "libdl",
+     "liblog", "libm", "libutils"],
+ }
+@@ -18,15 +11,8 @@ cc_prebuilt_library_shared {
+ cc_prebuilt_library_shared {
+     name: "libvenc_common",
+     vendor_available: true,
+-    arch: {
+-        arm: {
+-            srcs: ["androideabi_32/libvenc_common.so"],
+-        },
+-        arm64: {
+-            srcs: ["androideabi_64/libvenc_common.so"],
+-        },
+-    },
+-    compile_multilib: "both",
++    srcs: ["androideabi_32/libvenc_common.so"],
++    compile_multilib: "32",
+     shared_libs: ["libMemAdapter", "libVE", "libc++", "libc", "libcdc_base",
+     "libcutils", "libdl", "liblog", "libm", "libutils", "libvenc_base"],
+ }
+@@ -34,15 +20,8 @@ cc_prebuilt_library_shared {
+ cc_prebuilt_library_shared {
+     name: "libvenc_h264",
+     vendor_available: true,
+-    arch: {
+-        arm: {
+-            srcs: ["androideabi_32/libvenc_h264.so"],
+-        },
+-        arm64: {
+-            srcs: ["androideabi_64/libvenc_h264.so"],
+-        },
+-    },
+-    compile_multilib: "both",
++    srcs: ["androideabi_32/libvenc_h264.so"],
++    compile_multilib: "32",
+     shared_libs: ["libMemAdapter", "libVE", "libcdc_base",
+     "libcutils","libutils", "liblog", "libvenc_base", "libvenc_common"],
+ }
+@@ -50,15 +29,8 @@ cc_prebuilt_library_shared {
+ cc_prebuilt_library_shared {
+     name: "libvenc_h265",
+     vendor_available: true,
+-    arch: {
+-        arm: {
+-            srcs: ["androideabi_32/libvenc_h265.so"],
+-        },
+-        arm64: {
+-            srcs: ["androideabi_64/libvenc_h265.so"],
+-        },
+-    },
+-    compile_multilib: "both",
++    srcs: ["androideabi_32/libvenc_h265.so"],
++    compile_multilib: "32",
+     shared_libs: ["libMemAdapter", "libVE", "libcdc_base",
+     "libcutils","libutils", "liblog", "libvenc_base","libvenc_common"],
+ }
+@@ -66,15 +38,8 @@ cc_prebuilt_library_shared {
+ cc_prebuilt_library_shared {
+     name: "libvenc_jpeg",
+     vendor_available: true,
+-    arch: {
+-        arm: {
+-            srcs: ["androideabi_32/libvenc_jpeg.so"],
+-        },
+-        arm64: {
+-            srcs: ["androideabi_64/libvenc_jpeg.so"],
+-        },
+-    },
+-    compile_multilib: "both",
++    srcs: ["androideabi_32/libvenc_jpeg.so"],
++    compile_multilib: "32",
+     shared_libs: ["libMemAdapter", "libVE", "libcdc_base",
+     "libutils","libcutils", "liblog", "libvenc_base", "libvenc_common"],
+ }
+@@ -82,15 +47,8 @@ cc_prebuilt_library_shared {
+ cc_prebuilt_library_shared {
+     name: "libvideoengine",
+     vendor_available: true,
+-    arch: {
+-        arm: {
+-            srcs: ["androideabi_32/libvideoengine.so"],
+-        },
+-        arm64: {
+-            srcs: ["androideabi_64/libvideoengine.so"],
+-        },
+-    },
+-    compile_multilib: "both",
++    srcs: ["androideabi_32/libvideoengine.so"],
++    compile_multilib: "32",
+     shared_libs: ["libVE", "libc++", "libc", "libcdc_base", "libcutils",
+     "libdl", "liblog", "libm", "libui", "libutils"],
+ }
+@@ -98,15 +56,8 @@ cc_prebuilt_library_shared {
+ cc_prebuilt_library_shared {
+     name: "libawavs",
+     vendor_available: true,
+-    arch: {
+-        arm: {
+-            srcs: ["androideabi_32/libawavs.so"],
+-        },
+-        arm64: {
+-            srcs: ["androideabi_64/libawavs.so"],
+-        },
+-    },
+-    compile_multilib: "both",
++    srcs: ["androideabi_32/libawavs.so"],
++    compile_multilib: "32",
+     shared_libs: ["libVE", "libbinder", "libc++", "libc", "libcdc_base",
+     "libcutils", "libdl", "liblog", "libm", "libui", "libutils", "libsbm", "libfbm",
+     "libvideoengine"],
+@@ -115,15 +66,8 @@ cc_prebuilt_library_shared {
+ cc_prebuilt_library_shared {
+     name: "libawh264",
+     vendor_available: true,
+-    arch: {
+-        arm: {
+-            srcs: ["androideabi_32/libawh264.so"],
+-        },
+-        arm64: {
+-            srcs: ["androideabi_64/libawh264.so"],
+-        },
+-    },
+-    compile_multilib: "both",
++    srcs: ["androideabi_32/libawh264.so"],
++    compile_multilib: "32",
+     shared_libs: ["libVE", "libbinder", "libc++", "libc", "libcdc_base",
+     "libcutils", "libdl", "liblog", "libm", "libui", "libutils", "libsbm", "libfbm",
+     "libvideoengine"],
+@@ -132,15 +76,8 @@ cc_prebuilt_library_shared {
+ cc_prebuilt_library_shared {
+     name: "libawh265",
+     vendor_available: true,
+-    arch: {
+-        arm: {
+-            srcs: ["androideabi_32/libawh265.so"],
+-        },
+-        arm64: {
+-            srcs: ["androideabi_64/libawh265.so"],
+-        },
+-    },
+-    compile_multilib: "both",
++    srcs: ["androideabi_32/libawh265.so"],
++    compile_multilib: "32",
+     shared_libs: ["libMemAdapter", "libVE", "libbinder", "libc++", "libc",
+     "libcdc_base", "libcutils", "libdl", "liblog", "libm", "libui", "libutils",
+     "libsbm", "libfbm", "libvideoengine"],
+@@ -150,15 +87,8 @@ cc_prebuilt_library_shared {
+ cc_prebuilt_library_shared {
+     name: "libawh265soft",
+     vendor_available: true,
+-    arch: {
+-        arm: {
+-            srcs: ["androideabi_32/libawh265soft.so"],
+-        },
+-        arm64: {
+-            srcs: ["androideabi_64/libawh265soft.so"],
+-        },
+-    },
+-    compile_multilib: "both",
++    srcs: ["androideabi_32/libawh265soft.so"],
++    compile_multilib: "32",
+     shared_libs: ["libMemAdapter", "libVE", "libbinder", "libc++", "libc",
+     "libcdc_base", "libcutils", "libdl", "liblog", "libm", "libui", "libutils",
+     "libsbm", "libfbm", "libvideoengine"],
+@@ -169,15 +99,8 @@ cc_prebuilt_library_shared {
+ cc_prebuilt_library_shared {
+     name: "libawmjpeg",
+     vendor_available: true,
+-    arch: {
+-        arm: {
+-            srcs: ["androideabi_32/libawmjpeg.so"],
+-        },
+-        arm64: {
+-            srcs: ["androideabi_64/libawmjpeg.so"],
+-        },
+-    },
+-    compile_multilib: "both",
++    srcs: ["androideabi_32/libawmjpeg.so"],
++    compile_multilib: "32",
+     shared_libs: ["libMemAdapter", "libVE", "libbinder", "libc++", "libc",
+     "libcdc_base", "libcutils", "libdl", "liblog", "libm", "libui", "libutils",
+     "libsbm", "libfbm", "libvideoengine"],
+@@ -186,15 +109,8 @@ cc_prebuilt_library_shared {
+ cc_prebuilt_library_shared {
+     name: "libawmjpegplus",
+     vendor_available: true,
+-    arch: {
+-        arm: {
+-            srcs: ["androideabi_32/libawmjpegplus.so"],
+-        },
+-        arm64: {
+-            srcs: ["androideabi_64/libawmjpegplus.so"],
+-        },
+-    },
+-    compile_multilib: "both",
++    srcs: ["androideabi_32/libawmjpegplus.so"],
++    compile_multilib: "32",
+     shared_libs: ["libMemAdapter", "libVE", "libbinder", "libc++", "libc",
+     "libcdc_base", "libcutils", "libdl", "liblog", "libm", "libui", "libutils",
+     "libsbm", "libfbm", "libvideoengine"],
+@@ -203,15 +119,8 @@ cc_prebuilt_library_shared {
+ cc_prebuilt_library_shared {
+     name: "libawmpeg2",
+     vendor_available: true,
+-    arch: {
+-        arm: {
+-            srcs: ["androideabi_32/libawmpeg2.so"],
+-        },
+-        arm64: {
+-            srcs: ["androideabi_64/libawmpeg2.so"],
+-        },
+-    },
+-    compile_multilib: "both",
++    srcs: ["androideabi_32/libawmpeg2.so"],
++    compile_multilib: "32",
+     shared_libs: ["libVE", "libbinder", "libc++", "libc", "libcdc_base",
+     "libcutils", "libdl", "liblog", "libm", "libui", "libutils", "libsbm", "libfbm",
+     "libvideoengine"],
+@@ -220,15 +129,8 @@ cc_prebuilt_library_shared {
+ cc_prebuilt_library_shared {
+     name: "libawmpeg4base",
+     vendor_available: true,
+-    arch: {
+-        arm: {
+-            srcs: ["androideabi_32/libawmpeg4base.so"],
+-        },
+-        arm64: {
+-            srcs: ["androideabi_64/libawmpeg4base.so"],
+-        },
+-    },
+-    compile_multilib: "both",
++    srcs: ["androideabi_32/libawmpeg4base.so"],
++    compile_multilib: "32",
+     shared_libs: ["libVE", "libbinder", "libc++", "libc", "libcdc_base",
+     "libcutils", "libdl", "liblog", "libm", "libui", "libutils", "libsbm", "libfbm",
+     "libvideoengine"],
+@@ -237,15 +139,8 @@ cc_prebuilt_library_shared {
+ cc_prebuilt_library_shared {
+     name: "libawmpeg4dx",
+     vendor_available: true,
+-    arch: {
+-        arm: {
+-            srcs: ["androideabi_32/libawmpeg4dx.so"],
+-        },
+-        arm64: {
+-            srcs: ["androideabi_64/libawmpeg4dx.so"],
+-        },
+-    },
+-    compile_multilib: "both",
++    srcs: ["androideabi_32/libawmpeg4dx.so"],
++    compile_multilib: "32",
+     shared_libs: ["libVE", "libawmpeg4base", "libbinder", "libc++", "libc",
+     "libcdc_base", "libcutils", "libdl", "liblog", "libm", "libui", "libutils",
+     "libsbm", "libfbm", "libvideoengine"],
+@@ -254,15 +149,8 @@ cc_prebuilt_library_shared {
+ cc_prebuilt_library_shared {
+     name: "libawmpeg4h263",
+     vendor_available: true,
+-    arch: {
+-        arm: {
+-            srcs: ["androideabi_32/libawmpeg4h263.so"],
+-        },
+-        arm64: {
+-            srcs: ["androideabi_64/libawmpeg4h263.so"],
+-        },
+-    },
+-    compile_multilib: "both",
++    srcs: ["androideabi_32/libawmpeg4h263.so"],
++    compile_multilib: "32",
+     shared_libs: ["libVE", "libawmpeg4base", "libbinder", "libc++", "libc",
+     "libcdc_base", "libcutils", "libdl", "liblog", "libm", "libui", "libutils",
+     "libsbm", "libfbm", "libvideoengine"],
+@@ -271,15 +159,8 @@ cc_prebuilt_library_shared {
+ cc_prebuilt_library_shared {
+     name: "libawmpeg4normal",
+     vendor_available: true,
+-    arch: {
+-        arm: {
+-            srcs: ["androideabi_32/libawmpeg4normal.so"],
+-        },
+-        arm64: {
+-            srcs: ["androideabi_64/libawmpeg4normal.so"],
+-        },
+-    },
+-    compile_multilib: "both",
++    srcs: ["androideabi_32/libawmpeg4normal.so"],
++    compile_multilib: "32",
+     shared_libs: ["libVE", "libawmpeg4base", "libbinder", "libc++", "libc",
+     "libcdc_base", "libcutils", "libdl", "liblog", "libm", "libui", "libutils",
+     "libsbm", "libfbm", "libvideoengine"],
+@@ -288,15 +169,8 @@ cc_prebuilt_library_shared {
+ cc_prebuilt_library_shared {
+     name: "libawmpeg4vp6",
+     vendor_available: true,
+-    arch: {
+-        arm: {
+-            srcs: ["androideabi_32/libawmpeg4vp6.so"],
+-        },
+-        arm64: {
+-            srcs: ["androideabi_64/libawmpeg4vp6.so"],
+-        },
+-    },
+-    compile_multilib: "both",
++    srcs: ["androideabi_32/libawmpeg4vp6.so"],
++    compile_multilib: "32",
+     shared_libs: ["libVE", "libawmpeg4base", "libbinder", "libc++", "libc",
+     "libcdc_base", "libcutils", "libdl", "liblog", "libm", "libui", "libutils",
+     "libsbm", "libfbm", "libvideoengine"],
+@@ -305,15 +179,8 @@ cc_prebuilt_library_shared {
+ cc_prebuilt_library_shared {
+     name: "libawvp6soft",
+     vendor_available: true,
+-    arch: {
+-        arm: {
+-            srcs: ["androideabi_32/libawvp6soft.so"],
+-        },
+-        arm64: {
+-            srcs: ["androideabi_64/libawvp6soft.so"],
+-        },
+-    },
+-    compile_multilib: "both",
++    srcs: ["androideabi_32/libawvp6soft.so"],
++    compile_multilib: "32",
+     shared_libs: ["libVE", "libbinder", "libc++", "libc", "libcdc_base",
+     "libcutils", "libdl", "liblog", "libm", "libui", "libutils", "libsbm", "libfbm",
+     "libvideoengine"],
+@@ -323,15 +190,8 @@ cc_prebuilt_library_shared {
+ cc_prebuilt_library_shared {
+     name: "libawvp8",
+     vendor_available: true,
+-    arch: {
+-        arm: {
+-            srcs: ["androideabi_32/libawvp8.so"],
+-        },
+-        arm64: {
+-            srcs: ["androideabi_64/libawvp8.so"],
+-        },
+-    },
+-    compile_multilib: "both",
++    srcs: ["androideabi_32/libawvp8.so"],
++    compile_multilib: "32",
+     shared_libs: ["libVE", "libbinder", "libc++", "libc", "libcdc_base",
+     "libcutils", "libdl", "liblog", "libm", "libui", "libutils", "libsbm", "libfbm",
+     "libvideoengine"],
+@@ -341,15 +201,8 @@ cc_prebuilt_library_shared {
+ cc_prebuilt_library_shared {
+     name: "libawvp9soft",
+     vendor_available: true,
+-    arch: {
+-        arm: {
+-            srcs: ["androideabi_32/libawvp9soft.so"],
+-        },
+-        arm64: {
+-            srcs: ["androideabi_64/libawvp9soft.so"],
+-        },
+-    },
+-    compile_multilib: "both",
++    srcs: ["androideabi_32/libawvp9soft.so"],
++    compile_multilib: "32",
+     shared_libs: ["libMemAdapter", "libVE", "libbinder", "libc++", "libc",
+     "libcdc_base", "libcutils", "libdl", "liblog", "libm", "libui", "libutils",
+     "libsbm", "libfbm", "libvideoengine"],
+@@ -360,15 +213,8 @@ cc_prebuilt_library_shared {
+ cc_prebuilt_library_shared {
+     name: "libawwmv3",
+     vendor_available: true,
+-    arch: {
+-        arm: {
+-            srcs: ["androideabi_32/libawwmv3.so"],
+-        },
+-        arm64: {
+-            srcs: ["androideabi_64/libawwmv3.so"],
+-        },
+-    },
+-    compile_multilib: "both",
++    srcs: ["androideabi_32/libawwmv3.so"],
++    compile_multilib: "32",
+     shared_libs: ["libMemAdapter", "libVE", "libbinder", "libc++", "libc",
+     "libcdc_base", "libcutils", "libdl", "liblog", "libm", "libui", "libutils",
+     "libsbm", "libfbm", "libvideoengine"],
+@@ -378,15 +224,8 @@ cc_prebuilt_library_shared {
+ cc_prebuilt_library_shared {
+     name: "libawwmv12soft",
+     vendor_available: true,
+-    arch: {
+-        arm: {
+-            srcs: ["androideabi_32/libawwmv12soft.so"],
+-        },
+-        arm64: {
+-            srcs: ["androideabi_64/libawwmv12soft.so"],
+-        },
+-    },
+-    compile_multilib: "both",
++    srcs: ["androideabi_32/libawwmv12soft.so"],
++    compile_multilib: "32",
+     shared_libs: ["libMemAdapter", "libVE",  "libc++", "libc",
+     "libcdc_base", "liblog",
+     "libsbm", "libfbm", "libvideoengine"],
+@@ -397,15 +236,8 @@ cc_prebuilt_library_shared {
+ cc_prebuilt_library_shared {
+     name: "libawvp9Hw",
+     vendor_available: true,
+-    arch: {
+-        arm: {
+-            srcs: ["androideabi_32/libawvp9Hw.so"],
+-        },
+-        arm64: {
+-            srcs: ["androideabi_64/libawvp9Hw.so"],
+-        },
+-    },
+-    compile_multilib: "both",
++    srcs: ["androideabi_32/libawvp9Hw.so"],
++    compile_multilib: "32",
+     shared_libs: ["libMemAdapter", "libVE", "libbinder", "libc++", "libc",
+     "libcdc_base", "libcutils", "libdl", "liblog", "libm", "libui", "libutils",
+     "libsbm", "libfbm", "libvideoengine"],
+@@ -414,15 +246,8 @@ cc_prebuilt_library_shared {
+ cc_prebuilt_library_shared {
+     name: "libawvp9HwAL",
+     vendor_available: true,
+-    arch: {
+-        arm: {
+-            srcs: ["androideabi_32/libawvp9HwAL.so"],
+-        },
+-        arm64: {
+-            srcs: ["androideabi_64/libawvp9HwAL.so"],
+-        },
+-    },
+-    compile_multilib: "both",
++    srcs: ["androideabi_32/libawvp9HwAL.so"],
++    compile_multilib: "32",
+     shared_libs: ["libMemAdapter", "libVE", "libbinder", "libc++", "libc",
+     "libcdc_base", "libcutils", "libdl", "liblog", "libm", "libui", "libutils",
+     "libsbm", "libfbm", "libvideoengine"],
+@@ -431,15 +256,8 @@ cc_prebuilt_library_shared {
+ cc_prebuilt_library_shared {
+     name: "libawavs2",
+     vendor_available: true,
+-    arch: {
+-        arm: {
+-            srcs: ["androideabi_32/libawavs2.so"],
+-        },
+-        arm64: {
+-            srcs: ["androideabi_64/libawavs2.so"],
+-        },
+-    },
+-    compile_multilib: "both",
++    srcs: ["androideabi_32/libawavs2.so"],
++    compile_multilib: "32",
+     shared_libs: ["libMemAdapter", "libVE", "libbinder", "libc++", "libc",
+     "libcdc_base", "libcutils", "libdl", "liblog", "libm", "libui", "libutils",
+     "libsbm", "libfbm", "libvideoengine"],
+@@ -448,15 +266,8 @@ cc_prebuilt_library_shared {
+ cc_prebuilt_library_shared {
+     name: "libscaledown",
+     vendor_available: true,
+-    arch: {
+-        arm: {
+-            srcs: ["androideabi_32/libscaledown.so"],
+-        },
+-        arm64: {
+-            srcs: ["androideabi_64/libscaledown.so"],
+-        },
+-    },
+-    compile_multilib: "both",
++    srcs: ["androideabi_32/libscaledown.so"],
++    compile_multilib: "32",
+     shared_libs: ["libMemAdapter", "libVE", "libbinder", "libc++", "libc",
+     "libcdc_base", "libcutils", "libdl", "liblog", "libm", "libui", "libutils",
+     "libvideoengine"],
+diff --git a/frameworks/av/media/libcedarx/config/Android.bp b/frameworks/av/media/libcedarx/config/Android.bp
+index deb9584fcf..b38d8bf0d4 100644
+--- a/frameworks/av/media/libcedarx/config/Android.bp
++++ b/frameworks/av/media/libcedarx/config/Android.bp
+@@ -37,4 +37,9 @@ cc_defaults {
+         "-Wno-error=format",
+         "-Wno-error=return-type",
+     ],
++
++    // The cedarx audio decoders in external/lib32 are 32-bit-only Android blobs
++    // and the whole player stack links against the 32-bit cedarc VE libraries,
++    // so keep libcedarx 32-bit even on a 64-bit (arm64) build.
++    compile_multilib: "32",
+ }
+diff --git a/frameworks/av/media/libmediaplayerservice/Android.bp b/frameworks/av/media/libmediaplayerservice/Android.bp
+index a1b2cbcc40..fea64dd50f 100755
+--- a/frameworks/av/media/libmediaplayerservice/Android.bp
++++ b/frameworks/av/media/libmediaplayerservice/Android.bp
+@@ -135,4 +135,11 @@ cc_library {
+         cfi: true,
+     },
+ 
++    // MediaPlayerFactory.cpp hard-links AwPlayer/AwMetadataRetriever from
++    // libcedarx, which only exists as 32-bit (the aarch64 cedar blobs are
++    // glibc/musl Tina Linux builds). Its only consumer, mediaserver, is
++    // already compile_multilib: "prefer32" upstream, so a 32-bit-only
++    // variant is sufficient.
++    compile_multilib: "32",
++
+ }
+diff --git a/frameworks/av/media/libmediaplayerservice/tests/Android.bp b/frameworks/av/media/libmediaplayerservice/tests/Android.bp
+index 98626fde12..c2c972c63d 100644
+--- a/frameworks/av/media/libmediaplayerservice/tests/Android.bp
++++ b/frameworks/av/media/libmediaplayerservice/tests/Android.bp
+@@ -43,4 +43,7 @@ cc_test {
+         "-Wall",
+     ],
+ 
++    // Follows libmediaplayerservice, which is 32-bit-only on this platform.
++    compile_multilib: "32",
++
+ }
+diff --git a/frameworks/av/media/libmediaplayerservice/tests/stagefrightRecorder/Android.bp b/frameworks/av/media/libmediaplayerservice/tests/stagefrightRecorder/Android.bp
+index 92236ea0bd..57cb2077ff 100644
+--- a/frameworks/av/media/libmediaplayerservice/tests/stagefrightRecorder/Android.bp
++++ b/frameworks/av/media/libmediaplayerservice/tests/stagefrightRecorder/Android.bp
+@@ -89,4 +89,7 @@ cc_test {
+             "signed-integer-overflow",
+         ],
+     },
++
++    // Follows libmediaplayerservice, which is 32-bit-only on this platform.
++    compile_multilib: "32",
+ }
+diff --git a/hardware/aw/audio/homlet/h618/audio_hw.c b/hardware/aw/audio/homlet/h618/audio_hw.c
+index 5155e25fb5..eb0054c3de 100755
+--- a/hardware/aw/audio/homlet/h618/audio_hw.c
++++ b/hardware/aw/audio/homlet/h618/audio_hw.c
+@@ -2137,7 +2137,7 @@ static bool detectIEC61937(struct sunxi_stream_out *out, const void * audio_buf,
+    while(i < (bytes - 3)){
+        if(buf[i] == 0x72 && buf[i+1] == 0xF8 && buf[i+2] == 0x1F && buf[i+3] == 0x4E)
+        {
+-           ALOGV("Detect a iec header!!, byte : %d", bytes);
++           ALOGV("Detect a iec header!!, byte : %zu", bytes);
+            break;
+        }
+        i++;
+diff --git a/hardware/aw/display/pq/trans_info.c b/hardware/aw/display/pq/trans_info.c
+index 2ce7a53442..a4d1910c21 100755
+--- a/hardware/aw/display/pq/trans_info.c
++++ b/hardware/aw/display/pq/trans_info.c
+@@ -178,7 +178,7 @@ int download_firmware(int fd)
+ 	id = atoi(t_buff+3);
+ 	head[19] = '\0';
+ 	if (id != de_version) {
+-		PQ_Printf("de_version not match[%d]-[%d]:%s@%d.", de_version, id, t_buff, t_buff - head);
++		PQ_Printf("de_version not match[%d]-[%d]:%s@%ld.", de_version, id, t_buff, t_buff - head);
+ 		ret = -1;
+ 		close(fd);
+ 		goto err;
+diff --git a/hardware/aw/libcodec2/components/Android.bp b/hardware/aw/libcodec2/components/Android.bp
+index ed03440a80..9888674b50 100644
+--- a/hardware/aw/libcodec2/components/Android.bp
++++ b/hardware/aw/libcodec2/components/Android.bp
+@@ -46,6 +46,10 @@ cc_library_shared {
+         "libvencoder",
+         "libcdc_base",
+     ],
++
++    // Depends on the 32-bit-only cedarc VE prebuilts (and neon_rgb2yuv.s is
++    // 32-bit ARM asm). The codec2 HAL service is compile_multilib: "32" too.
++    compile_multilib: "32",
+ }
+ 
+ filegroup {
+@@ -75,5 +79,9 @@ cc_defaults {
+         "-mfpu=neon",
+     ],
+ 
++    // All hw codec components link libcodec2_hw_common -> 32-bit-only cedarc
++    // VE prebuilts, and -mfpu=neon above is 32-bit ARM only.
++    compile_multilib: "32",
++
+     ldflags: ["-Wl,-Bsymbolic"],
+ }
+diff --git a/hardware/aw/widevine/Android.mk b/hardware/aw/widevine/Android.mk
+index 75cb76affc..ec3ee174f5 100755
+--- a/hardware/aw/widevine/Android.mk
++++ b/hardware/aw/widevine/Android.mk
+@@ -52,18 +52,9 @@ LOCAL_PROPRIETARY_MODULE := true
+ LOCAL_SHARED_LIBRARIES := android.hardware.drm@1.0 android.hardware.drm@1.1 android.hardware.drm@1.2 android.hardware.drm@1.3 android.hardware.drm@1.4 android.hidl.memory@1.0 libbase libc++ libc libcrypto libcutils libdl libhidlbase libhidlmemory liblog libm libprotobuf-cpp-lite libutils
+ include $(BUILD_PREBUILT)
+ 
+-#64
+-include $(CLEAR_VARS)
+-LOCAL_MODULE := libwvhidl
+-LOCAL_SRC_FILES := lib64/libwvhidl.so
+-LOCAL_MODULE_CLASS := SHARED_LIBRARIES
+-LOCAL_MODULE_TAGS := optional
+-LOCAL_MODULE_SUFFIX := .so
+-LOCAL_MULTILIB := 64
+-LOCAL_PROPRIETARY_MODULE := true
+-#LOCAL_STRIP_MODULE := true
+-LOCAL_CHECK_ELF_FILES := false
+-include $(BUILD_PREBUILT)
++# No 64-bit blob is shipped for widevine (there is no lib64/ here), so the
++# 32-bit DRM HAL is the only variant. It is reached from 64-bit clients
++# over Binder.
+ 
+ #####################################################################
+ #libwvdrmengine.so
+@@ -81,20 +72,6 @@ LOCAL_PROPRIETARY_MODULE := true
+ LOCAL_SHARED_LIBRARIES := libbase libc++ libc libcrypto libdl libhidlbase liblog libm libprotobuf-cpp-lite libstagefright_foundation libutils
+ include $(BUILD_PREBUILT)
+ 
+-#64
+-include $(CLEAR_VARS)
+-LOCAL_MODULE := libwvdrmengine
+-LOCAL_SRC_FILES := lib64/libwvdrmengine.so
+-LOCAL_MODULE_CLASS := SHARED_LIBRARIES
+-LOCAL_MODULE_TAGS := optional
+-LOCAL_MODULE_SUFFIX := .so
+-LOCAL_MULTILIB := 64
+-LOCAL_MODULE_RELATIVE_PATH := mediadrm
+-LOCAL_PROPRIETARY_MODULE := true
+-#LOCAL_STRIP_MODULE := true
+-LOCAL_CHECK_ELF_FILES := false
+-include $(BUILD_PREBUILT)
+-
+ #####################################################################
+ #libvtswidevine.so
+ include $(CLEAR_VARS)
+@@ -111,20 +88,6 @@ LOCAL_PROPRIETARY_MODULE := true
+ LOCAL_SHARED_LIBRARIES := libbase libc++ libc libcrypto libdl libhidlbase liblog libm libssl libutils
+ include $(BUILD_PREBUILT)
+ 
+-#64
+-include $(CLEAR_VARS)
+-LOCAL_MODULE := libvtswidevine
+-LOCAL_SRC_FILES := lib64/libvtswidevine.so
+-LOCAL_MODULE_CLASS := SHARED_LIBRARIES
+-LOCAL_MODULE_TAGS := optional
+-LOCAL_MODULE_SUFFIX := .so
+-LOCAL_MULTILIB := 64
+-LOCAL_MODULE_RELATIVE_PATH := drm-vts-test-libs
+-LOCAL_PROPRIETARY_MODULE := true
+-#LOCAL_STRIP_MODULE := true
+-LOCAL_CHECK_ELF_FILES := false
+-include $(BUILD_PREBUILT)
+-
+ #####################################################################
+ #liboemcrypto.so
+ ifeq ($(BOARD_WIDEVINE_OEMCRYPTO_LEVEL),1)
+diff --git a/hardware/sprd/wlan/wifi_hal/lowi/rtt.cpp b/hardware/sprd/wlan/wifi_hal/lowi/rtt.cpp
+index f5f08c1cac..df5308fd2c 100644
+--- a/hardware/sprd/wlan/wifi_hal/lowi/rtt.cpp
++++ b/hardware/sprd/wlan/wifi_hal/lowi/rtt.cpp
+@@ -1,4 +1,5 @@
+ #include <stdint.h>
++#include <inttypes.h>
+ #include <fcntl.h>
+ #include <sys/socket.h>
+ #include <netlink/genl/genl.h>
+@@ -695,7 +696,7 @@ public:
+                         totalCnt++;
+                         ALOGI("retrived rtt_result : \n\tburst_num :%d, measurement_number : %d, success_number : %d\n"
+                                 "\tnumber_per_burst_peer : %d, status : %s, retry_after_duration : %d s\n"
+-                                "\trssi : %d dbm, rx_rate : %d Kbps, rtt : %lld ns, rtt_sd : %lld\n"
++                                "\trssi : %d dbm, rx_rate : %d Kbps, rtt : %" PRId64 " ns, rtt_sd : %" PRId64 "\n"
+                                 "\tdistance : %d, burst_duration : %d ms, negotiated_burst_num : %d\n",
+                                 rtt_result->burst_num, rtt_result->measurement_number,
+                                 rtt_result->success_number, rtt_result->number_per_burst_peer,
+-- 
+2.34.1
+

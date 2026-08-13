@@ -1,0 +1,4751 @@
+From 7994664113cca922872d1cb9e57221412206f3eb Mon Sep 17 00:00:00 2001
+From: gao <gao@local>
+Date: Tue, 11 Aug 2026 11:03:56 +0800
+Subject: [PATCH 4/5] abi: regenerate VNDK 64-bit libstagefright_foundation
+ baseline
+
+The 64-bit build re-derives the source-based libstagefright_foundation
+.lsdump; the -allow-unreferenced-changes abidiff flag already
+accepts the EXTENDING CHANGES (the same C++ sources compile into a
+slightly different aarch64 ELF).
+---
+ .../libstagefright_foundation.so.lsdump       | 3723 ++++++++++++++++-
+ 1 file changed, 3595 insertions(+), 128 deletions(-)
+
+diff --git a/prebuilts/abi-dumps/vndk/31/64/arm64_armv8-a/source-based/libstagefright_foundation.so.lsdump b/prebuilts/abi-dumps/vndk/31/64/arm64_armv8-a/source-based/libstagefright_foundation.so.lsdump
+index 47609b5ae3..9ed1ddce80 100644
+--- a/prebuilts/abi-dumps/vndk/31/64/arm64_armv8-a/source-based/libstagefright_foundation.so.lsdump
++++ b/prebuilts/abi-dumps/vndk/31/64/arm64_armv8-a/source-based/libstagefright_foundation.so.lsdump
+@@ -1,6 +1,15 @@
+ {
+  "array_types" :
+  [
++  {
++   "alignment" : 4,
++   "linker_set_key" : "_ZTIA2_i",
++   "name" : "int [2]",
++   "referenced_type" : "_ZTIi",
++   "self_type" : "_ZTIA2_i",
++   "size" : 8,
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ANetworkSession.h"
++  },
+   {
+    "alignment" : 1,
+    "linker_set_key" : "_ZTIA5121_h",
+@@ -491,6 +500,33 @@
+   {
+    "name" : "_ZN7android13MakeUserAgentEv"
+   },
++  {
++   "name" : "_ZN7android13ParsedMessage12GetAttributeEPKcS2_PNS_7AStringE"
++  },
++  {
++   "name" : "_ZN7android13ParsedMessage17GetInt32AttributeEPKcS2_Pi"
++  },
++  {
++   "name" : "_ZN7android13ParsedMessage5ParseEPKcmbPm"
++  },
++  {
++   "name" : "_ZN7android13ParsedMessage5parseEPKcmb"
++  },
++  {
++   "name" : "_ZN7android13ParsedMessageC1Ev"
++  },
++  {
++   "name" : "_ZN7android13ParsedMessageC2Ev"
++  },
++  {
++   "name" : "_ZN7android13ParsedMessageD0Ev"
++  },
++  {
++   "name" : "_ZN7android13ParsedMessageD1Ev"
++  },
++  {
++   "name" : "_ZN7android13ParsedMessageD2Ev"
++  },
+   {
+    "name" : "_ZN7android14FindAVCLayerIdEPKhm"
+   },
+@@ -500,6 +536,135 @@
+   {
+    "name" : "_ZN7android14uriDebugStringERKNS_7AStringEb"
+   },
++  {
++   "name" : "_ZN7android15ANetworkSession10threadLoopEv"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession11sendRequestEiPKvlbl"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession13NetworkThread10threadLoopEv"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession13NetworkThreadC1EPS0_"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession13NetworkThreadC2EPS0_"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession13NetworkThreadD0Ev"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession13NetworkThreadD1Ev"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession13NetworkThreadD2Ev"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession14destroySessionEi"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession16createRTSPClientEPKcjRKNS_2spINS_8AMessageEEEPi"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession16createRTSPServerERK7in_addrjRKNS_2spINS_8AMessageEEEPi"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession16createUDPSessionEjPKcjRKNS_2spINS_8AMessageEEEPi"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession16createUDPSessionEjRKNS_2spINS_8AMessageEEEPi"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession17connectUDPSessionEiPKcj"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession20createClientOrServerENS0_4ModeEPK7in_addrjPKcjRKNS_2spINS_8AMessageEEEPi"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession21MakeSocketNonBlockingEi"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession21switchToWebSocketModeEi"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession24createTCPDatagramSessionERK7in_addrjRKNS_2spINS_8AMessageEEEPi"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession24createTCPDatagramSessionEjPKcjRKNS_2spINS_8AMessageEEEPi"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession4stopEv"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession5startEv"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession7Session11notifyErrorEbiPKc"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession7Session11sendRequestEPKvlbl"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession7Session11wantsToReadEv"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession7Session12wantsToWriteEv"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession7Session17dumpFragmentStatsERKNS1_8FragmentE"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession7Session19notifyBitrateChangeEi"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession7Session21switchToWebSocketModeEv"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession7Session6notifyENS0_18NotificationReasonE"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession7Session7setModeENS1_4ModeE"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession7Session8readMoreEv"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession7Session9writeMoreEv"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession7SessionC1EiNS1_5StateEiRKNS_2spINS_8AMessageEEE"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession7SessionC2EiNS1_5StateEiRKNS_2spINS_8AMessageEEE"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession7SessionD0Ev"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession7SessionD1Ev"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession7SessionD2Ev"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSession9interruptEv"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSessionC1Ev"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSessionC2Ev"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSessionD0Ev"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSessionD1Ev"
++  },
++  {
++   "name" : "_ZN7android15ANetworkSessionD2Ev"
++  },
+   {
+    "name" : "_ZN7android15MediaBufferBase6CreateEm"
+   },
+@@ -1052,6 +1217,34 @@
+   {
+    "name" : "_ZNK7android12NALBitReader18atLeastNumBitsLeftEm"
+   },
++  {
++   "binding" : "weak",
++   "name" : "_ZNK7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEE10do_compareEPKvS6_"
++  },
++  {
++   "binding" : "weak",
++   "name" : "_ZNK7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEE10do_destroyEPvm"
++  },
++  {
++   "binding" : "weak",
++   "name" : "_ZNK7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEE12do_constructEPvm"
++  },
++  {
++   "binding" : "weak",
++   "name" : "_ZNK7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEE15do_move_forwardEPvPKvm"
++  },
++  {
++   "binding" : "weak",
++   "name" : "_ZNK7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEE16do_move_backwardEPvPKvm"
++  },
++  {
++   "binding" : "weak",
++   "name" : "_ZNK7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEE7do_copyEPvPKvm"
++  },
++  {
++   "binding" : "weak",
++   "name" : "_ZNK7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEE8do_splatEPvPKvm"
++  },
+   {
+    "binding" : "weak",
+    "name" : "_ZNK7android12SortedVectorINS_16key_value_pair_tINS_7String8ES2_EEE10do_compareEPKvS6_"
+@@ -1108,6 +1301,34 @@
+    "binding" : "weak",
+    "name" : "_ZNK7android12SortedVectorINS_16key_value_pair_tIiNS_13ALooperRoster11HandlerInfoEEEE8do_splatEPvPKvm"
+   },
++  {
++   "binding" : "weak",
++   "name" : "_ZNK7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE10do_compareEPKvS9_"
++  },
++  {
++   "binding" : "weak",
++   "name" : "_ZNK7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE10do_destroyEPvm"
++  },
++  {
++   "binding" : "weak",
++   "name" : "_ZNK7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE12do_constructEPvm"
++  },
++  {
++   "binding" : "weak",
++   "name" : "_ZNK7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE15do_move_forwardEPvPKvm"
++  },
++  {
++   "binding" : "weak",
++   "name" : "_ZNK7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE16do_move_backwardEPvPKvm"
++  },
++  {
++   "binding" : "weak",
++   "name" : "_ZNK7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE7do_copyEPvPKvm"
++  },
++  {
++   "binding" : "weak",
++   "name" : "_ZNK7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE8do_splatEPvPKvm"
++  },
+   {
+    "binding" : "weak",
+    "name" : "_ZNK7android12SortedVectorINS_16key_value_pair_tIjNS_12MetaDataBase10typed_dataEEEE10do_compareEPKvS7_"
+@@ -1136,6 +1357,39 @@
+    "binding" : "weak",
+    "name" : "_ZNK7android12SortedVectorINS_16key_value_pair_tIjNS_12MetaDataBase10typed_dataEEEE8do_splatEPvPKvm"
+   },
++  {
++   "name" : "_ZNK7android13ParsedMessage10findStringEPKcPNS_7AStringE"
++  },
++  {
++   "name" : "_ZNK7android13ParsedMessage10getContentEv"
++  },
++  {
++   "name" : "_ZNK7android13ParsedMessage11debugStringEv"
++  },
++  {
++   "name" : "_ZNK7android13ParsedMessage13getStatusCodeEPi"
++  },
++  {
++   "name" : "_ZNK7android13ParsedMessage15getRequestFieldEmPNS_7AStringE"
++  },
++  {
++   "name" : "_ZNK7android13ParsedMessage9findInt32EPKcPi"
++  },
++  {
++   "name" : "_ZNK7android15ANetworkSession7Session12isRTSPServerEv"
++  },
++  {
++   "name" : "_ZNK7android15ANetworkSession7Session19isTCPDatagramServerEv"
++  },
++  {
++   "name" : "_ZNK7android15ANetworkSession7Session22getNotificationMessageEv"
++  },
++  {
++   "name" : "_ZNK7android15ANetworkSession7Session6socketEv"
++  },
++  {
++   "name" : "_ZNK7android15ANetworkSession7Session9sessionIDEv"
++  },
+   {
+    "name" : "_ZNK7android16MediaBufferGroup7buffersEv"
+   },
+@@ -1333,6 +1587,12 @@
+   },
+   {
+    "name" : "_ZThn16_N7android8MetaDataD1Ev"
++  },
++  {
++   "name" : "_ZTv0_n24_N7android15ANetworkSession13NetworkThreadD0Ev"
++  },
++  {
++   "name" : "_ZTv0_n24_N7android15ANetworkSession13NetworkThreadD1Ev"
+   }
+  ],
+  "elf_objects" :
+@@ -1373,6 +1633,9 @@
+   {
+    "name" : "_ZN7android24MEDIA_MIMETYPE_VIDEO_RAWE"
+   },
++  {
++   "name" : "_ZN7android24MEDIA_MIMETYPE_VIDEO_VC1E"
++  },
+   {
+    "name" : "_ZN7android24MEDIA_MIMETYPE_VIDEO_VP8E"
+   },
+@@ -1418,6 +1681,9 @@
+   {
+    "name" : "_ZN7android25MEDIA_MIMETYPE_VIDEO_HEVCE"
+   },
++  {
++   "name" : "_ZN7android25MEDIA_MIMETYPE_VIDEO_S263E"
++  },
+   {
+    "name" : "_ZN7android25MEDIA_MIMETYPE_VIDEO_XVIDE"
+   },
+@@ -1436,6 +1702,9 @@
+   {
+    "name" : "_ZN7android26MEDIA_MIMETYPE_VIDEO_MJPEGE"
+   },
++  {
++   "name" : "_ZN7android26MEDIA_MIMETYPE_VIDEO_MPEG1E"
++  },
+   {
+    "name" : "_ZN7android26MEDIA_MIMETYPE_VIDEO_MPEG2E"
+   },
+@@ -1539,10 +1808,16 @@
+   {
+    "name" : "_ZN7android9AAtomizer9gAtomizerE"
+   },
++  {
++   "name" : "_ZTCN7android15ANetworkSession13NetworkThreadE0_NS_6ThreadE"
++  },
+   {
+    "binding" : "weak",
+    "name" : "_ZTCN7android7ALooper12LooperThreadE0_NS_6ThreadE"
+   },
++  {
++   "name" : "_ZTTN7android15ANetworkSession13NetworkThreadE"
++  },
+   {
+    "binding" : "weak",
+    "name" : "_ZTTN7android7ALooper12LooperThreadE"
+@@ -1563,6 +1838,10 @@
+   {
+    "name" : "_ZTVN7android12NALBitReaderE"
+   },
++  {
++   "binding" : "weak",
++   "name" : "_ZTVN7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEEE"
++  },
+   {
+    "binding" : "weak",
+    "name" : "_ZTVN7android12SortedVectorINS_16key_value_pair_tINS_7String8ES2_EEEE"
+@@ -1571,10 +1850,26 @@
+    "binding" : "weak",
+    "name" : "_ZTVN7android12SortedVectorINS_16key_value_pair_tIiNS_13ALooperRoster11HandlerInfoEEEEE"
+   },
++  {
++   "binding" : "weak",
++   "name" : "_ZTVN7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE"
++  },
+   {
+    "binding" : "weak",
+    "name" : "_ZTVN7android12SortedVectorINS_16key_value_pair_tIjNS_12MetaDataBase10typed_dataEEEEE"
+   },
++  {
++   "name" : "_ZTVN7android13ParsedMessageE"
++  },
++  {
++   "name" : "_ZTVN7android15ANetworkSession13NetworkThreadE"
++  },
++  {
++   "name" : "_ZTVN7android15ANetworkSession7SessionE"
++  },
++  {
++   "name" : "_ZTVN7android15ANetworkSessionE"
++  },
+   {
+    "binding" : "weak",
+    "name" : "_ZTVN7android15MediaBufferBaseE"
+@@ -1582,6 +1877,10 @@
+   {
+    "name" : "_ZTVN7android16MediaBufferGroupE"
+   },
++  {
++   "binding" : "weak",
++   "name" : "_ZTVN7android4ListINS_15ANetworkSession7Session8FragmentEEE"
++  },
+   {
+    "binding" : "weak",
+    "name" : "_ZTVN7android4ListINS_7ALooper5EventEEE"
+@@ -2972,6 +3271,23 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "underlying_type" : "_ZTIj"
+   },
++  {
++   "alignment" : 4,
++   "enum_fields" :
++   [
++    {
++     "enum_field_value" : 0,
++     "name" : "android::trait_pointer<android::key_value_pair_t<android::AString, android::AString>>::value"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android13trait_pointerINS_16key_value_pair_tINS_7AStringES2_EEE6$valueE",
++   "name" : "android::trait_pointer<key_value_pair_t<AString, AString>>::(anonymous enum at system/core/libutils/include/utils/TypeHelpers.h:39:51)",
++   "referenced_type" : "_ZTIN7android13trait_pointerINS_16key_value_pair_tINS_7AStringES2_EEE6$valueE",
++   "self_type" : "_ZTIN7android13trait_pointerINS_16key_value_pair_tINS_7AStringES2_EEE6$valueE",
++   "size" : 4,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "underlying_type" : "_ZTIj"
++  },
+   {
+    "alignment" : 4,
+    "enum_fields" :
+@@ -3006,6 +3322,23 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "underlying_type" : "_ZTIj"
+   },
++  {
++   "alignment" : 4,
++   "enum_fields" :
++   [
++    {
++     "enum_field_value" : 0,
++     "name" : "android::trait_pointer<android::key_value_pair_t<int, android::sp<android::ANetworkSession::Session>>>::value"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android13trait_pointerINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE6$valueE",
++   "name" : "android::trait_pointer<key_value_pair_t<int, sp<Session>>>::(anonymous enum at system/core/libutils/include/utils/TypeHelpers.h:39:51)",
++   "referenced_type" : "_ZTIN7android13trait_pointerINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE6$valueE",
++   "self_type" : "_ZTIN7android13trait_pointerINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE6$valueE",
++   "size" : 4,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "underlying_type" : "_ZTIj"
++  },
+   {
+    "alignment" : 4,
+    "enum_fields" :
+@@ -3040,6 +3373,23 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "underlying_type" : "_ZTIj"
+   },
++  {
++   "alignment" : 4,
++   "enum_fields" :
++   [
++    {
++     "enum_field_value" : 0,
++     "name" : "android::trait_pointer<android::sp<android::ANetworkSession::Session>>::value"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android13trait_pointerINS_2spINS_15ANetworkSession7SessionEEEE6$valueE",
++   "name" : "android::trait_pointer<sp<Session>>::(anonymous enum at system/core/libutils/include/utils/TypeHelpers.h:39:51)",
++   "referenced_type" : "_ZTIN7android13trait_pointerINS_2spINS_15ANetworkSession7SessionEEEE6$valueE",
++   "self_type" : "_ZTIN7android13trait_pointerINS_2spINS_15ANetworkSession7SessionEEEE6$valueE",
++   "size" : 4,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "underlying_type" : "_ZTIj"
++  },
+   {
+    "alignment" : 4,
+    "enum_fields" :
+@@ -3074,6 +3424,23 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "underlying_type" : "_ZTIj"
+   },
++  {
++   "alignment" : 4,
++   "enum_fields" :
++   [
++    {
++     "enum_field_value" : 0,
++     "name" : "android::trait_pointer<android::AString>::value"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android13trait_pointerINS_7AStringEE6$valueE",
++   "name" : "android::trait_pointer<AString>::(anonymous enum at system/core/libutils/include/utils/TypeHelpers.h:39:51)",
++   "referenced_type" : "_ZTIN7android13trait_pointerINS_7AStringEE6$valueE",
++   "self_type" : "_ZTIN7android13trait_pointerINS_7AStringEE6$valueE",
++   "size" : 4,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "underlying_type" : "_ZTIj"
++  },
+   {
+    "alignment" : 4,
+    "enum_fields" :
+@@ -3642,11 +4009,127 @@
+    [
+     {
+      "enum_field_value" : 0,
+-     "name" : "android::aggregate_traits<android::String8, android::String8>::is_pointer"
++     "name" : "android::ANetworkSession::kWhatError"
+     },
+     {
+-     "enum_field_value" : 0,
+-     "name" : "android::aggregate_traits<android::String8, android::String8>::has_trivial_ctor"
++     "enum_field_value" : 1,
++     "name" : "android::ANetworkSession::kWhatConnected"
++    },
++    {
++     "enum_field_value" : 2,
++     "name" : "android::ANetworkSession::kWhatClientConnected"
++    },
++    {
++     "enum_field_value" : 3,
++     "name" : "android::ANetworkSession::kWhatData"
++    },
++    {
++     "enum_field_value" : 4,
++     "name" : "android::ANetworkSession::kWhatDatagram"
++    },
++    {
++     "enum_field_value" : 5,
++     "name" : "android::ANetworkSession::kWhatBinaryData"
++    },
++    {
++     "enum_field_value" : 6,
++     "name" : "android::ANetworkSession::kWhatWebSocketMessage"
++    },
++    {
++     "enum_field_value" : 7,
++     "name" : "android::ANetworkSession::kWhatNetworkStall"
++    },
++    {
++     "enum_field_value" : 8,
++     "name" : "android::ANetworkSession::kWhatBitrateChange"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android15ANetworkSession18NotificationReasonE",
++   "name" : "android::ANetworkSession::NotificationReason",
++   "referenced_type" : "_ZTIN7android15ANetworkSession18NotificationReasonE",
++   "self_type" : "_ZTIN7android15ANetworkSession18NotificationReasonE",
++   "size" : 4,
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ANetworkSession.h",
++   "underlying_type" : "_ZTIj"
++  },
++  {
++   "access" : "private",
++   "alignment" : 4,
++   "enum_fields" :
++   [
++    {
++     "enum_field_value" : 0,
++     "name" : "android::ANetworkSession::kModeCreateUDPSession"
++    },
++    {
++     "enum_field_value" : 1,
++     "name" : "android::ANetworkSession::kModeCreateTCPDatagramSessionPassive"
++    },
++    {
++     "enum_field_value" : 2,
++     "name" : "android::ANetworkSession::kModeCreateTCPDatagramSessionActive"
++    },
++    {
++     "enum_field_value" : 3,
++     "name" : "android::ANetworkSession::kModeCreateRTSPServer"
++    },
++    {
++     "enum_field_value" : 4,
++     "name" : "android::ANetworkSession::kModeCreateRTSPClient"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android15ANetworkSession4ModeE",
++   "name" : "android::ANetworkSession::Mode",
++   "referenced_type" : "_ZTIN7android15ANetworkSession4ModeE",
++   "self_type" : "_ZTIN7android15ANetworkSession4ModeE",
++   "size" : 4,
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ANetworkSession.h",
++   "underlying_type" : "_ZTIj"
++  },
++  {
++   "alignment" : 4,
++   "enum_fields" :
++   [
++    {
++     "enum_field_value" : 0,
++     "name" : "android::aggregate_traits<android::AString, android::AString>::is_pointer"
++    },
++    {
++     "enum_field_value" : 0,
++     "name" : "android::aggregate_traits<android::AString, android::AString>::has_trivial_ctor"
++    },
++    {
++     "enum_field_value" : 0,
++     "name" : "android::aggregate_traits<android::AString, android::AString>::has_trivial_dtor"
++    },
++    {
++     "enum_field_value" : 0,
++     "name" : "android::aggregate_traits<android::AString, android::AString>::has_trivial_copy"
++    },
++    {
++     "enum_field_value" : 0,
++     "name" : "android::aggregate_traits<android::AString, android::AString>::has_trivial_move"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android16aggregate_traitsINS_7AStringES1_E17$has_trivial_copyE",
++   "name" : "android::aggregate_traits<AString, AString>::(anonymous enum at system/core/libutils/include/utils/TypeHelpers.h:60:5)",
++   "referenced_type" : "_ZTIN7android16aggregate_traitsINS_7AStringES1_E17$has_trivial_copyE",
++   "self_type" : "_ZTIN7android16aggregate_traitsINS_7AStringES1_E17$has_trivial_copyE",
++   "size" : 4,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "underlying_type" : "_ZTIj"
++  },
++  {
++   "alignment" : 4,
++   "enum_fields" :
++   [
++    {
++     "enum_field_value" : 0,
++     "name" : "android::aggregate_traits<android::String8, android::String8>::is_pointer"
++    },
++    {
++     "enum_field_value" : 0,
++     "name" : "android::aggregate_traits<android::String8, android::String8>::has_trivial_ctor"
+     },
+     {
+      "enum_field_value" : 0,
+@@ -3702,6 +4185,39 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "underlying_type" : "_ZTIj"
+   },
++  {
++   "alignment" : 4,
++   "enum_fields" :
++   [
++    {
++     "enum_field_value" : 0,
++     "name" : "android::aggregate_traits<int, android::sp<android::ANetworkSession::Session>>::is_pointer"
++    },
++    {
++     "enum_field_value" : 0,
++     "name" : "android::aggregate_traits<int, android::sp<android::ANetworkSession::Session>>::has_trivial_ctor"
++    },
++    {
++     "enum_field_value" : 0,
++     "name" : "android::aggregate_traits<int, android::sp<android::ANetworkSession::Session>>::has_trivial_dtor"
++    },
++    {
++     "enum_field_value" : 0,
++     "name" : "android::aggregate_traits<int, android::sp<android::ANetworkSession::Session>>::has_trivial_copy"
++    },
++    {
++     "enum_field_value" : 0,
++     "name" : "android::aggregate_traits<int, android::sp<android::ANetworkSession::Session>>::has_trivial_move"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android16aggregate_traitsIiNS_2spINS_15ANetworkSession7SessionEEEE17$has_trivial_copyE",
++   "name" : "android::aggregate_traits<int, sp<Session>>::(anonymous enum at system/core/libutils/include/utils/TypeHelpers.h:60:5)",
++   "referenced_type" : "_ZTIN7android16aggregate_traitsIiNS_2spINS_15ANetworkSession7SessionEEEE17$has_trivial_copyE",
++   "self_type" : "_ZTIN7android16aggregate_traitsIiNS_2spINS_15ANetworkSession7SessionEEEE17$has_trivial_copyE",
++   "size" : 4,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "underlying_type" : "_ZTIj"
++  },
+   {
+    "alignment" : 4,
+    "enum_fields" :
+@@ -3827,6 +4343,23 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "underlying_type" : "_ZTIj"
+   },
++  {
++   "alignment" : 4,
++   "enum_fields" :
++   [
++    {
++     "enum_field_value" : 0,
++     "name" : "android::trait_trivial_copy<android::key_value_pair_t<android::AString, android::AString>>::value"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android18trait_trivial_copyINS_16key_value_pair_tINS_7AStringES2_EEE6$valueE",
++   "name" : "android::trait_trivial_copy<key_value_pair_t<AString, AString>>::(anonymous enum at system/core/libutils/include/utils/TypeHelpers.h:287:3)",
++   "referenced_type" : "_ZTIN7android18trait_trivial_copyINS_16key_value_pair_tINS_7AStringES2_EEE6$valueE",
++   "self_type" : "_ZTIN7android18trait_trivial_copyINS_16key_value_pair_tINS_7AStringES2_EEE6$valueE",
++   "size" : 4,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "underlying_type" : "_ZTIj"
++  },
+   {
+    "alignment" : 4,
+    "enum_fields" :
+@@ -3861,6 +4394,23 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "underlying_type" : "_ZTIj"
+   },
++  {
++   "alignment" : 4,
++   "enum_fields" :
++   [
++    {
++     "enum_field_value" : 0,
++     "name" : "android::trait_trivial_copy<android::key_value_pair_t<int, android::sp<android::ANetworkSession::Session>>>::value"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android18trait_trivial_copyINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE6$valueE",
++   "name" : "android::trait_trivial_copy<key_value_pair_t<int, sp<Session>>>::(anonymous enum at system/core/libutils/include/utils/TypeHelpers.h:287:3)",
++   "referenced_type" : "_ZTIN7android18trait_trivial_copyINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE6$valueE",
++   "self_type" : "_ZTIN7android18trait_trivial_copyINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE6$valueE",
++   "size" : 4,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "underlying_type" : "_ZTIj"
++  },
+   {
+    "alignment" : 4,
+    "enum_fields" :
+@@ -3895,6 +4445,23 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "underlying_type" : "_ZTIj"
+   },
++  {
++   "alignment" : 4,
++   "enum_fields" :
++   [
++    {
++     "enum_field_value" : 0,
++     "name" : "android::trait_trivial_copy<android::sp<android::ANetworkSession::Session>>::value"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android18trait_trivial_copyINS_2spINS_15ANetworkSession7SessionEEEE6$valueE",
++   "name" : "android::trait_trivial_copy<sp<Session>>::(anonymous enum at system/core/libutils/include/utils/TypeHelpers.h:37:51)",
++   "referenced_type" : "_ZTIN7android18trait_trivial_copyINS_2spINS_15ANetworkSession7SessionEEEE6$valueE",
++   "self_type" : "_ZTIN7android18trait_trivial_copyINS_2spINS_15ANetworkSession7SessionEEEE6$valueE",
++   "size" : 4,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "underlying_type" : "_ZTIj"
++  },
+   {
+    "alignment" : 4,
+    "enum_fields" :
+@@ -3929,6 +4496,23 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "underlying_type" : "_ZTIj"
+   },
++  {
++   "alignment" : 4,
++   "enum_fields" :
++   [
++    {
++     "enum_field_value" : 0,
++     "name" : "android::trait_trivial_copy<android::AString>::value"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android18trait_trivial_copyINS_7AStringEE6$valueE",
++   "name" : "android::trait_trivial_copy<AString>::(anonymous enum at system/core/libutils/include/utils/TypeHelpers.h:37:51)",
++   "referenced_type" : "_ZTIN7android18trait_trivial_copyINS_7AStringEE6$valueE",
++   "self_type" : "_ZTIN7android18trait_trivial_copyINS_7AStringEE6$valueE",
++   "size" : 4,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "underlying_type" : "_ZTIj"
++  },
+   {
+    "alignment" : 4,
+    "enum_fields" :
+@@ -4218,6 +4802,23 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "underlying_type" : "_ZTIj"
+   },
++  {
++   "alignment" : 4,
++   "enum_fields" :
++   [
++    {
++     "enum_field_value" : 0,
++     "name" : "android::trait_trivial_ctor<android::key_value_pair_t<android::AString, android::AString>>::value"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android18trait_trivial_ctorINS_16key_value_pair_tINS_7AStringES2_EEE6$valueE",
++   "name" : "android::trait_trivial_ctor<key_value_pair_t<AString, AString>>::(anonymous enum at system/core/libutils/include/utils/TypeHelpers.h:281:3)",
++   "referenced_type" : "_ZTIN7android18trait_trivial_ctorINS_16key_value_pair_tINS_7AStringES2_EEE6$valueE",
++   "self_type" : "_ZTIN7android18trait_trivial_ctorINS_16key_value_pair_tINS_7AStringES2_EEE6$valueE",
++   "size" : 4,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "underlying_type" : "_ZTIj"
++  },
+   {
+    "alignment" : 4,
+    "enum_fields" :
+@@ -4252,6 +4853,23 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "underlying_type" : "_ZTIj"
+   },
++  {
++   "alignment" : 4,
++   "enum_fields" :
++   [
++    {
++     "enum_field_value" : 0,
++     "name" : "android::trait_trivial_ctor<android::key_value_pair_t<int, android::sp<android::ANetworkSession::Session>>>::value"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android18trait_trivial_ctorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE6$valueE",
++   "name" : "android::trait_trivial_ctor<key_value_pair_t<int, sp<Session>>>::(anonymous enum at system/core/libutils/include/utils/TypeHelpers.h:281:3)",
++   "referenced_type" : "_ZTIN7android18trait_trivial_ctorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE6$valueE",
++   "self_type" : "_ZTIN7android18trait_trivial_ctorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE6$valueE",
++   "size" : 4,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "underlying_type" : "_ZTIj"
++  },
+   {
+    "alignment" : 4,
+    "enum_fields" :
+@@ -4286,6 +4904,23 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "underlying_type" : "_ZTIj"
+   },
++  {
++   "alignment" : 4,
++   "enum_fields" :
++   [
++    {
++     "enum_field_value" : 0,
++     "name" : "android::trait_trivial_ctor<android::sp<android::ANetworkSession::Session>>::value"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android18trait_trivial_ctorINS_2spINS_15ANetworkSession7SessionEEEE6$valueE",
++   "name" : "android::trait_trivial_ctor<sp<Session>>::(anonymous enum at system/core/libutils/include/utils/TypeHelpers.h:35:51)",
++   "referenced_type" : "_ZTIN7android18trait_trivial_ctorINS_2spINS_15ANetworkSession7SessionEEEE6$valueE",
++   "self_type" : "_ZTIN7android18trait_trivial_ctorINS_2spINS_15ANetworkSession7SessionEEEE6$valueE",
++   "size" : 4,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "underlying_type" : "_ZTIj"
++  },
+   {
+    "alignment" : 4,
+    "enum_fields" :
+@@ -4320,6 +4955,23 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "underlying_type" : "_ZTIj"
+   },
++  {
++   "alignment" : 4,
++   "enum_fields" :
++   [
++    {
++     "enum_field_value" : 0,
++     "name" : "android::trait_trivial_ctor<android::AString>::value"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android18trait_trivial_ctorINS_7AStringEE6$valueE",
++   "name" : "android::trait_trivial_ctor<AString>::(anonymous enum at system/core/libutils/include/utils/TypeHelpers.h:35:51)",
++   "referenced_type" : "_ZTIN7android18trait_trivial_ctorINS_7AStringEE6$valueE",
++   "self_type" : "_ZTIN7android18trait_trivial_ctorINS_7AStringEE6$valueE",
++   "size" : 4,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "underlying_type" : "_ZTIj"
++  },
+   {
+    "alignment" : 4,
+    "enum_fields" :
+@@ -4609,6 +5261,23 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "underlying_type" : "_ZTIj"
+   },
++  {
++   "alignment" : 4,
++   "enum_fields" :
++   [
++    {
++     "enum_field_value" : 0,
++     "name" : "android::trait_trivial_dtor<android::key_value_pair_t<android::AString, android::AString>>::value"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android18trait_trivial_dtorINS_16key_value_pair_tINS_7AStringES2_EEE6$valueE",
++   "name" : "android::trait_trivial_dtor<key_value_pair_t<AString, AString>>::(anonymous enum at system/core/libutils/include/utils/TypeHelpers.h:284:3)",
++   "referenced_type" : "_ZTIN7android18trait_trivial_dtorINS_16key_value_pair_tINS_7AStringES2_EEE6$valueE",
++   "self_type" : "_ZTIN7android18trait_trivial_dtorINS_16key_value_pair_tINS_7AStringES2_EEE6$valueE",
++   "size" : 4,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "underlying_type" : "_ZTIj"
++  },
+   {
+    "alignment" : 4,
+    "enum_fields" :
+@@ -4643,6 +5312,23 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "underlying_type" : "_ZTIj"
+   },
++  {
++   "alignment" : 4,
++   "enum_fields" :
++   [
++    {
++     "enum_field_value" : 0,
++     "name" : "android::trait_trivial_dtor<android::key_value_pair_t<int, android::sp<android::ANetworkSession::Session>>>::value"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android18trait_trivial_dtorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE6$valueE",
++   "name" : "android::trait_trivial_dtor<key_value_pair_t<int, sp<Session>>>::(anonymous enum at system/core/libutils/include/utils/TypeHelpers.h:284:3)",
++   "referenced_type" : "_ZTIN7android18trait_trivial_dtorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE6$valueE",
++   "self_type" : "_ZTIN7android18trait_trivial_dtorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE6$valueE",
++   "size" : 4,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "underlying_type" : "_ZTIj"
++  },
+   {
+    "alignment" : 4,
+    "enum_fields" :
+@@ -4677,6 +5363,23 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "underlying_type" : "_ZTIj"
+   },
++  {
++   "alignment" : 4,
++   "enum_fields" :
++   [
++    {
++     "enum_field_value" : 0,
++     "name" : "android::trait_trivial_dtor<android::sp<android::ANetworkSession::Session>>::value"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android18trait_trivial_dtorINS_2spINS_15ANetworkSession7SessionEEEE6$valueE",
++   "name" : "android::trait_trivial_dtor<sp<Session>>::(anonymous enum at system/core/libutils/include/utils/TypeHelpers.h:36:51)",
++   "referenced_type" : "_ZTIN7android18trait_trivial_dtorINS_2spINS_15ANetworkSession7SessionEEEE6$valueE",
++   "self_type" : "_ZTIN7android18trait_trivial_dtorINS_2spINS_15ANetworkSession7SessionEEEE6$valueE",
++   "size" : 4,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "underlying_type" : "_ZTIj"
++  },
+   {
+    "alignment" : 4,
+    "enum_fields" :
+@@ -4711,6 +5414,23 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "underlying_type" : "_ZTIj"
+   },
++  {
++   "alignment" : 4,
++   "enum_fields" :
++   [
++    {
++     "enum_field_value" : 0,
++     "name" : "android::trait_trivial_dtor<android::AString>::value"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android18trait_trivial_dtorINS_7AStringEE6$valueE",
++   "name" : "android::trait_trivial_dtor<AString>::(anonymous enum at system/core/libutils/include/utils/TypeHelpers.h:36:51)",
++   "referenced_type" : "_ZTIN7android18trait_trivial_dtorINS_7AStringEE6$valueE",
++   "self_type" : "_ZTIN7android18trait_trivial_dtorINS_7AStringEE6$valueE",
++   "size" : 4,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "underlying_type" : "_ZTIj"
++  },
+   {
+    "alignment" : 4,
+    "enum_fields" :
+@@ -5005,8 +5725,25 @@
+    "enum_fields" :
+    [
+     {
+-     "enum_field_value" : 1,
+-     "name" : "android::trait_trivial_move<android::key_value_pair_t<android::String8, android::String8>>::value"
++     "enum_field_value" : 0,
++     "name" : "android::trait_trivial_move<android::key_value_pair_t<android::AString, android::AString>>::value"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android18trait_trivial_moveINS_16key_value_pair_tINS_7AStringES2_EEE6$valueE",
++   "name" : "android::trait_trivial_move<key_value_pair_t<AString, AString>>::(anonymous enum at system/core/libutils/include/utils/TypeHelpers.h:290:3)",
++   "referenced_type" : "_ZTIN7android18trait_trivial_moveINS_16key_value_pair_tINS_7AStringES2_EEE6$valueE",
++   "self_type" : "_ZTIN7android18trait_trivial_moveINS_16key_value_pair_tINS_7AStringES2_EEE6$valueE",
++   "size" : 4,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "underlying_type" : "_ZTIj"
++  },
++  {
++   "alignment" : 4,
++   "enum_fields" :
++   [
++    {
++     "enum_field_value" : 1,
++     "name" : "android::trait_trivial_move<android::key_value_pair_t<android::String8, android::String8>>::value"
+     }
+    ],
+    "linker_set_key" : "_ZTIN7android18trait_trivial_moveINS_16key_value_pair_tINS_7String8ES2_EEE6$valueE",
+@@ -5034,6 +5771,23 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "underlying_type" : "_ZTIj"
+   },
++  {
++   "alignment" : 4,
++   "enum_fields" :
++   [
++    {
++     "enum_field_value" : 0,
++     "name" : "android::trait_trivial_move<android::key_value_pair_t<int, android::sp<android::ANetworkSession::Session>>>::value"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android18trait_trivial_moveINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE6$valueE",
++   "name" : "android::trait_trivial_move<key_value_pair_t<int, sp<Session>>>::(anonymous enum at system/core/libutils/include/utils/TypeHelpers.h:290:3)",
++   "referenced_type" : "_ZTIN7android18trait_trivial_moveINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE6$valueE",
++   "self_type" : "_ZTIN7android18trait_trivial_moveINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE6$valueE",
++   "size" : 4,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "underlying_type" : "_ZTIj"
++  },
+   {
+    "alignment" : 4,
+    "enum_fields" :
+@@ -5068,6 +5822,23 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "underlying_type" : "_ZTIj"
+   },
++  {
++   "alignment" : 4,
++   "enum_fields" :
++   [
++    {
++     "enum_field_value" : 0,
++     "name" : "android::trait_trivial_move<android::sp<android::ANetworkSession::Session>>::value"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android18trait_trivial_moveINS_2spINS_15ANetworkSession7SessionEEEE6$valueE",
++   "name" : "android::trait_trivial_move<sp<Session>>::(anonymous enum at system/core/libutils/include/utils/TypeHelpers.h:38:51)",
++   "referenced_type" : "_ZTIN7android18trait_trivial_moveINS_2spINS_15ANetworkSession7SessionEEEE6$valueE",
++   "self_type" : "_ZTIN7android18trait_trivial_moveINS_2spINS_15ANetworkSession7SessionEEEE6$valueE",
++   "size" : 4,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "underlying_type" : "_ZTIj"
++  },
+   {
+    "alignment" : 4,
+    "enum_fields" :
+@@ -5102,6 +5873,23 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "underlying_type" : "_ZTIj"
+   },
++  {
++   "alignment" : 4,
++   "enum_fields" :
++   [
++    {
++     "enum_field_value" : 0,
++     "name" : "android::trait_trivial_move<android::AString>::value"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android18trait_trivial_moveINS_7AStringEE6$valueE",
++   "name" : "android::trait_trivial_move<AString>::(anonymous enum at system/core/libutils/include/utils/TypeHelpers.h:38:51)",
++   "referenced_type" : "_ZTIN7android18trait_trivial_moveINS_7AStringEE6$valueE",
++   "self_type" : "_ZTIN7android18trait_trivial_moveINS_7AStringEE6$valueE",
++   "size" : 4,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "underlying_type" : "_ZTIj"
++  },
+   {
+    "alignment" : 4,
+    "enum_fields" :
+@@ -6263,6 +7051,39 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "underlying_type" : "_ZTIj"
+   },
++  {
++   "alignment" : 4,
++   "enum_fields" :
++   [
++    {
++     "enum_field_value" : 0,
++     "name" : "android::traits<android::key_value_pair_t<android::AString, android::AString>>::is_pointer"
++    },
++    {
++     "enum_field_value" : 0,
++     "name" : "android::traits<android::key_value_pair_t<android::AString, android::AString>>::has_trivial_ctor"
++    },
++    {
++     "enum_field_value" : 0,
++     "name" : "android::traits<android::key_value_pair_t<android::AString, android::AString>>::has_trivial_dtor"
++    },
++    {
++     "enum_field_value" : 0,
++     "name" : "android::traits<android::key_value_pair_t<android::AString, android::AString>>::has_trivial_copy"
++    },
++    {
++     "enum_field_value" : 0,
++     "name" : "android::traits<android::key_value_pair_t<android::AString, android::AString>>::has_trivial_move"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android6traitsINS_16key_value_pair_tINS_7AStringES2_EEE17$has_trivial_copyE",
++   "name" : "android::traits<key_value_pair_t<AString, AString>>::(anonymous enum at system/core/libutils/include/utils/TypeHelpers.h:44:5)",
++   "referenced_type" : "_ZTIN7android6traitsINS_16key_value_pair_tINS_7AStringES2_EEE17$has_trivial_copyE",
++   "self_type" : "_ZTIN7android6traitsINS_16key_value_pair_tINS_7AStringES2_EEE17$has_trivial_copyE",
++   "size" : 4,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "underlying_type" : "_ZTIj"
++  },
+   {
+    "alignment" : 4,
+    "enum_fields" :
+@@ -6329,6 +7150,39 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "underlying_type" : "_ZTIj"
+   },
++  {
++   "alignment" : 4,
++   "enum_fields" :
++   [
++    {
++     "enum_field_value" : 0,
++     "name" : "android::traits<android::key_value_pair_t<int, android::sp<android::ANetworkSession::Session>>>::is_pointer"
++    },
++    {
++     "enum_field_value" : 0,
++     "name" : "android::traits<android::key_value_pair_t<int, android::sp<android::ANetworkSession::Session>>>::has_trivial_ctor"
++    },
++    {
++     "enum_field_value" : 0,
++     "name" : "android::traits<android::key_value_pair_t<int, android::sp<android::ANetworkSession::Session>>>::has_trivial_dtor"
++    },
++    {
++     "enum_field_value" : 0,
++     "name" : "android::traits<android::key_value_pair_t<int, android::sp<android::ANetworkSession::Session>>>::has_trivial_copy"
++    },
++    {
++     "enum_field_value" : 0,
++     "name" : "android::traits<android::key_value_pair_t<int, android::sp<android::ANetworkSession::Session>>>::has_trivial_move"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android6traitsINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE17$has_trivial_copyE",
++   "name" : "android::traits<key_value_pair_t<int, sp<Session>>>::(anonymous enum at system/core/libutils/include/utils/TypeHelpers.h:44:5)",
++   "referenced_type" : "_ZTIN7android6traitsINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE17$has_trivial_copyE",
++   "self_type" : "_ZTIN7android6traitsINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE17$has_trivial_copyE",
++   "size" : 4,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "underlying_type" : "_ZTIj"
++  },
+   {
+    "alignment" : 4,
+    "enum_fields" :
+@@ -6395,6 +7249,39 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "underlying_type" : "_ZTIj"
+   },
++  {
++   "alignment" : 4,
++   "enum_fields" :
++   [
++    {
++     "enum_field_value" : 0,
++     "name" : "android::traits<android::sp<android::ANetworkSession::Session>>::is_pointer"
++    },
++    {
++     "enum_field_value" : 0,
++     "name" : "android::traits<android::sp<android::ANetworkSession::Session>>::has_trivial_ctor"
++    },
++    {
++     "enum_field_value" : 0,
++     "name" : "android::traits<android::sp<android::ANetworkSession::Session>>::has_trivial_dtor"
++    },
++    {
++     "enum_field_value" : 0,
++     "name" : "android::traits<android::sp<android::ANetworkSession::Session>>::has_trivial_copy"
++    },
++    {
++     "enum_field_value" : 0,
++     "name" : "android::traits<android::sp<android::ANetworkSession::Session>>::has_trivial_move"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android6traitsINS_2spINS_15ANetworkSession7SessionEEEE17$has_trivial_copyE",
++   "name" : "android::traits<sp<Session>>::(anonymous enum at system/core/libutils/include/utils/TypeHelpers.h:44:5)",
++   "referenced_type" : "_ZTIN7android6traitsINS_2spINS_15ANetworkSession7SessionEEEE17$has_trivial_copyE",
++   "self_type" : "_ZTIN7android6traitsINS_2spINS_15ANetworkSession7SessionEEEE17$has_trivial_copyE",
++   "size" : 4,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "underlying_type" : "_ZTIj"
++  },
+   {
+    "alignment" : 4,
+    "enum_fields" :
+@@ -6461,6 +7348,39 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "underlying_type" : "_ZTIj"
+   },
++  {
++   "alignment" : 4,
++   "enum_fields" :
++   [
++    {
++     "enum_field_value" : 0,
++     "name" : "android::traits<android::AString>::is_pointer"
++    },
++    {
++     "enum_field_value" : 0,
++     "name" : "android::traits<android::AString>::has_trivial_ctor"
++    },
++    {
++     "enum_field_value" : 0,
++     "name" : "android::traits<android::AString>::has_trivial_dtor"
++    },
++    {
++     "enum_field_value" : 0,
++     "name" : "android::traits<android::AString>::has_trivial_copy"
++    },
++    {
++     "enum_field_value" : 0,
++     "name" : "android::traits<android::AString>::has_trivial_move"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android6traitsINS_7AStringEE17$has_trivial_copyE",
++   "name" : "android::traits<AString>::(anonymous enum at system/core/libutils/include/utils/TypeHelpers.h:44:5)",
++   "referenced_type" : "_ZTIN7android6traitsINS_7AStringEE17$has_trivial_copyE",
++   "self_type" : "_ZTIN7android6traitsINS_7AStringEE17$has_trivial_copyE",
++   "size" : 4,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "underlying_type" : "_ZTIj"
++  },
+   {
+    "alignment" : 4,
+    "enum_fields" :
+@@ -8018,197 +8938,755 @@
+    "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ABitReader.h"
+   },
+   {
+-   "function_name" : "android::decodeBase64",
+-   "linker_set_key" : "_ZN7android12decodeBase64EPhPmPKc",
++   "function_name" : "android::decodeBase64",
++   "linker_set_key" : "_ZN7android12decodeBase64EPhPmPKc",
++   "parameters" :
++   [
++    {
++     "referenced_type" : "_ZTIPh"
++    },
++    {
++     "referenced_type" : "_ZTIPm"
++    },
++    {
++     "referenced_type" : "_ZTIPKc"
++    }
++   ],
++   "return_type" : "_ZTIb",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/base64.h"
++  },
++  {
++   "function_name" : "android::decodeBase64",
++   "linker_set_key" : "_ZN7android12decodeBase64ERKNS_7AStringE",
++   "parameters" :
++   [
++    {
++     "referenced_type" : "_ZTIRKN7android7AStringE"
++    }
++   ],
++   "return_type" : "_ZTIN7android2spINS_7ABufferEEE",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/base64.h"
++  },
++  {
++   "function_name" : "android::encodeBase64",
++   "linker_set_key" : "_ZN7android12encodeBase64EPKvmPNS_7AStringE",
++   "parameters" :
++   [
++    {
++     "referenced_type" : "_ZTIPKv"
++    },
++    {
++     "referenced_type" : "_ZTIm"
++    },
++    {
++     "referenced_type" : "_ZTIPN7android7AStringE"
++    }
++   ],
++   "return_type" : "_ZTIv",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/base64.h"
++  },
++  {
++   "function_name" : "android::ALooperRoster::registerHandler",
++   "linker_set_key" : "_ZN7android13ALooperRoster15registerHandlerERKNS_2spINS_7ALooperEEERKNS1_INS_8AHandlerEEE",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPN7android13ALooperRosterE"
++    },
++    {
++     "referenced_type" : "_ZTIRKN7android2spINS_7ALooperEEE"
++    },
++    {
++     "referenced_type" : "_ZTIRKN7android2spINS_8AHandlerEEE"
++    }
++   ],
++   "return_type" : "_ZTIi",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ALooperRoster.h"
++  },
++  {
++   "function_name" : "android::ALooperRoster::unregisterHandler",
++   "linker_set_key" : "_ZN7android13ALooperRoster17unregisterHandlerEi",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPN7android13ALooperRosterE"
++    },
++    {
++     "referenced_type" : "_ZTIi"
++    }
++   ],
++   "return_type" : "_ZTIv",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ALooperRoster.h"
++  },
++  {
++   "function_name" : "android::ALooperRoster::unregisterStaleHandlers",
++   "linker_set_key" : "_ZN7android13ALooperRoster23unregisterStaleHandlersEv",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPN7android13ALooperRosterE"
++    }
++   ],
++   "return_type" : "_ZTIv",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ALooperRoster.h"
++  },
++  {
++   "function_name" : "android::ALooperRoster::dump",
++   "linker_set_key" : "_ZN7android13ALooperRoster4dumpEiRKNS_6VectorINS_8String16EEE",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPN7android13ALooperRosterE"
++    },
++    {
++     "referenced_type" : "_ZTIi"
++    },
++    {
++     "referenced_type" : "_ZTIRKN7android6VectorINS_8String16EEE"
++    }
++   ],
++   "return_type" : "_ZTIv",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ALooperRoster.h"
++  },
++  {
++   "function_name" : "android::ALooperRoster::ALooperRoster",
++   "linker_set_key" : "_ZN7android13ALooperRosterC1Ev",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPN7android13ALooperRosterE"
++    }
++   ],
++   "return_type" : "_ZTIv",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ALooperRoster.h"
++  },
++  {
++   "function_name" : "android::ALooperRoster::ALooperRoster",
++   "linker_set_key" : "_ZN7android13ALooperRosterC2Ev",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPN7android13ALooperRosterE"
++    }
++   ],
++   "return_type" : "_ZTIv",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ALooperRoster.h"
++  },
++  {
++   "function_name" : "android::AStringPrintf",
++   "linker_set_key" : "_ZN7android13AStringPrintfEPKcz",
++   "parameters" :
++   [
++    {
++     "referenced_type" : "_ZTIPKc"
++    }
++   ],
++   "return_type" : "_ZTIN7android7AStringE",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/AString.h"
++  },
++  {
++   "function_name" : "android::ParsedMessage::GetAttribute",
++   "linker_set_key" : "_ZN7android13ParsedMessage12GetAttributeEPKcS2_PNS_7AStringE",
++   "parameters" :
++   [
++    {
++     "referenced_type" : "_ZTIPKc"
++    },
++    {
++     "referenced_type" : "_ZTIPKc"
++    },
++    {
++     "referenced_type" : "_ZTIPN7android7AStringE"
++    }
++   ],
++   "return_type" : "_ZTIb",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ParsedMessage.h"
++  },
++  {
++   "function_name" : "android::ParsedMessage::GetInt32Attribute",
++   "linker_set_key" : "_ZN7android13ParsedMessage17GetInt32AttributeEPKcS2_Pi",
++   "parameters" :
++   [
++    {
++     "referenced_type" : "_ZTIPKc"
++    },
++    {
++     "referenced_type" : "_ZTIPKc"
++    },
++    {
++     "referenced_type" : "_ZTIPi"
++    }
++   ],
++   "return_type" : "_ZTIb",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ParsedMessage.h"
++  },
++  {
++   "function_name" : "android::ParsedMessage::Parse",
++   "linker_set_key" : "_ZN7android13ParsedMessage5ParseEPKcmbPm",
++   "parameters" :
++   [
++    {
++     "referenced_type" : "_ZTIPKc"
++    },
++    {
++     "referenced_type" : "_ZTIm"
++    },
++    {
++     "referenced_type" : "_ZTIb"
++    },
++    {
++     "referenced_type" : "_ZTIPm"
++    }
++   ],
++   "return_type" : "_ZTIN7android2spINS_13ParsedMessageEEE",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ParsedMessage.h"
++  },
++  {
++   "access" : "private",
++   "function_name" : "android::ParsedMessage::parse",
++   "linker_set_key" : "_ZN7android13ParsedMessage5parseEPKcmb",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPN7android13ParsedMessageE"
++    },
++    {
++     "referenced_type" : "_ZTIPKc"
++    },
++    {
++     "referenced_type" : "_ZTIm"
++    },
++    {
++     "referenced_type" : "_ZTIb"
++    }
++   ],
++   "return_type" : "_ZTIl",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ParsedMessage.h"
++  },
++  {
++   "access" : "private",
++   "function_name" : "android::ParsedMessage::ParsedMessage",
++   "linker_set_key" : "_ZN7android13ParsedMessageC1Ev",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPN7android13ParsedMessageE"
++    }
++   ],
++   "return_type" : "_ZTIv",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ParsedMessage.h"
++  },
++  {
++   "access" : "private",
++   "function_name" : "android::ParsedMessage::ParsedMessage",
++   "linker_set_key" : "_ZN7android13ParsedMessageC2Ev",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPN7android13ParsedMessageE"
++    }
++   ],
++   "return_type" : "_ZTIv",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ParsedMessage.h"
++  },
++  {
++   "access" : "protected",
++   "function_name" : "android::ParsedMessage::~ParsedMessage",
++   "linker_set_key" : "_ZN7android13ParsedMessageD0Ev",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPN7android13ParsedMessageE"
++    }
++   ],
++   "return_type" : "_ZTIv",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ParsedMessage.h"
++  },
++  {
++   "access" : "protected",
++   "function_name" : "android::ParsedMessage::~ParsedMessage",
++   "linker_set_key" : "_ZN7android13ParsedMessageD1Ev",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPN7android13ParsedMessageE"
++    }
++   ],
++   "return_type" : "_ZTIv",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ParsedMessage.h"
++  },
++  {
++   "access" : "protected",
++   "function_name" : "android::ParsedMessage::~ParsedMessage",
++   "linker_set_key" : "_ZN7android13ParsedMessageD2Ev",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPN7android13ParsedMessageE"
++    }
++   ],
++   "return_type" : "_ZTIv",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ParsedMessage.h"
++  },
++  {
++   "function_name" : "android::FindAVCLayerId",
++   "linker_set_key" : "_ZN7android14FindAVCLayerIdEPKhm",
++   "parameters" :
++   [
++    {
++     "referenced_type" : "_ZTIPKh"
++    },
++    {
++     "referenced_type" : "_ZTIm"
++    }
++   ],
++   "return_type" : "_ZTIj",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/avc_utils.h"
++  },
++  {
++   "function_name" : "android::getNextNALUnit",
++   "linker_set_key" : "_ZN7android14getNextNALUnitEPPKhPmS2_S3_b",
++   "parameters" :
++   [
++    {
++     "referenced_type" : "_ZTIPPKh"
++    },
++    {
++     "referenced_type" : "_ZTIPm"
++    },
++    {
++     "referenced_type" : "_ZTIPPKh"
++    },
++    {
++     "referenced_type" : "_ZTIPm"
++    },
++    {
++     "default_arg" : true,
++     "referenced_type" : "_ZTIb"
++    }
++   ],
++   "return_type" : "_ZTIi",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/avc_utils.h"
++  },
++  {
++   "access" : "private",
++   "function_name" : "android::ANetworkSession::threadLoop",
++   "linker_set_key" : "_ZN7android15ANetworkSession10threadLoopEv",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPN7android15ANetworkSessionE"
++    }
++   ],
++   "return_type" : "_ZTIv",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ANetworkSession.h"
++  },
++  {
++   "function_name" : "android::ANetworkSession::sendRequest",
++   "linker_set_key" : "_ZN7android15ANetworkSession11sendRequestEiPKvlbl",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPN7android15ANetworkSessionE"
++    },
++    {
++     "referenced_type" : "_ZTIi"
++    },
++    {
++     "referenced_type" : "_ZTIPKv"
++    },
++    {
++     "default_arg" : true,
++     "referenced_type" : "_ZTIl"
++    },
++    {
++     "default_arg" : true,
++     "referenced_type" : "_ZTIb"
++    },
++    {
++     "default_arg" : true,
++     "referenced_type" : "_ZTIl"
++    }
++   ],
++   "return_type" : "_ZTIi",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ANetworkSession.h"
++  },
++  {
++   "function_name" : "android::ANetworkSession::destroySession",
++   "linker_set_key" : "_ZN7android15ANetworkSession14destroySessionEi",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPN7android15ANetworkSessionE"
++    },
++    {
++     "referenced_type" : "_ZTIi"
++    }
++   ],
++   "return_type" : "_ZTIi",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ANetworkSession.h"
++  },
++  {
++   "function_name" : "android::ANetworkSession::createRTSPClient",
++   "linker_set_key" : "_ZN7android15ANetworkSession16createRTSPClientEPKcjRKNS_2spINS_8AMessageEEEPi",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPN7android15ANetworkSessionE"
++    },
++    {
++     "referenced_type" : "_ZTIPKc"
++    },
++    {
++     "referenced_type" : "_ZTIj"
++    },
++    {
++     "referenced_type" : "_ZTIRKN7android2spINS_8AMessageEEE"
++    },
++    {
++     "referenced_type" : "_ZTIPi"
++    }
++   ],
++   "return_type" : "_ZTIi",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ANetworkSession.h"
++  },
++  {
++   "function_name" : "android::ANetworkSession::createRTSPServer",
++   "linker_set_key" : "_ZN7android15ANetworkSession16createRTSPServerERK7in_addrjRKNS_2spINS_8AMessageEEEPi",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPN7android15ANetworkSessionE"
++    },
++    {
++     "referenced_type" : "_ZTIRK7in_addr"
++    },
++    {
++     "referenced_type" : "_ZTIj"
++    },
++    {
++     "referenced_type" : "_ZTIRKN7android2spINS_8AMessageEEE"
++    },
++    {
++     "referenced_type" : "_ZTIPi"
++    }
++   ],
++   "return_type" : "_ZTIi",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ANetworkSession.h"
++  },
++  {
++   "function_name" : "android::ANetworkSession::createUDPSession",
++   "linker_set_key" : "_ZN7android15ANetworkSession16createUDPSessionEjPKcjRKNS_2spINS_8AMessageEEEPi",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPN7android15ANetworkSessionE"
++    },
++    {
++     "referenced_type" : "_ZTIj"
++    },
++    {
++     "referenced_type" : "_ZTIPKc"
++    },
++    {
++     "referenced_type" : "_ZTIj"
++    },
++    {
++     "referenced_type" : "_ZTIRKN7android2spINS_8AMessageEEE"
++    },
++    {
++     "referenced_type" : "_ZTIPi"
++    }
++   ],
++   "return_type" : "_ZTIi",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ANetworkSession.h"
++  },
++  {
++   "function_name" : "android::ANetworkSession::createUDPSession",
++   "linker_set_key" : "_ZN7android15ANetworkSession16createUDPSessionEjRKNS_2spINS_8AMessageEEEPi",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPN7android15ANetworkSessionE"
++    },
++    {
++     "referenced_type" : "_ZTIj"
++    },
++    {
++     "referenced_type" : "_ZTIRKN7android2spINS_8AMessageEEE"
++    },
++    {
++     "referenced_type" : "_ZTIPi"
++    }
++   ],
++   "return_type" : "_ZTIi",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ANetworkSession.h"
++  },
++  {
++   "function_name" : "android::ANetworkSession::connectUDPSession",
++   "linker_set_key" : "_ZN7android15ANetworkSession17connectUDPSessionEiPKcj",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPN7android15ANetworkSessionE"
++    },
++    {
++     "referenced_type" : "_ZTIi"
++    },
++    {
++     "referenced_type" : "_ZTIPKc"
++    },
++    {
++     "referenced_type" : "_ZTIj"
++    }
++   ],
++   "return_type" : "_ZTIi",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ANetworkSession.h"
++  },
++  {
++   "access" : "private",
++   "function_name" : "android::ANetworkSession::createClientOrServer",
++   "linker_set_key" : "_ZN7android15ANetworkSession20createClientOrServerENS0_4ModeEPK7in_addrjPKcjRKNS_2spINS_8AMessageEEEPi",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPN7android15ANetworkSessionE"
++    },
++    {
++     "referenced_type" : "_ZTIN7android15ANetworkSession4ModeE"
++    },
++    {
++     "referenced_type" : "_ZTIPK7in_addr"
++    },
++    {
++     "referenced_type" : "_ZTIj"
++    },
++    {
++     "referenced_type" : "_ZTIPKc"
++    },
++    {
++     "referenced_type" : "_ZTIj"
++    },
++    {
++     "referenced_type" : "_ZTIRKN7android2spINS_8AMessageEEE"
++    },
++    {
++     "referenced_type" : "_ZTIPi"
++    }
++   ],
++   "return_type" : "_ZTIi",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ANetworkSession.h"
++  },
++  {
++   "access" : "private",
++   "function_name" : "android::ANetworkSession::MakeSocketNonBlocking",
++   "linker_set_key" : "_ZN7android15ANetworkSession21MakeSocketNonBlockingEi",
+    "parameters" :
+    [
+     {
+-     "referenced_type" : "_ZTIPh"
+-    },
+-    {
+-     "referenced_type" : "_ZTIPm"
+-    },
+-    {
+-     "referenced_type" : "_ZTIPKc"
++     "referenced_type" : "_ZTIi"
+     }
+    ],
+-   "return_type" : "_ZTIb",
+-   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/base64.h"
++   "return_type" : "_ZTIi",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ANetworkSession.h"
+   },
+   {
+-   "function_name" : "android::decodeBase64",
+-   "linker_set_key" : "_ZN7android12decodeBase64ERKNS_7AStringE",
++   "function_name" : "android::ANetworkSession::switchToWebSocketMode",
++   "linker_set_key" : "_ZN7android15ANetworkSession21switchToWebSocketModeEi",
+    "parameters" :
+    [
+     {
+-     "referenced_type" : "_ZTIRKN7android7AStringE"
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPN7android15ANetworkSessionE"
++    },
++    {
++     "referenced_type" : "_ZTIi"
+     }
+    ],
+-   "return_type" : "_ZTIN7android2spINS_7ABufferEEE",
+-   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/base64.h"
++   "return_type" : "_ZTIi",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ANetworkSession.h"
+   },
+   {
+-   "function_name" : "android::encodeBase64",
+-   "linker_set_key" : "_ZN7android12encodeBase64EPKvmPNS_7AStringE",
++   "function_name" : "android::ANetworkSession::createTCPDatagramSession",
++   "linker_set_key" : "_ZN7android15ANetworkSession24createTCPDatagramSessionERK7in_addrjRKNS_2spINS_8AMessageEEEPi",
+    "parameters" :
+    [
+     {
+-     "referenced_type" : "_ZTIPKv"
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPN7android15ANetworkSessionE"
+     },
+     {
+-     "referenced_type" : "_ZTIm"
++     "referenced_type" : "_ZTIRK7in_addr"
+     },
+     {
+-     "referenced_type" : "_ZTIPN7android7AStringE"
++     "referenced_type" : "_ZTIj"
++    },
++    {
++     "referenced_type" : "_ZTIRKN7android2spINS_8AMessageEEE"
++    },
++    {
++     "referenced_type" : "_ZTIPi"
+     }
+    ],
+-   "return_type" : "_ZTIv",
+-   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/base64.h"
++   "return_type" : "_ZTIi",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ANetworkSession.h"
+   },
+   {
+-   "function_name" : "android::ALooperRoster::registerHandler",
+-   "linker_set_key" : "_ZN7android13ALooperRoster15registerHandlerERKNS_2spINS_7ALooperEEERKNS1_INS_8AHandlerEEE",
++   "function_name" : "android::ANetworkSession::createTCPDatagramSession",
++   "linker_set_key" : "_ZN7android15ANetworkSession24createTCPDatagramSessionEjPKcjRKNS_2spINS_8AMessageEEEPi",
+    "parameters" :
+    [
+     {
+      "is_this_ptr" : true,
+-     "referenced_type" : "_ZTIPN7android13ALooperRosterE"
++     "referenced_type" : "_ZTIPN7android15ANetworkSessionE"
+     },
+     {
+-     "referenced_type" : "_ZTIRKN7android2spINS_7ALooperEEE"
++     "referenced_type" : "_ZTIj"
+     },
+     {
+-     "referenced_type" : "_ZTIRKN7android2spINS_8AHandlerEEE"
++     "referenced_type" : "_ZTIPKc"
++    },
++    {
++     "referenced_type" : "_ZTIj"
++    },
++    {
++     "referenced_type" : "_ZTIRKN7android2spINS_8AMessageEEE"
++    },
++    {
++     "referenced_type" : "_ZTIPi"
+     }
+    ],
+    "return_type" : "_ZTIi",
+-   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ALooperRoster.h"
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ANetworkSession.h"
+   },
+   {
+-   "function_name" : "android::ALooperRoster::unregisterHandler",
+-   "linker_set_key" : "_ZN7android13ALooperRoster17unregisterHandlerEi",
++   "function_name" : "android::ANetworkSession::stop",
++   "linker_set_key" : "_ZN7android15ANetworkSession4stopEv",
+    "parameters" :
+    [
+     {
+      "is_this_ptr" : true,
+-     "referenced_type" : "_ZTIPN7android13ALooperRosterE"
+-    },
+-    {
+-     "referenced_type" : "_ZTIi"
++     "referenced_type" : "_ZTIPN7android15ANetworkSessionE"
+     }
+    ],
+-   "return_type" : "_ZTIv",
+-   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ALooperRoster.h"
++   "return_type" : "_ZTIi",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ANetworkSession.h"
+   },
+   {
+-   "function_name" : "android::ALooperRoster::unregisterStaleHandlers",
+-   "linker_set_key" : "_ZN7android13ALooperRoster23unregisterStaleHandlersEv",
++   "function_name" : "android::ANetworkSession::start",
++   "linker_set_key" : "_ZN7android15ANetworkSession5startEv",
+    "parameters" :
+    [
+     {
+      "is_this_ptr" : true,
+-     "referenced_type" : "_ZTIPN7android13ALooperRosterE"
++     "referenced_type" : "_ZTIPN7android15ANetworkSessionE"
+     }
+    ],
+-   "return_type" : "_ZTIv",
+-   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ALooperRoster.h"
++   "return_type" : "_ZTIi",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ANetworkSession.h"
+   },
+   {
+-   "function_name" : "android::ALooperRoster::dump",
+-   "linker_set_key" : "_ZN7android13ALooperRoster4dumpEiRKNS_6VectorINS_8String16EEE",
++   "access" : "private",
++   "function_name" : "android::ANetworkSession::interrupt",
++   "linker_set_key" : "_ZN7android15ANetworkSession9interruptEv",
+    "parameters" :
+    [
+     {
+      "is_this_ptr" : true,
+-     "referenced_type" : "_ZTIPN7android13ALooperRosterE"
+-    },
+-    {
+-     "referenced_type" : "_ZTIi"
+-    },
+-    {
+-     "referenced_type" : "_ZTIRKN7android6VectorINS_8String16EEE"
++     "referenced_type" : "_ZTIPN7android15ANetworkSessionE"
+     }
+    ],
+    "return_type" : "_ZTIv",
+-   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ALooperRoster.h"
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ANetworkSession.h"
+   },
+   {
+-   "function_name" : "android::ALooperRoster::ALooperRoster",
+-   "linker_set_key" : "_ZN7android13ALooperRosterC1Ev",
++   "function_name" : "android::ANetworkSession::ANetworkSession",
++   "linker_set_key" : "_ZN7android15ANetworkSessionC1Ev",
+    "parameters" :
+    [
+     {
+      "is_this_ptr" : true,
+-     "referenced_type" : "_ZTIPN7android13ALooperRosterE"
++     "referenced_type" : "_ZTIPN7android15ANetworkSessionE"
+     }
+    ],
+    "return_type" : "_ZTIv",
+-   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ALooperRoster.h"
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ANetworkSession.h"
+   },
+   {
+-   "function_name" : "android::ALooperRoster::ALooperRoster",
+-   "linker_set_key" : "_ZN7android13ALooperRosterC2Ev",
++   "function_name" : "android::ANetworkSession::ANetworkSession",
++   "linker_set_key" : "_ZN7android15ANetworkSessionC2Ev",
+    "parameters" :
+    [
+     {
+      "is_this_ptr" : true,
+-     "referenced_type" : "_ZTIPN7android13ALooperRosterE"
++     "referenced_type" : "_ZTIPN7android15ANetworkSessionE"
+     }
+    ],
+    "return_type" : "_ZTIv",
+-   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ALooperRoster.h"
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ANetworkSession.h"
+   },
+   {
+-   "function_name" : "android::AStringPrintf",
+-   "linker_set_key" : "_ZN7android13AStringPrintfEPKcz",
++   "access" : "protected",
++   "function_name" : "android::ANetworkSession::~ANetworkSession",
++   "linker_set_key" : "_ZN7android15ANetworkSessionD0Ev",
+    "parameters" :
+    [
+     {
+-     "referenced_type" : "_ZTIPKc"
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPN7android15ANetworkSessionE"
+     }
+    ],
+-   "return_type" : "_ZTIN7android7AStringE",
+-   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/AString.h"
++   "return_type" : "_ZTIv",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ANetworkSession.h"
+   },
+   {
+-   "function_name" : "android::FindAVCLayerId",
+-   "linker_set_key" : "_ZN7android14FindAVCLayerIdEPKhm",
++   "access" : "protected",
++   "function_name" : "android::ANetworkSession::~ANetworkSession",
++   "linker_set_key" : "_ZN7android15ANetworkSessionD1Ev",
+    "parameters" :
+    [
+     {
+-     "referenced_type" : "_ZTIPKh"
+-    },
+-    {
+-     "referenced_type" : "_ZTIm"
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPN7android15ANetworkSessionE"
+     }
+    ],
+-   "return_type" : "_ZTIj",
+-   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/avc_utils.h"
++   "return_type" : "_ZTIv",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ANetworkSession.h"
+   },
+   {
+-   "function_name" : "android::getNextNALUnit",
+-   "linker_set_key" : "_ZN7android14getNextNALUnitEPPKhPmS2_S3_b",
++   "access" : "protected",
++   "function_name" : "android::ANetworkSession::~ANetworkSession",
++   "linker_set_key" : "_ZN7android15ANetworkSessionD2Ev",
+    "parameters" :
+    [
+     {
+-     "referenced_type" : "_ZTIPPKh"
+-    },
+-    {
+-     "referenced_type" : "_ZTIPm"
+-    },
+-    {
+-     "referenced_type" : "_ZTIPPKh"
+-    },
+-    {
+-     "referenced_type" : "_ZTIPm"
+-    },
+-    {
+-     "default_arg" : true,
+-     "referenced_type" : "_ZTIb"
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPN7android15ANetworkSessionE"
+     }
+    ],
+-   "return_type" : "_ZTIi",
+-   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/avc_utils.h"
++   "return_type" : "_ZTIv",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ANetworkSession.h"
+   },
+   {
+    "function_name" : "android::MediaBufferBase::Create",
+@@ -11203,43 +12681,195 @@
+      "referenced_type" : "_ZTIPi"
+     }
+    ],
+-   "return_type" : "_ZTIb",
+-   "source_file" : "frameworks/av/media/libstagefright/include/media/stagefright/MetaDataBase.h"
++   "return_type" : "_ZTIb",
++   "source_file" : "frameworks/av/media/libstagefright/include/media/stagefright/MetaDataBase.h"
++  },
++  {
++   "function_name" : "android::MetaDataBase::findInt64",
++   "linker_set_key" : "_ZNK7android12MetaDataBase9findInt64EjPl",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPKN7android12MetaDataBaseE"
++    },
++    {
++     "referenced_type" : "_ZTIj"
++    },
++    {
++     "referenced_type" : "_ZTIPl"
++    }
++   ],
++   "return_type" : "_ZTIb",
++   "source_file" : "frameworks/av/media/libstagefright/include/media/stagefright/MetaDataBase.h"
++  },
++  {
++   "function_name" : "android::NALBitReader::atLeastNumBitsLeft",
++   "linker_set_key" : "_ZNK7android12NALBitReader18atLeastNumBitsLeftEm",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPKN7android12NALBitReaderE"
++    },
++    {
++     "referenced_type" : "_ZTIm"
++    }
++   ],
++   "return_type" : "_ZTIb",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ABitReader.h"
++  },
++  {
++   "access" : "protected",
++   "function_name" : "android::SortedVector<android::key_value_pair_t<android::AString, android::AString>>::do_compare",
++   "linker_set_key" : "_ZNK7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEE10do_compareEPKvS6_",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPKN7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEEE"
++    },
++    {
++     "referenced_type" : "_ZTIPKv"
++    },
++    {
++     "referenced_type" : "_ZTIPKv"
++    }
++   ],
++   "return_type" : "_ZTIi",
++   "source_file" : "system/core/libutils/include/utils/SortedVector.h"
++  },
++  {
++   "access" : "protected",
++   "function_name" : "android::SortedVector<android::key_value_pair_t<android::AString, android::AString>>::do_destroy",
++   "linker_set_key" : "_ZNK7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEE10do_destroyEPvm",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPKN7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEEE"
++    },
++    {
++     "referenced_type" : "_ZTIPv"
++    },
++    {
++     "referenced_type" : "_ZTIm"
++    }
++   ],
++   "return_type" : "_ZTIv",
++   "source_file" : "system/core/libutils/include/utils/SortedVector.h"
++  },
++  {
++   "access" : "protected",
++   "function_name" : "android::SortedVector<android::key_value_pair_t<android::AString, android::AString>>::do_construct",
++   "linker_set_key" : "_ZNK7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEE12do_constructEPvm",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPKN7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEEE"
++    },
++    {
++     "referenced_type" : "_ZTIPv"
++    },
++    {
++     "referenced_type" : "_ZTIm"
++    }
++   ],
++   "return_type" : "_ZTIv",
++   "source_file" : "system/core/libutils/include/utils/SortedVector.h"
++  },
++  {
++   "access" : "protected",
++   "function_name" : "android::SortedVector<android::key_value_pair_t<android::AString, android::AString>>::do_move_forward",
++   "linker_set_key" : "_ZNK7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEE15do_move_forwardEPvPKvm",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPKN7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEEE"
++    },
++    {
++     "referenced_type" : "_ZTIPv"
++    },
++    {
++     "referenced_type" : "_ZTIPKv"
++    },
++    {
++     "referenced_type" : "_ZTIm"
++    }
++   ],
++   "return_type" : "_ZTIv",
++   "source_file" : "system/core/libutils/include/utils/SortedVector.h"
++  },
++  {
++   "access" : "protected",
++   "function_name" : "android::SortedVector<android::key_value_pair_t<android::AString, android::AString>>::do_move_backward",
++   "linker_set_key" : "_ZNK7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEE16do_move_backwardEPvPKvm",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPKN7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEEE"
++    },
++    {
++     "referenced_type" : "_ZTIPv"
++    },
++    {
++     "referenced_type" : "_ZTIPKv"
++    },
++    {
++     "referenced_type" : "_ZTIm"
++    }
++   ],
++   "return_type" : "_ZTIv",
++   "source_file" : "system/core/libutils/include/utils/SortedVector.h"
+   },
+   {
+-   "function_name" : "android::MetaDataBase::findInt64",
+-   "linker_set_key" : "_ZNK7android12MetaDataBase9findInt64EjPl",
++   "access" : "protected",
++   "function_name" : "android::SortedVector<android::key_value_pair_t<android::AString, android::AString>>::do_copy",
++   "linker_set_key" : "_ZNK7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEE7do_copyEPvPKvm",
+    "parameters" :
+    [
+     {
+      "is_this_ptr" : true,
+-     "referenced_type" : "_ZTIPKN7android12MetaDataBaseE"
++     "referenced_type" : "_ZTIPKN7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEEE"
+     },
+     {
+-     "referenced_type" : "_ZTIj"
++     "referenced_type" : "_ZTIPv"
+     },
+     {
+-     "referenced_type" : "_ZTIPl"
++     "referenced_type" : "_ZTIPKv"
++    },
++    {
++     "referenced_type" : "_ZTIm"
+     }
+    ],
+-   "return_type" : "_ZTIb",
+-   "source_file" : "frameworks/av/media/libstagefright/include/media/stagefright/MetaDataBase.h"
++   "return_type" : "_ZTIv",
++   "source_file" : "system/core/libutils/include/utils/SortedVector.h"
+   },
+   {
+-   "function_name" : "android::NALBitReader::atLeastNumBitsLeft",
+-   "linker_set_key" : "_ZNK7android12NALBitReader18atLeastNumBitsLeftEm",
++   "access" : "protected",
++   "function_name" : "android::SortedVector<android::key_value_pair_t<android::AString, android::AString>>::do_splat",
++   "linker_set_key" : "_ZNK7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEE8do_splatEPvPKvm",
+    "parameters" :
+    [
+     {
+      "is_this_ptr" : true,
+-     "referenced_type" : "_ZTIPKN7android12NALBitReaderE"
++     "referenced_type" : "_ZTIPKN7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEEE"
++    },
++    {
++     "referenced_type" : "_ZTIPv"
++    },
++    {
++     "referenced_type" : "_ZTIPKv"
+     },
+     {
+      "referenced_type" : "_ZTIm"
+     }
+    ],
+-   "return_type" : "_ZTIb",
+-   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ABitReader.h"
++   "return_type" : "_ZTIv",
++   "source_file" : "system/core/libutils/include/utils/SortedVector.h"
+   },
+   {
+    "access" : "protected",
+@@ -11545,6 +13175,158 @@
+    "return_type" : "_ZTIv",
+    "source_file" : "system/core/libutils/include/utils/SortedVector.h"
+   },
++  {
++   "access" : "protected",
++   "function_name" : "android::SortedVector<android::key_value_pair_t<int, android::sp<android::ANetworkSession::Session>>>::do_compare",
++   "linker_set_key" : "_ZNK7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE10do_compareEPKvS9_",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPKN7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE"
++    },
++    {
++     "referenced_type" : "_ZTIPKv"
++    },
++    {
++     "referenced_type" : "_ZTIPKv"
++    }
++   ],
++   "return_type" : "_ZTIi",
++   "source_file" : "system/core/libutils/include/utils/SortedVector.h"
++  },
++  {
++   "access" : "protected",
++   "function_name" : "android::SortedVector<android::key_value_pair_t<int, android::sp<android::ANetworkSession::Session>>>::do_destroy",
++   "linker_set_key" : "_ZNK7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE10do_destroyEPvm",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPKN7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE"
++    },
++    {
++     "referenced_type" : "_ZTIPv"
++    },
++    {
++     "referenced_type" : "_ZTIm"
++    }
++   ],
++   "return_type" : "_ZTIv",
++   "source_file" : "system/core/libutils/include/utils/SortedVector.h"
++  },
++  {
++   "access" : "protected",
++   "function_name" : "android::SortedVector<android::key_value_pair_t<int, android::sp<android::ANetworkSession::Session>>>::do_construct",
++   "linker_set_key" : "_ZNK7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE12do_constructEPvm",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPKN7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE"
++    },
++    {
++     "referenced_type" : "_ZTIPv"
++    },
++    {
++     "referenced_type" : "_ZTIm"
++    }
++   ],
++   "return_type" : "_ZTIv",
++   "source_file" : "system/core/libutils/include/utils/SortedVector.h"
++  },
++  {
++   "access" : "protected",
++   "function_name" : "android::SortedVector<android::key_value_pair_t<int, android::sp<android::ANetworkSession::Session>>>::do_move_forward",
++   "linker_set_key" : "_ZNK7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE15do_move_forwardEPvPKvm",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPKN7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE"
++    },
++    {
++     "referenced_type" : "_ZTIPv"
++    },
++    {
++     "referenced_type" : "_ZTIPKv"
++    },
++    {
++     "referenced_type" : "_ZTIm"
++    }
++   ],
++   "return_type" : "_ZTIv",
++   "source_file" : "system/core/libutils/include/utils/SortedVector.h"
++  },
++  {
++   "access" : "protected",
++   "function_name" : "android::SortedVector<android::key_value_pair_t<int, android::sp<android::ANetworkSession::Session>>>::do_move_backward",
++   "linker_set_key" : "_ZNK7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE16do_move_backwardEPvPKvm",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPKN7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE"
++    },
++    {
++     "referenced_type" : "_ZTIPv"
++    },
++    {
++     "referenced_type" : "_ZTIPKv"
++    },
++    {
++     "referenced_type" : "_ZTIm"
++    }
++   ],
++   "return_type" : "_ZTIv",
++   "source_file" : "system/core/libutils/include/utils/SortedVector.h"
++  },
++  {
++   "access" : "protected",
++   "function_name" : "android::SortedVector<android::key_value_pair_t<int, android::sp<android::ANetworkSession::Session>>>::do_copy",
++   "linker_set_key" : "_ZNK7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE7do_copyEPvPKvm",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPKN7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE"
++    },
++    {
++     "referenced_type" : "_ZTIPv"
++    },
++    {
++     "referenced_type" : "_ZTIPKv"
++    },
++    {
++     "referenced_type" : "_ZTIm"
++    }
++   ],
++   "return_type" : "_ZTIv",
++   "source_file" : "system/core/libutils/include/utils/SortedVector.h"
++  },
++  {
++   "access" : "protected",
++   "function_name" : "android::SortedVector<android::key_value_pair_t<int, android::sp<android::ANetworkSession::Session>>>::do_splat",
++   "linker_set_key" : "_ZNK7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE8do_splatEPvPKvm",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPKN7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE"
++    },
++    {
++     "referenced_type" : "_ZTIPv"
++    },
++    {
++     "referenced_type" : "_ZTIPKv"
++    },
++    {
++     "referenced_type" : "_ZTIm"
++    }
++   ],
++   "return_type" : "_ZTIv",
++   "source_file" : "system/core/libutils/include/utils/SortedVector.h"
++  },
+   {
+    "access" : "protected",
+    "function_name" : "android::SortedVector<android::key_value_pair_t<unsigned int, android::MetaDataBase::typed_data>>::do_compare",
+@@ -11697,6 +13479,105 @@
+    "return_type" : "_ZTIv",
+    "source_file" : "system/core/libutils/include/utils/SortedVector.h"
+   },
++  {
++   "function_name" : "android::ParsedMessage::findString",
++   "linker_set_key" : "_ZNK7android13ParsedMessage10findStringEPKcPNS_7AStringE",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPKN7android13ParsedMessageE"
++    },
++    {
++     "referenced_type" : "_ZTIPKc"
++    },
++    {
++     "referenced_type" : "_ZTIPN7android7AStringE"
++    }
++   ],
++   "return_type" : "_ZTIb",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ParsedMessage.h"
++  },
++  {
++   "function_name" : "android::ParsedMessage::getContent",
++   "linker_set_key" : "_ZNK7android13ParsedMessage10getContentEv",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPKN7android13ParsedMessageE"
++    }
++   ],
++   "return_type" : "_ZTIPKc",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ParsedMessage.h"
++  },
++  {
++   "function_name" : "android::ParsedMessage::debugString",
++   "linker_set_key" : "_ZNK7android13ParsedMessage11debugStringEv",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPKN7android13ParsedMessageE"
++    }
++   ],
++   "return_type" : "_ZTIN7android7AStringE",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ParsedMessage.h"
++  },
++  {
++   "function_name" : "android::ParsedMessage::getStatusCode",
++   "linker_set_key" : "_ZNK7android13ParsedMessage13getStatusCodeEPi",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPKN7android13ParsedMessageE"
++    },
++    {
++     "referenced_type" : "_ZTIPi"
++    }
++   ],
++   "return_type" : "_ZTIb",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ParsedMessage.h"
++  },
++  {
++   "function_name" : "android::ParsedMessage::getRequestField",
++   "linker_set_key" : "_ZNK7android13ParsedMessage15getRequestFieldEmPNS_7AStringE",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPKN7android13ParsedMessageE"
++    },
++    {
++     "referenced_type" : "_ZTIm"
++    },
++    {
++     "referenced_type" : "_ZTIPN7android7AStringE"
++    }
++   ],
++   "return_type" : "_ZTIb",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ParsedMessage.h"
++  },
++  {
++   "function_name" : "android::ParsedMessage::findInt32",
++   "linker_set_key" : "_ZNK7android13ParsedMessage9findInt32EPKcPi",
++   "parameters" :
++   [
++    {
++     "is_this_ptr" : true,
++     "referenced_type" : "_ZTIPKN7android13ParsedMessageE"
++    },
++    {
++     "referenced_type" : "_ZTIPKc"
++    },
++    {
++     "referenced_type" : "_ZTIPi"
++    }
++   ],
++   "return_type" : "_ZTIb",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ParsedMessage.h"
++  },
+   {
+    "function_name" : "android::MediaBufferGroup::buffers",
+    "linker_set_key" : "_ZNK7android16MediaBufferGroup7buffersEv",
+@@ -12711,6 +14592,12 @@
+    "referenced_type" : "_ZTIPKc",
+    "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/MediaDefs.h"
+   },
++  {
++   "linker_set_key" : "_ZN7android24MEDIA_MIMETYPE_VIDEO_VC1E",
++   "name" : "android::MEDIA_MIMETYPE_VIDEO_VC1",
++   "referenced_type" : "_ZTIPKc",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/MediaDefs.h"
++  },
+   {
+    "linker_set_key" : "_ZN7android24MEDIA_MIMETYPE_VIDEO_VP8E",
+    "name" : "android::MEDIA_MIMETYPE_VIDEO_VP8",
+@@ -12801,6 +14688,12 @@
+    "referenced_type" : "_ZTIPKc",
+    "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/MediaDefs.h"
+   },
++  {
++   "linker_set_key" : "_ZN7android25MEDIA_MIMETYPE_VIDEO_S263E",
++   "name" : "android::MEDIA_MIMETYPE_VIDEO_S263",
++   "referenced_type" : "_ZTIPKc",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/MediaDefs.h"
++  },
+   {
+    "linker_set_key" : "_ZN7android25MEDIA_MIMETYPE_VIDEO_XVIDE",
+    "name" : "android::MEDIA_MIMETYPE_VIDEO_XVID",
+@@ -12837,6 +14730,12 @@
+    "referenced_type" : "_ZTIPKc",
+    "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/MediaDefs.h"
+   },
++  {
++   "linker_set_key" : "_ZN7android26MEDIA_MIMETYPE_VIDEO_MPEG1E",
++   "name" : "android::MEDIA_MIMETYPE_VIDEO_MPEG1",
++   "referenced_type" : "_ZTIPKc",
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/MediaDefs.h"
++  },
+   {
+    "linker_set_key" : "_ZN7android26MEDIA_MIMETYPE_VIDEO_MPEG2E",
+    "name" : "android::MEDIA_MIMETYPE_VIDEO_MPEG2",
+@@ -13062,7 +14961,16 @@
+    "referenced_type" : "_ZTIK19android_dataspace_t",
+    "self_type" : "_ZTIRK19android_dataspace_t",
+    "size" : 8,
+-   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ALookup.h"
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ALookup.h"
++  },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIRK7in_addr",
++   "name" : "const in_addr &",
++   "referenced_type" : "_ZTIK7in_addr",
++   "self_type" : "_ZTIRK7in_addr",
++   "size" : 8,
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ANetworkSession.h"
+   },
+   {
+    "alignment" : 8,
+@@ -13190,6 +15098,24 @@
+    "size" : 8,
+    "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ColorUtils.h"
+   },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIRKN7android15ANetworkSession7Session8FragmentE",
++   "name" : "const android::ANetworkSession::Session::Fragment &",
++   "referenced_type" : "_ZTIKN7android15ANetworkSession7Session8FragmentE",
++   "self_type" : "_ZTIRKN7android15ANetworkSession7Session8FragmentE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/List.h"
++  },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIRKN7android16key_value_pair_tINS_7AStringES1_EE",
++   "name" : "const android::key_value_pair_t<android::AString, android::AString> &",
++   "referenced_type" : "_ZTIKN7android16key_value_pair_tINS_7AStringES1_EE",
++   "self_type" : "_ZTIRKN7android16key_value_pair_tINS_7AStringES1_EE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h"
++  },
+   {
+    "alignment" : 8,
+    "linker_set_key" : "_ZTIRKN7android16key_value_pair_tINS_7String8ES1_EE",
+@@ -13208,6 +15134,15 @@
+    "size" : 8,
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h"
+   },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIRKN7android16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEE",
++   "name" : "const android::key_value_pair_t<int, android::sp<android::ANetworkSession::Session>> &",
++   "referenced_type" : "_ZTIKN7android16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEE",
++   "self_type" : "_ZTIRKN7android16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h"
++  },
+   {
+    "alignment" : 8,
+    "linker_set_key" : "_ZTIRKN7android16key_value_pair_tIjNS_12MetaDataBase10typed_dataEEE",
+@@ -13262,6 +15197,24 @@
+    "size" : 8,
+    "source_file" : "system/core/libutils/include/utils/StrongPointer.h"
+   },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIRKN7android2spINS_13ParsedMessageEEE",
++   "name" : "const android::sp<android::ParsedMessage> &",
++   "referenced_type" : "_ZTIKN7android2spINS_13ParsedMessageEEE",
++   "self_type" : "_ZTIRKN7android2spINS_13ParsedMessageEEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/StrongPointer.h"
++  },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIRKN7android2spINS_15ANetworkSession7SessionEEE",
++   "name" : "const android::sp<android::ANetworkSession::Session> &",
++   "referenced_type" : "_ZTIKN7android2spINS_15ANetworkSession7SessionEEE",
++   "self_type" : "_ZTIRKN7android2spINS_15ANetworkSession7SessionEEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h"
++  },
+   {
+    "alignment" : 8,
+    "linker_set_key" : "_ZTIRKN7android2spINS_7ABufferEEE",
+@@ -13343,6 +15296,15 @@
+    "size" : 8,
+    "source_file" : "system/core/libutils/include/utils/RefBase.h"
+   },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIRKN7android4ListINS_15ANetworkSession7Session8FragmentEE13_ListIteratorIS3_NS4_14CONST_ITERATOREEE",
++   "name" : "const android::List<Fragment>::_ListIterator<android::ANetworkSession::Session::Fragment, android::List<Fragment>::CONST_ITERATOR> &",
++   "referenced_type" : "_ZTIKN7android4ListINS_15ANetworkSession7Session8FragmentEE13_ListIteratorIS3_NS4_14CONST_ITERATOREEE",
++   "self_type" : "_ZTIRKN7android4ListINS_15ANetworkSession7Session8FragmentEE13_ListIteratorIS3_NS4_14CONST_ITERATOREEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/List.h"
++  },
+   {
+    "alignment" : 8,
+    "linker_set_key" : "_ZTIRKN7android4ListINS_7ALooper5EventEE13_ListIteratorIS2_NS3_18NON_CONST_ITERATOREEE",
+@@ -13631,6 +15593,24 @@
+    "size" : 8,
+    "source_file" : "system/core/libutils/include/utils/KeyedVector.h"
+   },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIRN7android15ANetworkSession7Session8FragmentE",
++   "name" : "android::ANetworkSession::Session::Fragment &",
++   "referenced_type" : "_ZTIN7android15ANetworkSession7Session8FragmentE",
++   "self_type" : "_ZTIRN7android15ANetworkSession7Session8FragmentE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/List.h"
++  },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIRN7android16key_value_pair_tINS_7AStringES1_EE",
++   "name" : "android::key_value_pair_t<android::AString, android::AString> &",
++   "referenced_type" : "_ZTIN7android16key_value_pair_tINS_7AStringES1_EE",
++   "self_type" : "_ZTIRN7android16key_value_pair_tINS_7AStringES1_EE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h"
++  },
+   {
+    "alignment" : 8,
+    "linker_set_key" : "_ZTIRN7android16key_value_pair_tINS_7String8ES1_EE",
+@@ -13649,6 +15629,15 @@
+    "size" : 8,
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h"
+   },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIRN7android16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEE",
++   "name" : "android::key_value_pair_t<int, android::sp<android::ANetworkSession::Session>> &",
++   "referenced_type" : "_ZTIN7android16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEE",
++   "self_type" : "_ZTIRN7android16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h"
++  },
+   {
+    "alignment" : 8,
+    "linker_set_key" : "_ZTIRN7android16key_value_pair_tIjNS_12MetaDataBase10typed_dataEEE",
+@@ -13676,6 +15665,24 @@
+    "size" : 8,
+    "source_file" : "system/core/libutils/include/utils/StrongPointer.h"
+   },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIRN7android2spINS_15ANetworkSession7SessionEEE",
++   "name" : "android::sp<android::ANetworkSession::Session> &",
++   "referenced_type" : "_ZTIN7android2spINS_15ANetworkSession7SessionEEE",
++   "self_type" : "_ZTIRN7android2spINS_15ANetworkSession7SessionEEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/StrongPointer.h"
++  },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIRN7android2spINS_6ThreadEEE",
++   "name" : "android::sp<android::Thread> &",
++   "referenced_type" : "_ZTIN7android2spINS_6ThreadEEE",
++   "self_type" : "_ZTIRN7android2spINS_6ThreadEEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/StrongPointer.h"
++  },
+   {
+    "alignment" : 8,
+    "linker_set_key" : "_ZTIRN7android2spINS_7ABufferEEE",
+@@ -13739,6 +15746,15 @@
+    "size" : 8,
+    "source_file" : "system/core/libutils/include/utils/RefBase.h"
+   },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIRN7android4ListINS_15ANetworkSession7Session8FragmentEE13_ListIteratorIS3_NS4_14CONST_ITERATOREEE",
++   "name" : "android::List<Fragment>::_ListIterator<android::ANetworkSession::Session::Fragment, android::List<Fragment>::CONST_ITERATOR> &",
++   "referenced_type" : "_ZTIN7android4ListINS_15ANetworkSession7Session8FragmentEE13_ListIteratorIS3_NS4_14CONST_ITERATOREEE",
++   "self_type" : "_ZTIRN7android4ListINS_15ANetworkSession7Session8FragmentEE13_ListIteratorIS3_NS4_14CONST_ITERATOREEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/List.h"
++  },
+   {
+    "alignment" : 8,
+    "linker_set_key" : "_ZTIRN7android4ListINS_7ALooper5EventEE13_ListIteratorIS2_NS3_18NON_CONST_ITERATOREEE",
+@@ -13967,6 +15983,15 @@
+    "size" : 8,
+    "source_file" : "system/core/libutils/include/utils/AndroidThreads.h"
+   },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPK7in_addr",
++   "name" : "const in_addr *",
++   "referenced_type" : "_ZTIK7in_addr",
++   "self_type" : "_ZTIPK7in_addr",
++   "size" : 8,
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ANetworkSession.h"
++  },
+   {
+    "alignment" : 8,
+    "linker_set_key" : "_ZTIPK7log_msg",
+@@ -14012,6 +16037,15 @@
+    "size" : 8,
+    "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/AMessage.h"
+   },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPKN7android11KeyedVectorINS_7AStringES1_EE",
++   "name" : "const android::KeyedVector<android::AString, android::AString> *",
++   "referenced_type" : "_ZTIKN7android11KeyedVectorINS_7AStringES1_EE",
++   "self_type" : "_ZTIPKN7android11KeyedVectorINS_7AStringES1_EE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/KeyedVector.h"
++  },
+   {
+    "alignment" : 8,
+    "linker_set_key" : "_ZTIPKN7android11KeyedVectorIiNS_13ALooperRoster11HandlerInfoEEE",
+@@ -14021,6 +16055,15 @@
+    "size" : 8,
+    "source_file" : "system/core/libutils/include/utils/KeyedVector.h"
+   },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPKN7android11KeyedVectorIiNS_2spINS_15ANetworkSession7SessionEEEEE",
++   "name" : "const android::KeyedVector<int, android::sp<android::ANetworkSession::Session>> *",
++   "referenced_type" : "_ZTIKN7android11KeyedVectorIiNS_2spINS_15ANetworkSession7SessionEEEEE",
++   "self_type" : "_ZTIPKN7android11KeyedVectorIiNS_2spINS_15ANetworkSession7SessionEEEEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/KeyedVector.h"
++  },
+   {
+    "alignment" : 8,
+    "linker_set_key" : "_ZTIPKN7android11KeyedVectorIjNS_12MetaDataBase10typed_dataEEE",
+@@ -14075,6 +16118,15 @@
+    "size" : 8,
+    "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ABitReader.h"
+   },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPKN7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEEE",
++   "name" : "const android::SortedVector<android::key_value_pair_t<android::AString, android::AString>> *",
++   "referenced_type" : "_ZTIKN7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEEE",
++   "self_type" : "_ZTIPKN7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/SortedVector.h"
++  },
+   {
+    "alignment" : 8,
+    "linker_set_key" : "_ZTIPKN7android12SortedVectorINS_16key_value_pair_tINS_7String8ES2_EEEE",
+@@ -14093,6 +16145,15 @@
+    "size" : 8,
+    "source_file" : "system/core/libutils/include/utils/SortedVector.h"
+   },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPKN7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE",
++   "name" : "const android::SortedVector<android::key_value_pair_t<int, android::sp<android::ANetworkSession::Session>>> *",
++   "referenced_type" : "_ZTIKN7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE",
++   "self_type" : "_ZTIPKN7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/SortedVector.h"
++  },
+   {
+    "alignment" : 8,
+    "linker_set_key" : "_ZTIPKN7android12SortedVectorINS_16key_value_pair_tIjNS_12MetaDataBase10typed_dataEEEEE",
+@@ -14111,6 +16172,15 @@
+    "size" : 8,
+    "source_file" : "system/core/libutils/include/utils/SortedVector.h"
+   },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPKN7android13ParsedMessageE",
++   "name" : "const android::ParsedMessage *",
++   "referenced_type" : "_ZTIKN7android13ParsedMessageE",
++   "self_type" : "_ZTIPKN7android13ParsedMessageE",
++   "size" : 8,
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ParsedMessage.h"
++  },
+   {
+    "alignment" : 8,
+    "linker_set_key" : "_ZTIPKN7android16MediaBufferGroupE",
+@@ -14120,6 +16190,15 @@
+    "size" : 8,
+    "source_file" : "frameworks/av/media/libstagefright/include/media/stagefright/MediaBufferGroup.h"
+   },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPKN7android16key_value_pair_tINS_7AStringES1_EE",
++   "name" : "const android::key_value_pair_t<android::AString, android::AString> *",
++   "referenced_type" : "_ZTIKN7android16key_value_pair_tINS_7AStringES1_EE",
++   "self_type" : "_ZTIPKN7android16key_value_pair_tINS_7AStringES1_EE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h"
++  },
+   {
+    "alignment" : 8,
+    "linker_set_key" : "_ZTIPKN7android16key_value_pair_tINS_7String8ES1_EE",
+@@ -14138,6 +16217,15 @@
+    "size" : 8,
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h"
+   },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPKN7android16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEE",
++   "name" : "const android::key_value_pair_t<int, android::sp<android::ANetworkSession::Session>> *",
++   "referenced_type" : "_ZTIKN7android16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEE",
++   "self_type" : "_ZTIPKN7android16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h"
++  },
+   {
+    "alignment" : 8,
+    "linker_set_key" : "_ZTIPKN7android16key_value_pair_tIjNS_12MetaDataBase10typed_dataEEE",
+@@ -14183,6 +16271,33 @@
+    "size" : 8,
+    "source_file" : "system/core/libutils/include/utils/StrongPointer.h"
+   },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPKN7android2spINS_13ParsedMessageEEE",
++   "name" : "const android::sp<android::ParsedMessage> *",
++   "referenced_type" : "_ZTIKN7android2spINS_13ParsedMessageEEE",
++   "self_type" : "_ZTIPKN7android2spINS_13ParsedMessageEEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/StrongPointer.h"
++  },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPKN7android2spINS_15ANetworkSession7SessionEEE",
++   "name" : "const android::sp<android::ANetworkSession::Session> *",
++   "referenced_type" : "_ZTIKN7android2spINS_15ANetworkSession7SessionEEE",
++   "self_type" : "_ZTIPKN7android2spINS_15ANetworkSession7SessionEEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/StrongPointer.h"
++  },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPKN7android2spINS_6ThreadEEE",
++   "name" : "const android::sp<android::Thread> *",
++   "referenced_type" : "_ZTIKN7android2spINS_6ThreadEEE",
++   "self_type" : "_ZTIPKN7android2spINS_6ThreadEEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/StrongPointer.h"
++  },
+   {
+    "alignment" : 8,
+    "linker_set_key" : "_ZTIPKN7android2spINS_7ABufferEEE",
+@@ -14264,6 +16379,69 @@
+    "size" : 8,
+    "source_file" : "system/core/libutils/include/utils/RefBase.h"
+   },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPKN7android4ListINS_15ANetworkSession7Session8FragmentEE13_ListIteratorIS3_NS4_14CONST_ITERATOREEE",
++   "name" : "const android::List<Fragment>::_ListIterator<android::ANetworkSession::Session::Fragment, android::List<Fragment>::CONST_ITERATOR> *",
++   "referenced_type" : "_ZTIKN7android4ListINS_15ANetworkSession7Session8FragmentEE13_ListIteratorIS3_NS4_14CONST_ITERATOREEE",
++   "self_type" : "_ZTIPKN7android4ListINS_15ANetworkSession7Session8FragmentEE13_ListIteratorIS3_NS4_14CONST_ITERATOREEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/List.h"
++  },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPKN7android4ListINS_15ANetworkSession7Session8FragmentEE13_ListIteratorIS3_NS4_18NON_CONST_ITERATOREEE",
++   "name" : "const android::List<Fragment>::_ListIterator<android::ANetworkSession::Session::Fragment, android::List<Fragment>::NON_CONST_ITERATOR> *",
++   "referenced_type" : "_ZTIKN7android4ListINS_15ANetworkSession7Session8FragmentEE13_ListIteratorIS3_NS4_18NON_CONST_ITERATOREEE",
++   "self_type" : "_ZTIPKN7android4ListINS_15ANetworkSession7Session8FragmentEE13_ListIteratorIS3_NS4_18NON_CONST_ITERATOREEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/List.h"
++  },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPKN7android4ListINS_15ANetworkSession7Session8FragmentEE5_NodeE",
++   "name" : "const android::List<Fragment>::_Node *",
++   "referenced_type" : "_ZTIKN7android4ListINS_15ANetworkSession7Session8FragmentEE5_NodeE",
++   "self_type" : "_ZTIPKN7android4ListINS_15ANetworkSession7Session8FragmentEE5_NodeE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/List.h"
++  },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPKN7android4ListINS_15ANetworkSession7Session8FragmentEEE",
++   "name" : "const android::List<android::ANetworkSession::Session::Fragment> *",
++   "referenced_type" : "_ZTIKN7android4ListINS_15ANetworkSession7Session8FragmentEEE",
++   "self_type" : "_ZTIPKN7android4ListINS_15ANetworkSession7Session8FragmentEEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/List.h"
++  },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPKN7android4ListINS_2spINS_15ANetworkSession7SessionEEEE13_ListIteratorIS4_NS5_18NON_CONST_ITERATOREEE",
++   "name" : "const android::List<sp<Session>>::_ListIterator<android::sp<android::ANetworkSession::Session>, android::List<sp<Session>>::NON_CONST_ITERATOR> *",
++   "referenced_type" : "_ZTIKN7android4ListINS_2spINS_15ANetworkSession7SessionEEEE13_ListIteratorIS4_NS5_18NON_CONST_ITERATOREEE",
++   "self_type" : "_ZTIPKN7android4ListINS_2spINS_15ANetworkSession7SessionEEEE13_ListIteratorIS4_NS5_18NON_CONST_ITERATOREEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/List.h"
++  },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPKN7android4ListINS_2spINS_15ANetworkSession7SessionEEEE5_NodeE",
++   "name" : "const android::List<sp<Session>>::_Node *",
++   "referenced_type" : "_ZTIKN7android4ListINS_2spINS_15ANetworkSession7SessionEEEE5_NodeE",
++   "self_type" : "_ZTIPKN7android4ListINS_2spINS_15ANetworkSession7SessionEEEE5_NodeE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/List.h"
++  },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPKN7android4ListINS_2spINS_15ANetworkSession7SessionEEEEE",
++   "name" : "const android::List<android::sp<android::ANetworkSession::Session>> *",
++   "referenced_type" : "_ZTIKN7android4ListINS_2spINS_15ANetworkSession7SessionEEEEE",
++   "self_type" : "_ZTIPKN7android4ListINS_2spINS_15ANetworkSession7SessionEEEEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/List.h"
++  },
+   {
+    "alignment" : 8,
+    "linker_set_key" : "_ZTIPKN7android4ListINS_7ALooper5EventEE13_ListIteratorIS2_NS3_18NON_CONST_ITERATOREEE",
+@@ -14660,6 +16838,15 @@
+    "size" : 8,
+    "source_file" : "system/core/libutils/include/utils/StrongPointer.h"
+   },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPN7android11KeyedVectorINS_7AStringES1_EE",
++   "name" : "android::KeyedVector<android::AString, android::AString> *",
++   "referenced_type" : "_ZTIN7android11KeyedVectorINS_7AStringES1_EE",
++   "self_type" : "_ZTIPN7android11KeyedVectorINS_7AStringES1_EE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/KeyedVector.h"
++  },
+   {
+    "alignment" : 8,
+    "linker_set_key" : "_ZTIPN7android11KeyedVectorIiNS_13ALooperRoster11HandlerInfoEEE",
+@@ -14669,6 +16856,15 @@
+    "size" : 8,
+    "source_file" : "system/core/libutils/include/utils/KeyedVector.h"
+   },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPN7android11KeyedVectorIiNS_2spINS_15ANetworkSession7SessionEEEEE",
++   "name" : "android::KeyedVector<int, android::sp<android::ANetworkSession::Session>> *",
++   "referenced_type" : "_ZTIN7android11KeyedVectorIiNS_2spINS_15ANetworkSession7SessionEEEEE",
++   "self_type" : "_ZTIPN7android11KeyedVectorIiNS_2spINS_15ANetworkSession7SessionEEEEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/KeyedVector.h"
++  },
+   {
+    "alignment" : 8,
+    "linker_set_key" : "_ZTIPN7android11KeyedVectorIjNS_12MetaDataBase10typed_dataEEE",
+@@ -14777,6 +16973,15 @@
+    "size" : 8,
+    "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ABitReader.h"
+   },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPN7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEEE",
++   "name" : "android::SortedVector<android::key_value_pair_t<android::AString, android::AString>> *",
++   "referenced_type" : "_ZTIN7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEEE",
++   "self_type" : "_ZTIPN7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/SortedVector.h"
++  },
+   {
+    "alignment" : 8,
+    "linker_set_key" : "_ZTIPN7android12SortedVectorINS_16key_value_pair_tINS_7String8ES2_EEEE",
+@@ -14795,6 +17000,15 @@
+    "size" : 8,
+    "source_file" : "system/core/libutils/include/utils/SortedVector.h"
+   },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPN7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE",
++   "name" : "android::SortedVector<android::key_value_pair_t<int, android::sp<android::ANetworkSession::Session>>> *",
++   "referenced_type" : "_ZTIN7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE",
++   "self_type" : "_ZTIPN7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/SortedVector.h"
++  },
+   {
+    "alignment" : 8,
+    "linker_set_key" : "_ZTIPN7android12SortedVectorINS_16key_value_pair_tIjNS_12MetaDataBase10typed_dataEEEEE",
+@@ -14831,6 +17045,42 @@
+    "size" : 8,
+    "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ColorUtils.h"
+   },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPN7android13ParsedMessageE",
++   "name" : "android::ParsedMessage *",
++   "referenced_type" : "_ZTIN7android13ParsedMessageE",
++   "self_type" : "_ZTIPN7android13ParsedMessageE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/StrongPointer.h"
++  },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPN7android15ANetworkSession13NetworkThreadE",
++   "name" : "android::ANetworkSession::NetworkThread *",
++   "referenced_type" : "_ZTIN7android15ANetworkSession13NetworkThreadE",
++   "self_type" : "_ZTIPN7android15ANetworkSession13NetworkThreadE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/StrongPointer.h"
++  },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPN7android15ANetworkSession7SessionE",
++   "name" : "android::ANetworkSession::Session *",
++   "referenced_type" : "_ZTIN7android15ANetworkSession7SessionE",
++   "self_type" : "_ZTIPN7android15ANetworkSession7SessionE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/StrongPointer.h"
++  },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPN7android15ANetworkSessionE",
++   "name" : "android::ANetworkSession *",
++   "referenced_type" : "_ZTIN7android15ANetworkSessionE",
++   "self_type" : "_ZTIPN7android15ANetworkSessionE",
++   "size" : 8,
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ANetworkSession.h"
++  },
+   {
+    "alignment" : 8,
+    "linker_set_key" : "_ZTIPN7android15MediaBufferBaseE",
+@@ -14867,6 +17117,15 @@
+    "size" : 8,
+    "source_file" : "system/core/libutils/include/utils/RefBase.h"
+   },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPN7android16key_value_pair_tINS_7AStringES1_EE",
++   "name" : "android::key_value_pair_t<android::AString, android::AString> *",
++   "referenced_type" : "_ZTIN7android16key_value_pair_tINS_7AStringES1_EE",
++   "self_type" : "_ZTIPN7android16key_value_pair_tINS_7AStringES1_EE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h"
++  },
+   {
+    "alignment" : 8,
+    "linker_set_key" : "_ZTIPN7android16key_value_pair_tINS_7String8ES1_EE",
+@@ -14885,6 +17144,15 @@
+    "size" : 8,
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h"
+   },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPN7android16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEE",
++   "name" : "android::key_value_pair_t<int, android::sp<android::ANetworkSession::Session>> *",
++   "referenced_type" : "_ZTIN7android16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEE",
++   "self_type" : "_ZTIPN7android16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h"
++  },
+   {
+    "alignment" : 8,
+    "linker_set_key" : "_ZTIPN7android16key_value_pair_tIjNS_12MetaDataBase10typed_dataEEE",
+@@ -14975,6 +17243,33 @@
+    "size" : 8,
+    "source_file" : "system/core/libutils/include/utils/StrongPointer.h"
+   },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPN7android2spINS_13ParsedMessageEEE",
++   "name" : "android::sp<android::ParsedMessage> *",
++   "referenced_type" : "_ZTIN7android2spINS_13ParsedMessageEEE",
++   "self_type" : "_ZTIPN7android2spINS_13ParsedMessageEEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/StrongPointer.h"
++  },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPN7android2spINS_15ANetworkSession7SessionEEE",
++   "name" : "android::sp<android::ANetworkSession::Session> *",
++   "referenced_type" : "_ZTIN7android2spINS_15ANetworkSession7SessionEEE",
++   "self_type" : "_ZTIPN7android2spINS_15ANetworkSession7SessionEEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/StrongPointer.h"
++  },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPN7android2spINS_6ThreadEEE",
++   "name" : "android::sp<android::Thread> *",
++   "referenced_type" : "_ZTIN7android2spINS_6ThreadEEE",
++   "self_type" : "_ZTIPN7android2spINS_6ThreadEEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/StrongPointer.h"
++  },
+   {
+    "alignment" : 8,
+    "linker_set_key" : "_ZTIPN7android2spINS_7ABufferEEE",
+@@ -15065,6 +17360,69 @@
+    "size" : 8,
+    "source_file" : "system/core/libutils/include/utils/RefBase.h"
+   },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPN7android4ListINS_15ANetworkSession7Session8FragmentEE13_ListIteratorIS3_NS4_14CONST_ITERATOREEE",
++   "name" : "android::List<Fragment>::_ListIterator<android::ANetworkSession::Session::Fragment, android::List<Fragment>::CONST_ITERATOR> *",
++   "referenced_type" : "_ZTIN7android4ListINS_15ANetworkSession7Session8FragmentEE13_ListIteratorIS3_NS4_14CONST_ITERATOREEE",
++   "self_type" : "_ZTIPN7android4ListINS_15ANetworkSession7Session8FragmentEE13_ListIteratorIS3_NS4_14CONST_ITERATOREEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/List.h"
++  },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPN7android4ListINS_15ANetworkSession7Session8FragmentEE13_ListIteratorIS3_NS4_18NON_CONST_ITERATOREEE",
++   "name" : "android::List<Fragment>::_ListIterator<android::ANetworkSession::Session::Fragment, android::List<Fragment>::NON_CONST_ITERATOR> *",
++   "referenced_type" : "_ZTIN7android4ListINS_15ANetworkSession7Session8FragmentEE13_ListIteratorIS3_NS4_18NON_CONST_ITERATOREEE",
++   "self_type" : "_ZTIPN7android4ListINS_15ANetworkSession7Session8FragmentEE13_ListIteratorIS3_NS4_18NON_CONST_ITERATOREEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/List.h"
++  },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPN7android4ListINS_15ANetworkSession7Session8FragmentEE5_NodeE",
++   "name" : "android::List<Fragment>::_Node *",
++   "referenced_type" : "_ZTIN7android4ListINS_15ANetworkSession7Session8FragmentEE5_NodeE",
++   "self_type" : "_ZTIPN7android4ListINS_15ANetworkSession7Session8FragmentEE5_NodeE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/List.h"
++  },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPN7android4ListINS_15ANetworkSession7Session8FragmentEEE",
++   "name" : "android::List<android::ANetworkSession::Session::Fragment> *",
++   "referenced_type" : "_ZTIN7android4ListINS_15ANetworkSession7Session8FragmentEEE",
++   "self_type" : "_ZTIPN7android4ListINS_15ANetworkSession7Session8FragmentEEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/List.h"
++  },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPN7android4ListINS_2spINS_15ANetworkSession7SessionEEEE13_ListIteratorIS4_NS5_18NON_CONST_ITERATOREEE",
++   "name" : "android::List<sp<Session>>::_ListIterator<android::sp<android::ANetworkSession::Session>, android::List<sp<Session>>::NON_CONST_ITERATOR> *",
++   "referenced_type" : "_ZTIN7android4ListINS_2spINS_15ANetworkSession7SessionEEEE13_ListIteratorIS4_NS5_18NON_CONST_ITERATOREEE",
++   "self_type" : "_ZTIPN7android4ListINS_2spINS_15ANetworkSession7SessionEEEE13_ListIteratorIS4_NS5_18NON_CONST_ITERATOREEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/List.h"
++  },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPN7android4ListINS_2spINS_15ANetworkSession7SessionEEEE5_NodeE",
++   "name" : "android::List<sp<Session>>::_Node *",
++   "referenced_type" : "_ZTIN7android4ListINS_2spINS_15ANetworkSession7SessionEEEE5_NodeE",
++   "self_type" : "_ZTIPN7android4ListINS_2spINS_15ANetworkSession7SessionEEEE5_NodeE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/List.h"
++  },
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTIPN7android4ListINS_2spINS_15ANetworkSession7SessionEEEEE",
++   "name" : "android::List<android::sp<android::ANetworkSession::Session>> *",
++   "referenced_type" : "_ZTIN7android4ListINS_2spINS_15ANetworkSession7SessionEEEEE",
++   "self_type" : "_ZTIPN7android4ListINS_2spINS_15ANetworkSession7SessionEEEEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/List.h"
++  },
+   {
+    "alignment" : 8,
+    "linker_set_key" : "_ZTIPN7android4ListINS_7ALooper5EventEE13_ListIteratorIS2_NS3_18NON_CONST_ITERATOREEE",
+@@ -15681,6 +18039,16 @@
+    "size" : 4,
+    "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ALookup.h"
+   },
++  {
++   "alignment" : 4,
++   "is_const" : true,
++   "linker_set_key" : "_ZTIK7in_addr",
++   "name" : "const in_addr",
++   "referenced_type" : "_ZTI7in_addr",
++   "self_type" : "_ZTIK7in_addr",
++   "size" : 4,
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ANetworkSession.h"
++  },
+   {
+    "alignment" : 4,
+    "is_const" : true,
+@@ -15771,6 +18139,16 @@
+    "size" : 48,
+    "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/AMessage.h"
+   },
++  {
++   "alignment" : 8,
++   "is_const" : true,
++   "linker_set_key" : "_ZTIKN7android11KeyedVectorINS_7AStringES1_EE",
++   "name" : "const android::KeyedVector<android::AString, android::AString>",
++   "referenced_type" : "_ZTIN7android11KeyedVectorINS_7AStringES1_EE",
++   "self_type" : "_ZTIKN7android11KeyedVectorINS_7AStringES1_EE",
++   "size" : 40,
++   "source_file" : "system/core/libutils/include/utils/KeyedVector.h"
++  },
+   {
+    "alignment" : 8,
+    "is_const" : true,
+@@ -15781,6 +18159,16 @@
+    "size" : 40,
+    "source_file" : "system/core/libutils/include/utils/KeyedVector.h"
+   },
++  {
++   "alignment" : 8,
++   "is_const" : true,
++   "linker_set_key" : "_ZTIKN7android11KeyedVectorIiNS_2spINS_15ANetworkSession7SessionEEEEE",
++   "name" : "const android::KeyedVector<int, android::sp<android::ANetworkSession::Session>>",
++   "referenced_type" : "_ZTIN7android11KeyedVectorIiNS_2spINS_15ANetworkSession7SessionEEEEE",
++   "self_type" : "_ZTIKN7android11KeyedVectorIiNS_2spINS_15ANetworkSession7SessionEEEEE",
++   "size" : 40,
++   "source_file" : "system/core/libutils/include/utils/KeyedVector.h"
++  },
+   {
+    "alignment" : 8,
+    "is_const" : true,
+@@ -15901,6 +18289,16 @@
+    "size" : 48,
+    "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ABitReader.h"
+   },
++  {
++   "alignment" : 8,
++   "is_const" : true,
++   "linker_set_key" : "_ZTIKN7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEEE",
++   "name" : "const android::SortedVector<android::key_value_pair_t<android::AString, android::AString>>",
++   "referenced_type" : "_ZTIN7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEEE",
++   "self_type" : "_ZTIKN7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEEE",
++   "size" : 40,
++   "source_file" : "system/core/libutils/include/utils/SortedVector.h"
++  },
+   {
+    "alignment" : 8,
+    "is_const" : true,
+@@ -15921,6 +18319,16 @@
+    "size" : 40,
+    "source_file" : "system/core/libutils/include/utils/SortedVector.h"
+   },
++  {
++   "alignment" : 8,
++   "is_const" : true,
++   "linker_set_key" : "_ZTIKN7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE",
++   "name" : "const android::SortedVector<android::key_value_pair_t<int, android::sp<android::ANetworkSession::Session>>>",
++   "referenced_type" : "_ZTIN7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE",
++   "self_type" : "_ZTIKN7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE",
++   "size" : 40,
++   "source_file" : "system/core/libutils/include/utils/SortedVector.h"
++  },
+   {
+    "alignment" : 8,
+    "is_const" : true,
+@@ -15961,6 +18369,26 @@
+    "size" : 25,
+    "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ColorUtils.h"
+   },
++  {
++   "alignment" : 8,
++   "is_const" : true,
++   "linker_set_key" : "_ZTIKN7android13ParsedMessageE",
++   "name" : "const android::ParsedMessage",
++   "referenced_type" : "_ZTIN7android13ParsedMessageE",
++   "self_type" : "_ZTIKN7android13ParsedMessageE",
++   "size" : 80,
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ParsedMessage.h"
++  },
++  {
++   "alignment" : 8,
++   "is_const" : true,
++   "linker_set_key" : "_ZTIKN7android15ANetworkSession7Session8FragmentE",
++   "name" : "const android::ANetworkSession::Session::Fragment",
++   "referenced_type" : "_ZTIN7android15ANetworkSession7Session8FragmentE",
++   "self_type" : "_ZTIKN7android15ANetworkSession7Session8FragmentE",
++   "size" : 24,
++   "source_file" : "system/core/libutils/include/utils/List.h"
++  },
+   {
+    "alignment" : 8,
+    "is_const" : true,
+@@ -15971,6 +18399,16 @@
+    "size" : 24,
+    "source_file" : "frameworks/av/media/libstagefright/include/media/stagefright/MediaBufferGroup.h"
+   },
++  {
++   "alignment" : 8,
++   "is_const" : true,
++   "linker_set_key" : "_ZTIKN7android16key_value_pair_tINS_7AStringES1_EE",
++   "name" : "const android::key_value_pair_t<android::AString, android::AString>",
++   "referenced_type" : "_ZTIN7android16key_value_pair_tINS_7AStringES1_EE",
++   "self_type" : "_ZTIKN7android16key_value_pair_tINS_7AStringES1_EE",
++   "size" : 48,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h"
++  },
+   {
+    "alignment" : 8,
+    "is_const" : true,
+@@ -15991,6 +18429,16 @@
+    "size" : 40,
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h"
+   },
++  {
++   "alignment" : 8,
++   "is_const" : true,
++   "linker_set_key" : "_ZTIKN7android16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEE",
++   "name" : "const android::key_value_pair_t<int, android::sp<android::ANetworkSession::Session>>",
++   "referenced_type" : "_ZTIN7android16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEE",
++   "self_type" : "_ZTIKN7android16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEE",
++   "size" : 16,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h"
++  },
+   {
+    "alignment" : 8,
+    "is_const" : true,
+@@ -16051,6 +18499,36 @@
+    "size" : 8,
+    "source_file" : "system/core/libutils/include/utils/StrongPointer.h"
+   },
++  {
++   "alignment" : 8,
++   "is_const" : true,
++   "linker_set_key" : "_ZTIKN7android2spINS_13ParsedMessageEEE",
++   "name" : "const android::sp<android::ParsedMessage>",
++   "referenced_type" : "_ZTIN7android2spINS_13ParsedMessageEEE",
++   "self_type" : "_ZTIKN7android2spINS_13ParsedMessageEEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/StrongPointer.h"
++  },
++  {
++   "alignment" : 8,
++   "is_const" : true,
++   "linker_set_key" : "_ZTIKN7android2spINS_15ANetworkSession7SessionEEE",
++   "name" : "const android::sp<android::ANetworkSession::Session>",
++   "referenced_type" : "_ZTIN7android2spINS_15ANetworkSession7SessionEEE",
++   "self_type" : "_ZTIKN7android2spINS_15ANetworkSession7SessionEEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h"
++  },
++  {
++   "alignment" : 8,
++   "is_const" : true,
++   "linker_set_key" : "_ZTIKN7android2spINS_6ThreadEEE",
++   "name" : "const android::sp<android::Thread>",
++   "referenced_type" : "_ZTIN7android2spINS_6ThreadEEE",
++   "self_type" : "_ZTIKN7android2spINS_6ThreadEEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/StrongPointer.h"
++  },
+   {
+    "alignment" : 8,
+    "is_const" : true,
+@@ -16141,6 +18619,76 @@
+    "size" : 16,
+    "source_file" : "system/core/libutils/include/utils/RefBase.h"
+   },
++  {
++   "alignment" : 8,
++   "is_const" : true,
++   "linker_set_key" : "_ZTIKN7android4ListINS_15ANetworkSession7Session8FragmentEE13_ListIteratorIS3_NS4_14CONST_ITERATOREEE",
++   "name" : "const android::List<Fragment>::_ListIterator<android::ANetworkSession::Session::Fragment, android::List<Fragment>::CONST_ITERATOR>",
++   "referenced_type" : "_ZTIN7android4ListINS_15ANetworkSession7Session8FragmentEE13_ListIteratorIS3_NS4_14CONST_ITERATOREEE",
++   "self_type" : "_ZTIKN7android4ListINS_15ANetworkSession7Session8FragmentEE13_ListIteratorIS3_NS4_14CONST_ITERATOREEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/List.h"
++  },
++  {
++   "alignment" : 8,
++   "is_const" : true,
++   "linker_set_key" : "_ZTIKN7android4ListINS_15ANetworkSession7Session8FragmentEE13_ListIteratorIS3_NS4_18NON_CONST_ITERATOREEE",
++   "name" : "const android::List<Fragment>::_ListIterator<android::ANetworkSession::Session::Fragment, android::List<Fragment>::NON_CONST_ITERATOR>",
++   "referenced_type" : "_ZTIN7android4ListINS_15ANetworkSession7Session8FragmentEE13_ListIteratorIS3_NS4_18NON_CONST_ITERATOREEE",
++   "self_type" : "_ZTIKN7android4ListINS_15ANetworkSession7Session8FragmentEE13_ListIteratorIS3_NS4_18NON_CONST_ITERATOREEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/List.h"
++  },
++  {
++   "alignment" : 8,
++   "is_const" : true,
++   "linker_set_key" : "_ZTIKN7android4ListINS_15ANetworkSession7Session8FragmentEE5_NodeE",
++   "name" : "const android::List<Fragment>::_Node",
++   "referenced_type" : "_ZTIN7android4ListINS_15ANetworkSession7Session8FragmentEE5_NodeE",
++   "self_type" : "_ZTIKN7android4ListINS_15ANetworkSession7Session8FragmentEE5_NodeE",
++   "size" : 40,
++   "source_file" : "system/core/libutils/include/utils/List.h"
++  },
++  {
++   "alignment" : 8,
++   "is_const" : true,
++   "linker_set_key" : "_ZTIKN7android4ListINS_15ANetworkSession7Session8FragmentEEE",
++   "name" : "const android::List<android::ANetworkSession::Session::Fragment>",
++   "referenced_type" : "_ZTIN7android4ListINS_15ANetworkSession7Session8FragmentEEE",
++   "self_type" : "_ZTIKN7android4ListINS_15ANetworkSession7Session8FragmentEEE",
++   "size" : 16,
++   "source_file" : "system/core/libutils/include/utils/List.h"
++  },
++  {
++   "alignment" : 8,
++   "is_const" : true,
++   "linker_set_key" : "_ZTIKN7android4ListINS_2spINS_15ANetworkSession7SessionEEEE13_ListIteratorIS4_NS5_18NON_CONST_ITERATOREEE",
++   "name" : "const android::List<sp<Session>>::_ListIterator<android::sp<android::ANetworkSession::Session>, android::List<sp<Session>>::NON_CONST_ITERATOR>",
++   "referenced_type" : "_ZTIN7android4ListINS_2spINS_15ANetworkSession7SessionEEEE13_ListIteratorIS4_NS5_18NON_CONST_ITERATOREEE",
++   "self_type" : "_ZTIKN7android4ListINS_2spINS_15ANetworkSession7SessionEEEE13_ListIteratorIS4_NS5_18NON_CONST_ITERATOREEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/List.h"
++  },
++  {
++   "alignment" : 8,
++   "is_const" : true,
++   "linker_set_key" : "_ZTIKN7android4ListINS_2spINS_15ANetworkSession7SessionEEEE5_NodeE",
++   "name" : "const android::List<sp<Session>>::_Node",
++   "referenced_type" : "_ZTIN7android4ListINS_2spINS_15ANetworkSession7SessionEEEE5_NodeE",
++   "self_type" : "_ZTIKN7android4ListINS_2spINS_15ANetworkSession7SessionEEEE5_NodeE",
++   "size" : 24,
++   "source_file" : "system/core/libutils/include/utils/List.h"
++  },
++  {
++   "alignment" : 8,
++   "is_const" : true,
++   "linker_set_key" : "_ZTIKN7android4ListINS_2spINS_15ANetworkSession7SessionEEEEE",
++   "name" : "const android::List<android::sp<android::ANetworkSession::Session>>",
++   "referenced_type" : "_ZTIN7android4ListINS_2spINS_15ANetworkSession7SessionEEEEE",
++   "self_type" : "_ZTIKN7android4ListINS_2spINS_15ANetworkSession7SessionEEEEE",
++   "size" : 16,
++   "source_file" : "system/core/libutils/include/utils/List.h"
++  },
+   {
+    "alignment" : 8,
+    "is_const" : true,
+@@ -17611,6 +20159,25 @@
+     }
+    ]
+   },
++  {
++   "alignment" : 8,
++   "fields" :
++   [
++    {
++     "access" : "private",
++     "field_name" : "mVector",
++     "referenced_type" : "_ZTIN7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEEE"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android11KeyedVectorINS_7AStringES1_EE",
++   "name" : "android::KeyedVector<android::AString, android::AString>",
++   "record_kind" : "class",
++   "referenced_type" : "_ZTIN7android11KeyedVectorINS_7AStringES1_EE",
++   "self_type" : "_ZTIN7android11KeyedVectorINS_7AStringES1_EE",
++   "size" : 40,
++   "source_file" : "system/core/libutils/include/utils/KeyedVector.h",
++   "template_args" : [ "_ZTIN7android7AStringE", "_ZTIN7android7AStringE" ]
++  },
+   {
+    "alignment" : 8,
+    "fields" :
+@@ -17649,6 +20216,25 @@
+    "source_file" : "system/core/libutils/include/utils/KeyedVector.h",
+    "template_args" : [ "_ZTIi", "_ZTIN7android13ALooperRoster11HandlerInfoE" ]
+   },
++  {
++   "alignment" : 8,
++   "fields" :
++   [
++    {
++     "access" : "private",
++     "field_name" : "mVector",
++     "referenced_type" : "_ZTIN7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android11KeyedVectorIiNS_2spINS_15ANetworkSession7SessionEEEEE",
++   "name" : "android::KeyedVector<int, android::sp<android::ANetworkSession::Session>>",
++   "record_kind" : "class",
++   "referenced_type" : "_ZTIN7android11KeyedVectorIiNS_2spINS_15ANetworkSession7SessionEEEEE",
++   "self_type" : "_ZTIN7android11KeyedVectorIiNS_2spINS_15ANetworkSession7SessionEEEEE",
++   "size" : 40,
++   "source_file" : "system/core/libutils/include/utils/KeyedVector.h",
++   "template_args" : [ "_ZTIi", "_ZTIN7android2spINS_15ANetworkSession7SessionEEE" ]
++  },
+   {
+    "alignment" : 8,
+    "fields" :
+@@ -17985,6 +20571,63 @@
+     }
+    ]
+   },
++  {
++   "alignment" : 8,
++   "base_specifiers" :
++   [
++    {
++     "access" : "private",
++     "referenced_type" : "_ZTIN7android16SortedVectorImplE"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEEE",
++   "name" : "android::SortedVector<android::key_value_pair_t<android::AString, android::AString>>",
++   "record_kind" : "class",
++   "referenced_type" : "_ZTIN7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEEE",
++   "self_type" : "_ZTIN7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEEE",
++   "size" : 40,
++   "source_file" : "system/core/libutils/include/utils/SortedVector.h",
++   "template_args" : [ "_ZTIN7android16key_value_pair_tINS_7AStringES1_EE" ],
++   "vtable_components" :
++   [
++    {
++     "kind" : "offset_to_top"
++    },
++    {
++     "kind" : "rtti",
++     "mangled_component_name" : "_ZTIN7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEEE"
++    },
++    {
++     "kind" : "complete_dtor_pointer",
++     "mangled_component_name" : "_ZN7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEED1Ev"
++    },
++    {
++     "kind" : "deleting_dtor_pointer",
++     "mangled_component_name" : "_ZN7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEED0Ev"
++    },
++    {
++     "mangled_component_name" : "_ZNK7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEE12do_constructEPvm"
++    },
++    {
++     "mangled_component_name" : "_ZNK7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEE10do_destroyEPvm"
++    },
++    {
++     "mangled_component_name" : "_ZNK7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEE7do_copyEPvPKvm"
++    },
++    {
++     "mangled_component_name" : "_ZNK7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEE8do_splatEPvPKvm"
++    },
++    {
++     "mangled_component_name" : "_ZNK7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEE15do_move_forwardEPvPKvm"
++    },
++    {
++     "mangled_component_name" : "_ZNK7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEE16do_move_backwardEPvPKvm"
++    },
++    {
++     "mangled_component_name" : "_ZNK7android12SortedVectorINS_16key_value_pair_tINS_7AStringES2_EEE10do_compareEPKvS6_"
++    }
++   ]
++  },
+   {
+    "alignment" : 8,
+    "base_specifiers" :
+@@ -18099,6 +20742,66 @@
+     }
+    ]
+   },
++  {
++   "alignment" : 8,
++   "base_specifiers" :
++   [
++    {
++     "access" : "private",
++     "referenced_type" : "_ZTIN7android16SortedVectorImplE"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE",
++   "name" : "android::SortedVector<android::key_value_pair_t<int, android::sp<android::ANetworkSession::Session>>>",
++   "record_kind" : "class",
++   "referenced_type" : "_ZTIN7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE",
++   "self_type" : "_ZTIN7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE",
++   "size" : 40,
++   "source_file" : "system/core/libutils/include/utils/SortedVector.h",
++   "template_args" :
++   [
++    "_ZTIN7android16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEE"
++   ],
++   "vtable_components" :
++   [
++    {
++     "kind" : "offset_to_top"
++    },
++    {
++     "kind" : "rtti",
++     "mangled_component_name" : "_ZTIN7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE"
++    },
++    {
++     "kind" : "complete_dtor_pointer",
++     "mangled_component_name" : "_ZN7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEED1Ev"
++    },
++    {
++     "kind" : "deleting_dtor_pointer",
++     "mangled_component_name" : "_ZN7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEED0Ev"
++    },
++    {
++     "mangled_component_name" : "_ZNK7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE12do_constructEPvm"
++    },
++    {
++     "mangled_component_name" : "_ZNK7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE10do_destroyEPvm"
++    },
++    {
++     "mangled_component_name" : "_ZNK7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE7do_copyEPvPKvm"
++    },
++    {
++     "mangled_component_name" : "_ZNK7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE8do_splatEPvPKvm"
++    },
++    {
++     "mangled_component_name" : "_ZNK7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE15do_move_forwardEPvPKvm"
++    },
++    {
++     "mangled_component_name" : "_ZNK7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE16do_move_backwardEPvPKvm"
++    },
++    {
++     "mangled_component_name" : "_ZNK7android12SortedVectorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEE10do_compareEPKvS9_"
++    }
++   ]
++  },
+   {
+    "alignment" : 8,
+    "base_specifiers" :
+@@ -18250,28 +20953,88 @@
+    [
+     {
+      "access" : "private",
+-     "field_name" : "mLock",
+-     "referenced_type" : "_ZTIN7android5MutexE"
++     "field_name" : "mLock",
++     "referenced_type" : "_ZTIN7android5MutexE"
++    },
++    {
++     "access" : "private",
++     "field_name" : "mHandlers",
++     "field_offset" : 320,
++     "referenced_type" : "_ZTIN7android11KeyedVectorIiNS_13ALooperRoster11HandlerInfoEEE"
++    },
++    {
++     "access" : "private",
++     "field_name" : "mNextHandlerID",
++     "field_offset" : 640,
++     "referenced_type" : "_ZTIi"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android13ALooperRosterE",
++   "name" : "android::ALooperRoster",
++   "referenced_type" : "_ZTIN7android13ALooperRosterE",
++   "self_type" : "_ZTIN7android13ALooperRosterE",
++   "size" : 88,
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ALooperRoster.h"
++  },
++  {
++   "alignment" : 8,
++   "base_specifiers" :
++   [
++    {
++     "referenced_type" : "_ZTIN7android7RefBaseE"
++    }
++   ],
++   "fields" :
++   [
++    {
++     "access" : "private",
++     "field_name" : "mDict",
++     "field_offset" : 128,
++     "referenced_type" : "_ZTIN7android11KeyedVectorINS_7AStringES1_EE"
+     },
+     {
+      "access" : "private",
+-     "field_name" : "mHandlers",
+-     "field_offset" : 320,
+-     "referenced_type" : "_ZTIN7android11KeyedVectorIiNS_13ALooperRoster11HandlerInfoEEE"
++     "field_name" : "mContent",
++     "field_offset" : 448,
++     "referenced_type" : "_ZTIN7android7AStringE"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android13ParsedMessageE",
++   "name" : "android::ParsedMessage",
++   "referenced_type" : "_ZTIN7android13ParsedMessageE",
++   "self_type" : "_ZTIN7android13ParsedMessageE",
++   "size" : 80,
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ParsedMessage.h",
++   "vtable_components" :
++   [
++    {
++     "kind" : "offset_to_top"
+     },
+     {
+-     "access" : "private",
+-     "field_name" : "mNextHandlerID",
+-     "field_offset" : 640,
+-     "referenced_type" : "_ZTIi"
++     "kind" : "rtti",
++     "mangled_component_name" : "_ZTIN7android13ParsedMessageE"
++    },
++    {
++     "kind" : "complete_dtor_pointer",
++     "mangled_component_name" : "_ZN7android13ParsedMessageD1Ev"
++    },
++    {
++     "kind" : "deleting_dtor_pointer",
++     "mangled_component_name" : "_ZN7android13ParsedMessageD0Ev"
++    },
++    {
++     "mangled_component_name" : "_ZN7android7RefBase10onFirstRefEv"
++    },
++    {
++     "mangled_component_name" : "_ZN7android7RefBase15onLastStrongRefEPKv"
++    },
++    {
++     "mangled_component_name" : "_ZN7android7RefBase20onIncStrongAttemptedEjPKv"
++    },
++    {
++     "mangled_component_name" : "_ZN7android7RefBase13onLastWeakRefEPKv"
+     }
+-   ],
+-   "linker_set_key" : "_ZTIN7android13ALooperRosterE",
+-   "name" : "android::ALooperRoster",
+-   "referenced_type" : "_ZTIN7android13ALooperRosterE",
+-   "self_type" : "_ZTIN7android13ALooperRosterE",
+-   "size" : 88,
+-   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ALooperRoster.h"
++   ]
+   },
+   {
+    "alignment" : 1,
+@@ -18403,6 +21166,16 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "template_args" : [ "_ZTIN7android13ALooperRoster11HandlerInfoE" ]
+   },
++  {
++   "alignment" : 1,
++   "linker_set_key" : "_ZTIN7android13trait_pointerINS_16key_value_pair_tINS_7AStringES2_EEEE",
++   "name" : "android::trait_pointer<android::key_value_pair_t<android::AString, android::AString>>",
++   "referenced_type" : "_ZTIN7android13trait_pointerINS_16key_value_pair_tINS_7AStringES2_EEEE",
++   "self_type" : "_ZTIN7android13trait_pointerINS_16key_value_pair_tINS_7AStringES2_EEEE",
++   "size" : 1,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "template_args" : [ "_ZTIN7android16key_value_pair_tINS_7AStringES1_EE" ]
++  },
+   {
+    "alignment" : 1,
+    "linker_set_key" : "_ZTIN7android13trait_pointerINS_16key_value_pair_tINS_7String8ES2_EEEE",
+@@ -18423,6 +21196,19 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "template_args" : [ "_ZTIN7android16key_value_pair_tIiNS_13ALooperRoster11HandlerInfoEEE" ]
+   },
++  {
++   "alignment" : 1,
++   "linker_set_key" : "_ZTIN7android13trait_pointerINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE",
++   "name" : "android::trait_pointer<android::key_value_pair_t<int, android::sp<android::ANetworkSession::Session>>>",
++   "referenced_type" : "_ZTIN7android13trait_pointerINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE",
++   "self_type" : "_ZTIN7android13trait_pointerINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE",
++   "size" : 1,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "template_args" :
++   [
++    "_ZTIN7android16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEE"
++   ]
++  },
+   {
+    "alignment" : 1,
+    "linker_set_key" : "_ZTIN7android13trait_pointerINS_16key_value_pair_tIjNS_12MetaDataBase10typed_dataEEEEE",
+@@ -18443,6 +21229,16 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "template_args" : [ "_ZTIN7android16key_value_pair_tIjjEE" ]
+   },
++  {
++   "alignment" : 1,
++   "linker_set_key" : "_ZTIN7android13trait_pointerINS_2spINS_15ANetworkSession7SessionEEEEE",
++   "name" : "android::trait_pointer<android::sp<android::ANetworkSession::Session>>",
++   "referenced_type" : "_ZTIN7android13trait_pointerINS_2spINS_15ANetworkSession7SessionEEEEE",
++   "self_type" : "_ZTIN7android13trait_pointerINS_2spINS_15ANetworkSession7SessionEEEEE",
++   "size" : 1,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "template_args" : [ "_ZTIN7android2spINS_15ANetworkSession7SessionEEE" ]
++  },
+   {
+    "alignment" : 1,
+    "linker_set_key" : "_ZTIN7android13trait_pointerINS_2spINS_7ALooperEEEEE",
+@@ -18463,6 +21259,16 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "template_args" : [ "_ZTIN7android4ListINS_7AStringEEE" ]
+   },
++  {
++   "alignment" : 1,
++   "linker_set_key" : "_ZTIN7android13trait_pointerINS_7AStringEEE",
++   "name" : "android::trait_pointer<android::AString>",
++   "referenced_type" : "_ZTIN7android13trait_pointerINS_7AStringEEE",
++   "self_type" : "_ZTIN7android13trait_pointerINS_7AStringEEE",
++   "size" : 1,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "template_args" : [ "_ZTIN7android7AStringE" ]
++  },
+   {
+    "alignment" : 1,
+    "linker_set_key" : "_ZTIN7android13trait_pointerINS_7String8EEE",
+@@ -18671,6 +21477,84 @@
+     "_ZTIN7android6AUnionIJilmfdNS_8AMessage4RectENS_7AStringEPvNS_2spIS1_EENS5_INS_7ABufferEEENS5_INS_7RefBaseEEEEEE"
+    ]
+   },
++  {
++   "alignment" : 8,
++   "base_specifiers" :
++   [
++    {
++     "referenced_type" : "_ZTIN7android7RefBaseE"
++    }
++   ],
++   "fields" :
++   [
++    {
++     "access" : "private",
++     "field_name" : "mLock",
++     "field_offset" : 128,
++     "referenced_type" : "_ZTIN7android5MutexE"
++    },
++    {
++     "access" : "private",
++     "field_name" : "mThread",
++     "field_offset" : 448,
++     "referenced_type" : "_ZTIN7android2spINS_6ThreadEEE"
++    },
++    {
++     "access" : "private",
++     "field_name" : "mNextSessionID",
++     "field_offset" : 512,
++     "referenced_type" : "_ZTIi"
++    },
++    {
++     "access" : "private",
++     "field_name" : "mPipeFd",
++     "field_offset" : 544,
++     "referenced_type" : "_ZTIA2_i"
++    },
++    {
++     "access" : "private",
++     "field_name" : "mSessions",
++     "field_offset" : 640,
++     "referenced_type" : "_ZTIN7android11KeyedVectorIiNS_2spINS_15ANetworkSession7SessionEEEEE"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android15ANetworkSessionE",
++   "name" : "android::ANetworkSession",
++   "referenced_type" : "_ZTIN7android15ANetworkSessionE",
++   "self_type" : "_ZTIN7android15ANetworkSessionE",
++   "size" : 120,
++   "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/ANetworkSession.h",
++   "vtable_components" :
++   [
++    {
++     "kind" : "offset_to_top"
++    },
++    {
++     "kind" : "rtti",
++     "mangled_component_name" : "_ZTIN7android15ANetworkSessionE"
++    },
++    {
++     "kind" : "complete_dtor_pointer",
++     "mangled_component_name" : "_ZN7android15ANetworkSessionD1Ev"
++    },
++    {
++     "kind" : "deleting_dtor_pointer",
++     "mangled_component_name" : "_ZN7android15ANetworkSessionD0Ev"
++    },
++    {
++     "mangled_component_name" : "_ZN7android7RefBase10onFirstRefEv"
++    },
++    {
++     "mangled_component_name" : "_ZN7android7RefBase15onLastStrongRefEPKv"
++    },
++    {
++     "mangled_component_name" : "_ZN7android7RefBase20onIncStrongAttemptedEjPKv"
++    },
++    {
++     "mangled_component_name" : "_ZN7android7RefBase13onLastWeakRefEPKv"
++    }
++   ]
++  },
+   {
+    "alignment" : 8,
+    "fields" :
+@@ -20021,6 +22905,16 @@
+    "source_file" : "frameworks/av/media/libstagefright/foundation/include/media/stagefright/foundation/TypeTraits.h",
+    "template_args" : [ "_ZTIN7android2spINS_8AMessageEEE" ]
+   },
++  {
++   "alignment" : 1,
++   "linker_set_key" : "_ZTIN7android16aggregate_traitsINS_7AStringES1_EE",
++   "name" : "android::aggregate_traits<android::AString, android::AString>",
++   "referenced_type" : "_ZTIN7android16aggregate_traitsINS_7AStringES1_EE",
++   "self_type" : "_ZTIN7android16aggregate_traitsINS_7AStringES1_EE",
++   "size" : 1,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "template_args" : [ "_ZTIN7android7AStringE", "_ZTIN7android7AStringE" ]
++  },
+   {
+    "alignment" : 1,
+    "linker_set_key" : "_ZTIN7android16aggregate_traitsINS_7String8ES1_EE",
+@@ -20041,6 +22935,16 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "template_args" : [ "_ZTIi", "_ZTIN7android13ALooperRoster11HandlerInfoE" ]
+   },
++  {
++   "alignment" : 1,
++   "linker_set_key" : "_ZTIN7android16aggregate_traitsIiNS_2spINS_15ANetworkSession7SessionEEEEE",
++   "name" : "android::aggregate_traits<int, android::sp<android::ANetworkSession::Session>>",
++   "referenced_type" : "_ZTIN7android16aggregate_traitsIiNS_2spINS_15ANetworkSession7SessionEEEEE",
++   "self_type" : "_ZTIN7android16aggregate_traitsIiNS_2spINS_15ANetworkSession7SessionEEEEE",
++   "size" : 1,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "template_args" : [ "_ZTIi", "_ZTIN7android2spINS_15ANetworkSession7SessionEEE" ]
++  },
+   {
+    "alignment" : 1,
+    "linker_set_key" : "_ZTIN7android16aggregate_traitsIjNS_12MetaDataBase10typed_dataEEE",
+@@ -20061,6 +22965,28 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "template_args" : [ "_ZTIj", "_ZTIj" ]
+   },
++  {
++   "alignment" : 8,
++   "fields" :
++   [
++    {
++     "field_name" : "key",
++     "referenced_type" : "_ZTIN7android7AStringE"
++    },
++    {
++     "field_name" : "value",
++     "field_offset" : 192,
++     "referenced_type" : "_ZTIN7android7AStringE"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android16key_value_pair_tINS_7AStringES1_EE",
++   "name" : "android::key_value_pair_t<android::AString, android::AString>",
++   "referenced_type" : "_ZTIN7android16key_value_pair_tINS_7AStringES1_EE",
++   "self_type" : "_ZTIN7android16key_value_pair_tINS_7AStringES1_EE",
++   "size" : 48,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "template_args" : [ "_ZTIN7android7AStringE", "_ZTIN7android7AStringE" ]
++  },
+   {
+    "alignment" : 8,
+    "fields" :
+@@ -20105,6 +23031,28 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "template_args" : [ "_ZTIi", "_ZTIN7android13ALooperRoster11HandlerInfoE" ]
+   },
++  {
++   "alignment" : 8,
++   "fields" :
++   [
++    {
++     "field_name" : "key",
++     "referenced_type" : "_ZTIi"
++    },
++    {
++     "field_name" : "value",
++     "field_offset" : 64,
++     "referenced_type" : "_ZTIN7android2spINS_15ANetworkSession7SessionEEE"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEE",
++   "name" : "android::key_value_pair_t<int, android::sp<android::ANetworkSession::Session>>",
++   "referenced_type" : "_ZTIN7android16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEE",
++   "self_type" : "_ZTIN7android16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEE",
++   "size" : 16,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "template_args" : [ "_ZTIi", "_ZTIN7android2spINS_15ANetworkSession7SessionEEE" ]
++  },
+   {
+    "alignment" : 8,
+    "fields" :
+@@ -20149,6 +23097,22 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "template_args" : [ "_ZTIj", "_ZTIj" ]
+   },
++  {
++   "alignment" : 1,
++   "base_specifiers" :
++   [
++    {
++     "referenced_type" : "_ZTINSt3__117integral_constantIbLb0EEE"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android16use_trivial_moveINS_16key_value_pair_tINS_7AStringES2_EEEE",
++   "name" : "android::use_trivial_move<android::key_value_pair_t<android::AString, android::AString>>",
++   "referenced_type" : "_ZTIN7android16use_trivial_moveINS_16key_value_pair_tINS_7AStringES2_EEEE",
++   "self_type" : "_ZTIN7android16use_trivial_moveINS_16key_value_pair_tINS_7AStringES2_EEEE",
++   "size" : 1,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "template_args" : [ "_ZTIN7android16key_value_pair_tINS_7AStringES1_EE" ]
++  },
+   {
+    "alignment" : 1,
+    "base_specifiers" :
+@@ -20181,6 +23145,25 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "template_args" : [ "_ZTIN7android16key_value_pair_tIiNS_13ALooperRoster11HandlerInfoEEE" ]
+   },
++  {
++   "alignment" : 1,
++   "base_specifiers" :
++   [
++    {
++     "referenced_type" : "_ZTINSt3__117integral_constantIbLb0EEE"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android16use_trivial_moveINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE",
++   "name" : "android::use_trivial_move<android::key_value_pair_t<int, android::sp<android::ANetworkSession::Session>>>",
++   "referenced_type" : "_ZTIN7android16use_trivial_moveINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE",
++   "self_type" : "_ZTIN7android16use_trivial_moveINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE",
++   "size" : 1,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "template_args" :
++   [
++    "_ZTIN7android16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEE"
++   ]
++  },
+   {
+    "alignment" : 1,
+    "base_specifiers" :
+@@ -20337,6 +23320,16 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "template_args" : [ "_ZTIN7android13ALooperRoster11HandlerInfoE" ]
+   },
++  {
++   "alignment" : 1,
++   "linker_set_key" : "_ZTIN7android18trait_trivial_copyINS_16key_value_pair_tINS_7AStringES2_EEEE",
++   "name" : "android::trait_trivial_copy<android::key_value_pair_t<android::AString, android::AString>>",
++   "referenced_type" : "_ZTIN7android18trait_trivial_copyINS_16key_value_pair_tINS_7AStringES2_EEEE",
++   "self_type" : "_ZTIN7android18trait_trivial_copyINS_16key_value_pair_tINS_7AStringES2_EEEE",
++   "size" : 1,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "template_args" : [ "_ZTIN7android16key_value_pair_tINS_7AStringES1_EE" ]
++  },
+   {
+    "alignment" : 1,
+    "linker_set_key" : "_ZTIN7android18trait_trivial_copyINS_16key_value_pair_tINS_7String8ES2_EEEE",
+@@ -20357,6 +23350,19 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "template_args" : [ "_ZTIN7android16key_value_pair_tIiNS_13ALooperRoster11HandlerInfoEEE" ]
+   },
++  {
++   "alignment" : 1,
++   "linker_set_key" : "_ZTIN7android18trait_trivial_copyINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE",
++   "name" : "android::trait_trivial_copy<android::key_value_pair_t<int, android::sp<android::ANetworkSession::Session>>>",
++   "referenced_type" : "_ZTIN7android18trait_trivial_copyINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE",
++   "self_type" : "_ZTIN7android18trait_trivial_copyINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE",
++   "size" : 1,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "template_args" :
++   [
++    "_ZTIN7android16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEE"
++   ]
++  },
+   {
+    "alignment" : 1,
+    "linker_set_key" : "_ZTIN7android18trait_trivial_copyINS_16key_value_pair_tIjNS_12MetaDataBase10typed_dataEEEEE",
+@@ -20377,6 +23383,16 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "template_args" : [ "_ZTIN7android16key_value_pair_tIjjEE" ]
+   },
++  {
++   "alignment" : 1,
++   "linker_set_key" : "_ZTIN7android18trait_trivial_copyINS_2spINS_15ANetworkSession7SessionEEEEE",
++   "name" : "android::trait_trivial_copy<android::sp<android::ANetworkSession::Session>>",
++   "referenced_type" : "_ZTIN7android18trait_trivial_copyINS_2spINS_15ANetworkSession7SessionEEEEE",
++   "self_type" : "_ZTIN7android18trait_trivial_copyINS_2spINS_15ANetworkSession7SessionEEEEE",
++   "size" : 1,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "template_args" : [ "_ZTIN7android2spINS_15ANetworkSession7SessionEEE" ]
++  },
+   {
+    "alignment" : 1,
+    "linker_set_key" : "_ZTIN7android18trait_trivial_copyINS_2spINS_7ALooperEEEEE",
+@@ -20397,6 +23413,16 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "template_args" : [ "_ZTIN7android4ListINS_7AStringEEE" ]
+   },
++  {
++   "alignment" : 1,
++   "linker_set_key" : "_ZTIN7android18trait_trivial_copyINS_7AStringEEE",
++   "name" : "android::trait_trivial_copy<android::AString>",
++   "referenced_type" : "_ZTIN7android18trait_trivial_copyINS_7AStringEEE",
++   "self_type" : "_ZTIN7android18trait_trivial_copyINS_7AStringEEE",
++   "size" : 1,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "template_args" : [ "_ZTIN7android7AStringE" ]
++  },
+   {
+    "alignment" : 1,
+    "linker_set_key" : "_ZTIN7android18trait_trivial_copyINS_7String8EEE",
+@@ -20567,6 +23593,16 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "template_args" : [ "_ZTIN7android13ALooperRoster11HandlerInfoE" ]
+   },
++  {
++   "alignment" : 1,
++   "linker_set_key" : "_ZTIN7android18trait_trivial_ctorINS_16key_value_pair_tINS_7AStringES2_EEEE",
++   "name" : "android::trait_trivial_ctor<android::key_value_pair_t<android::AString, android::AString>>",
++   "referenced_type" : "_ZTIN7android18trait_trivial_ctorINS_16key_value_pair_tINS_7AStringES2_EEEE",
++   "self_type" : "_ZTIN7android18trait_trivial_ctorINS_16key_value_pair_tINS_7AStringES2_EEEE",
++   "size" : 1,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "template_args" : [ "_ZTIN7android16key_value_pair_tINS_7AStringES1_EE" ]
++  },
+   {
+    "alignment" : 1,
+    "linker_set_key" : "_ZTIN7android18trait_trivial_ctorINS_16key_value_pair_tINS_7String8ES2_EEEE",
+@@ -20587,6 +23623,19 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "template_args" : [ "_ZTIN7android16key_value_pair_tIiNS_13ALooperRoster11HandlerInfoEEE" ]
+   },
++  {
++   "alignment" : 1,
++   "linker_set_key" : "_ZTIN7android18trait_trivial_ctorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE",
++   "name" : "android::trait_trivial_ctor<android::key_value_pair_t<int, android::sp<android::ANetworkSession::Session>>>",
++   "referenced_type" : "_ZTIN7android18trait_trivial_ctorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE",
++   "self_type" : "_ZTIN7android18trait_trivial_ctorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE",
++   "size" : 1,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "template_args" :
++   [
++    "_ZTIN7android16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEE"
++   ]
++  },
+   {
+    "alignment" : 1,
+    "linker_set_key" : "_ZTIN7android18trait_trivial_ctorINS_16key_value_pair_tIjNS_12MetaDataBase10typed_dataEEEEE",
+@@ -20607,6 +23656,16 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "template_args" : [ "_ZTIN7android16key_value_pair_tIjjEE" ]
+   },
++  {
++   "alignment" : 1,
++   "linker_set_key" : "_ZTIN7android18trait_trivial_ctorINS_2spINS_15ANetworkSession7SessionEEEEE",
++   "name" : "android::trait_trivial_ctor<android::sp<android::ANetworkSession::Session>>",
++   "referenced_type" : "_ZTIN7android18trait_trivial_ctorINS_2spINS_15ANetworkSession7SessionEEEEE",
++   "self_type" : "_ZTIN7android18trait_trivial_ctorINS_2spINS_15ANetworkSession7SessionEEEEE",
++   "size" : 1,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "template_args" : [ "_ZTIN7android2spINS_15ANetworkSession7SessionEEE" ]
++  },
+   {
+    "alignment" : 1,
+    "linker_set_key" : "_ZTIN7android18trait_trivial_ctorINS_2spINS_7ALooperEEEEE",
+@@ -20627,6 +23686,16 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "template_args" : [ "_ZTIN7android4ListINS_7AStringEEE" ]
+   },
++  {
++   "alignment" : 1,
++   "linker_set_key" : "_ZTIN7android18trait_trivial_ctorINS_7AStringEEE",
++   "name" : "android::trait_trivial_ctor<android::AString>",
++   "referenced_type" : "_ZTIN7android18trait_trivial_ctorINS_7AStringEEE",
++   "self_type" : "_ZTIN7android18trait_trivial_ctorINS_7AStringEEE",
++   "size" : 1,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "template_args" : [ "_ZTIN7android7AStringE" ]
++  },
+   {
+    "alignment" : 1,
+    "linker_set_key" : "_ZTIN7android18trait_trivial_ctorINS_7String8EEE",
+@@ -20795,7 +23864,17 @@
+    "self_type" : "_ZTIN7android18trait_trivial_dtorINS_13ALooperRoster11HandlerInfoEEE",
+    "size" : 1,
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+-   "template_args" : [ "_ZTIN7android13ALooperRoster11HandlerInfoE" ]
++   "template_args" : [ "_ZTIN7android13ALooperRoster11HandlerInfoE" ]
++  },
++  {
++   "alignment" : 1,
++   "linker_set_key" : "_ZTIN7android18trait_trivial_dtorINS_16key_value_pair_tINS_7AStringES2_EEEE",
++   "name" : "android::trait_trivial_dtor<android::key_value_pair_t<android::AString, android::AString>>",
++   "referenced_type" : "_ZTIN7android18trait_trivial_dtorINS_16key_value_pair_tINS_7AStringES2_EEEE",
++   "self_type" : "_ZTIN7android18trait_trivial_dtorINS_16key_value_pair_tINS_7AStringES2_EEEE",
++   "size" : 1,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "template_args" : [ "_ZTIN7android16key_value_pair_tINS_7AStringES1_EE" ]
+   },
+   {
+    "alignment" : 1,
+@@ -20817,6 +23896,19 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "template_args" : [ "_ZTIN7android16key_value_pair_tIiNS_13ALooperRoster11HandlerInfoEEE" ]
+   },
++  {
++   "alignment" : 1,
++   "linker_set_key" : "_ZTIN7android18trait_trivial_dtorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE",
++   "name" : "android::trait_trivial_dtor<android::key_value_pair_t<int, android::sp<android::ANetworkSession::Session>>>",
++   "referenced_type" : "_ZTIN7android18trait_trivial_dtorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE",
++   "self_type" : "_ZTIN7android18trait_trivial_dtorINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE",
++   "size" : 1,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "template_args" :
++   [
++    "_ZTIN7android16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEE"
++   ]
++  },
+   {
+    "alignment" : 1,
+    "linker_set_key" : "_ZTIN7android18trait_trivial_dtorINS_16key_value_pair_tIjNS_12MetaDataBase10typed_dataEEEEE",
+@@ -20837,6 +23929,16 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "template_args" : [ "_ZTIN7android16key_value_pair_tIjjEE" ]
+   },
++  {
++   "alignment" : 1,
++   "linker_set_key" : "_ZTIN7android18trait_trivial_dtorINS_2spINS_15ANetworkSession7SessionEEEEE",
++   "name" : "android::trait_trivial_dtor<android::sp<android::ANetworkSession::Session>>",
++   "referenced_type" : "_ZTIN7android18trait_trivial_dtorINS_2spINS_15ANetworkSession7SessionEEEEE",
++   "self_type" : "_ZTIN7android18trait_trivial_dtorINS_2spINS_15ANetworkSession7SessionEEEEE",
++   "size" : 1,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "template_args" : [ "_ZTIN7android2spINS_15ANetworkSession7SessionEEE" ]
++  },
+   {
+    "alignment" : 1,
+    "linker_set_key" : "_ZTIN7android18trait_trivial_dtorINS_2spINS_7ALooperEEEEE",
+@@ -20857,6 +23959,16 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "template_args" : [ "_ZTIN7android4ListINS_7AStringEEE" ]
+   },
++  {
++   "alignment" : 1,
++   "linker_set_key" : "_ZTIN7android18trait_trivial_dtorINS_7AStringEEE",
++   "name" : "android::trait_trivial_dtor<android::AString>",
++   "referenced_type" : "_ZTIN7android18trait_trivial_dtorINS_7AStringEEE",
++   "self_type" : "_ZTIN7android18trait_trivial_dtorINS_7AStringEEE",
++   "size" : 1,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "template_args" : [ "_ZTIN7android7AStringE" ]
++  },
+   {
+    "alignment" : 1,
+    "linker_set_key" : "_ZTIN7android18trait_trivial_dtorINS_7String8EEE",
+@@ -21027,6 +24139,16 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "template_args" : [ "_ZTIN7android13ALooperRoster11HandlerInfoE" ]
+   },
++  {
++   "alignment" : 1,
++   "linker_set_key" : "_ZTIN7android18trait_trivial_moveINS_16key_value_pair_tINS_7AStringES2_EEEE",
++   "name" : "android::trait_trivial_move<android::key_value_pair_t<android::AString, android::AString>>",
++   "referenced_type" : "_ZTIN7android18trait_trivial_moveINS_16key_value_pair_tINS_7AStringES2_EEEE",
++   "self_type" : "_ZTIN7android18trait_trivial_moveINS_16key_value_pair_tINS_7AStringES2_EEEE",
++   "size" : 1,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "template_args" : [ "_ZTIN7android16key_value_pair_tINS_7AStringES1_EE" ]
++  },
+   {
+    "alignment" : 1,
+    "linker_set_key" : "_ZTIN7android18trait_trivial_moveINS_16key_value_pair_tINS_7String8ES2_EEEE",
+@@ -21047,6 +24169,19 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "template_args" : [ "_ZTIN7android16key_value_pair_tIiNS_13ALooperRoster11HandlerInfoEEE" ]
+   },
++  {
++   "alignment" : 1,
++   "linker_set_key" : "_ZTIN7android18trait_trivial_moveINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE",
++   "name" : "android::trait_trivial_move<android::key_value_pair_t<int, android::sp<android::ANetworkSession::Session>>>",
++   "referenced_type" : "_ZTIN7android18trait_trivial_moveINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE",
++   "self_type" : "_ZTIN7android18trait_trivial_moveINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE",
++   "size" : 1,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "template_args" :
++   [
++    "_ZTIN7android16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEE"
++   ]
++  },
+   {
+    "alignment" : 1,
+    "linker_set_key" : "_ZTIN7android18trait_trivial_moveINS_16key_value_pair_tIjNS_12MetaDataBase10typed_dataEEEEE",
+@@ -21067,6 +24202,16 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "template_args" : [ "_ZTIN7android16key_value_pair_tIjjEE" ]
+   },
++  {
++   "alignment" : 1,
++   "linker_set_key" : "_ZTIN7android18trait_trivial_moveINS_2spINS_15ANetworkSession7SessionEEEEE",
++   "name" : "android::trait_trivial_move<android::sp<android::ANetworkSession::Session>>",
++   "referenced_type" : "_ZTIN7android18trait_trivial_moveINS_2spINS_15ANetworkSession7SessionEEEEE",
++   "self_type" : "_ZTIN7android18trait_trivial_moveINS_2spINS_15ANetworkSession7SessionEEEEE",
++   "size" : 1,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "template_args" : [ "_ZTIN7android2spINS_15ANetworkSession7SessionEEE" ]
++  },
+   {
+    "alignment" : 1,
+    "linker_set_key" : "_ZTIN7android18trait_trivial_moveINS_2spINS_7ALooperEEEEE",
+@@ -21087,6 +24232,16 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "template_args" : [ "_ZTIN7android4ListINS_7AStringEEE" ]
+   },
++  {
++   "alignment" : 1,
++   "linker_set_key" : "_ZTIN7android18trait_trivial_moveINS_7AStringEEE",
++   "name" : "android::trait_trivial_move<android::AString>",
++   "referenced_type" : "_ZTIN7android18trait_trivial_moveINS_7AStringEEE",
++   "self_type" : "_ZTIN7android18trait_trivial_moveINS_7AStringEEE",
++   "size" : 1,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "template_args" : [ "_ZTIN7android7AStringE" ]
++  },
+   {
+    "alignment" : 1,
+    "linker_set_key" : "_ZTIN7android18trait_trivial_moveINS_7String8EEE",
+@@ -21653,6 +24808,44 @@
+    "source_file" : "system/core/libutils/include/utils/StrongPointer.h",
+    "template_args" : [ "_ZTIN7android11IMemoryHeapE" ]
+   },
++  {
++   "alignment" : 8,
++   "fields" :
++   [
++    {
++     "access" : "private",
++     "field_name" : "m_ptr",
++     "referenced_type" : "_ZTIPN7android13ParsedMessageE"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android2spINS_13ParsedMessageEEE",
++   "name" : "android::sp<android::ParsedMessage>",
++   "record_kind" : "class",
++   "referenced_type" : "_ZTIN7android2spINS_13ParsedMessageEEE",
++   "self_type" : "_ZTIN7android2spINS_13ParsedMessageEEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/StrongPointer.h",
++   "template_args" : [ "_ZTIN7android13ParsedMessageE" ]
++  },
++  {
++   "alignment" : 8,
++   "fields" :
++   [
++    {
++     "access" : "private",
++     "field_name" : "m_ptr",
++     "referenced_type" : "_ZTIPN7android15ANetworkSession7SessionE"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android2spINS_15ANetworkSession7SessionEEE",
++   "name" : "android::sp<android::ANetworkSession::Session>",
++   "record_kind" : "class",
++   "referenced_type" : "_ZTIN7android2spINS_15ANetworkSession7SessionEEE",
++   "self_type" : "_ZTIN7android2spINS_15ANetworkSession7SessionEEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/StrongPointer.h",
++   "template_args" : [ "_ZTIN7android15ANetworkSession7SessionE" ]
++  },
+   {
+    "alignment" : 8,
+    "fields" :
+@@ -21874,6 +25067,228 @@
+    "source_file" : "system/core/libutils/include/utils/RefBase.h",
+    "template_args" : [ "_ZTIN7android8AHandlerE" ]
+   },
++  {
++   "alignment" : 8,
++   "fields" :
++   [
++    {
++     "field_name" : "mpNode",
++     "referenced_type" : "_ZTIPKN7android4ListINS_15ANetworkSession7Session8FragmentEE5_NodeE"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android4ListINS_15ANetworkSession7Session8FragmentEE13_ListIteratorIS3_NS4_14CONST_ITERATOREEE",
++   "name" : "android::List<Fragment>::_ListIterator<android::ANetworkSession::Session::Fragment, android::List<Fragment>::CONST_ITERATOR>",
++   "record_kind" : "class",
++   "referenced_type" : "_ZTIN7android4ListINS_15ANetworkSession7Session8FragmentEE13_ListIteratorIS3_NS4_14CONST_ITERATOREEE",
++   "self_type" : "_ZTIN7android4ListINS_15ANetworkSession7Session8FragmentEE13_ListIteratorIS3_NS4_14CONST_ITERATOREEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/List.h",
++   "template_args" : [ "_ZTIN7android15ANetworkSession7Session8FragmentE" ]
++  },
++  {
++   "alignment" : 8,
++   "fields" :
++   [
++    {
++     "field_name" : "mpNode",
++     "referenced_type" : "_ZTIPN7android4ListINS_15ANetworkSession7Session8FragmentEE5_NodeE"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android4ListINS_15ANetworkSession7Session8FragmentEE13_ListIteratorIS3_NS4_18NON_CONST_ITERATOREEE",
++   "name" : "android::List<Fragment>::_ListIterator<android::ANetworkSession::Session::Fragment, android::List<Fragment>::NON_CONST_ITERATOR>",
++   "record_kind" : "class",
++   "referenced_type" : "_ZTIN7android4ListINS_15ANetworkSession7Session8FragmentEE13_ListIteratorIS3_NS4_18NON_CONST_ITERATOREEE",
++   "self_type" : "_ZTIN7android4ListINS_15ANetworkSession7Session8FragmentEE13_ListIteratorIS3_NS4_18NON_CONST_ITERATOREEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/List.h",
++   "template_args" : [ "_ZTIN7android15ANetworkSession7Session8FragmentE" ]
++  },
++  {
++   "alignment" : 1,
++   "linker_set_key" : "_ZTIN7android4ListINS_15ANetworkSession7Session8FragmentEE14CONST_ITERATORIS3_EE",
++   "name" : "android::List<Fragment>::CONST_ITERATOR<android::ANetworkSession::Session::Fragment>",
++   "referenced_type" : "_ZTIN7android4ListINS_15ANetworkSession7Session8FragmentEE14CONST_ITERATORIS3_EE",
++   "self_type" : "_ZTIN7android4ListINS_15ANetworkSession7Session8FragmentEE14CONST_ITERATORIS3_EE",
++   "size" : 1,
++   "source_file" : "system/core/libutils/include/utils/List.h",
++   "template_args" : [ "_ZTIN7android15ANetworkSession7Session8FragmentE" ]
++  },
++  {
++   "alignment" : 1,
++   "linker_set_key" : "_ZTIN7android4ListINS_15ANetworkSession7Session8FragmentEE18NON_CONST_ITERATORIS3_EE",
++   "name" : "android::List<Fragment>::NON_CONST_ITERATOR<android::ANetworkSession::Session::Fragment>",
++   "referenced_type" : "_ZTIN7android4ListINS_15ANetworkSession7Session8FragmentEE18NON_CONST_ITERATORIS3_EE",
++   "self_type" : "_ZTIN7android4ListINS_15ANetworkSession7Session8FragmentEE18NON_CONST_ITERATORIS3_EE",
++   "size" : 1,
++   "source_file" : "system/core/libutils/include/utils/List.h",
++   "template_args" : [ "_ZTIN7android15ANetworkSession7Session8FragmentE" ]
++  },
++  {
++   "access" : "protected",
++   "alignment" : 8,
++   "fields" :
++   [
++    {
++     "access" : "private",
++     "field_name" : "mVal",
++     "referenced_type" : "_ZTIN7android15ANetworkSession7Session8FragmentE"
++    },
++    {
++     "access" : "private",
++     "field_name" : "mpPrev",
++     "field_offset" : 192,
++     "referenced_type" : "_ZTIPN7android4ListINS_15ANetworkSession7Session8FragmentEE5_NodeE"
++    },
++    {
++     "access" : "private",
++     "field_name" : "mpNext",
++     "field_offset" : 256,
++     "referenced_type" : "_ZTIPN7android4ListINS_15ANetworkSession7Session8FragmentEE5_NodeE"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android4ListINS_15ANetworkSession7Session8FragmentEE5_NodeE",
++   "name" : "android::List<Fragment>::_Node",
++   "record_kind" : "class",
++   "referenced_type" : "_ZTIN7android4ListINS_15ANetworkSession7Session8FragmentEE5_NodeE",
++   "self_type" : "_ZTIN7android4ListINS_15ANetworkSession7Session8FragmentEE5_NodeE",
++   "size" : 40,
++   "source_file" : "system/core/libutils/include/utils/List.h"
++  },
++  {
++   "alignment" : 8,
++   "fields" :
++   [
++    {
++     "access" : "private",
++     "field_name" : "mpMiddle",
++     "field_offset" : 64,
++     "referenced_type" : "_ZTIPN7android4ListINS_15ANetworkSession7Session8FragmentEE5_NodeE"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android4ListINS_15ANetworkSession7Session8FragmentEEE",
++   "name" : "android::List<android::ANetworkSession::Session::Fragment>",
++   "record_kind" : "class",
++   "referenced_type" : "_ZTIN7android4ListINS_15ANetworkSession7Session8FragmentEEE",
++   "self_type" : "_ZTIN7android4ListINS_15ANetworkSession7Session8FragmentEEE",
++   "size" : 16,
++   "source_file" : "system/core/libutils/include/utils/List.h",
++   "template_args" : [ "_ZTIN7android15ANetworkSession7Session8FragmentE" ],
++   "vtable_components" :
++   [
++    {
++     "kind" : "offset_to_top"
++    },
++    {
++     "kind" : "rtti",
++     "mangled_component_name" : "_ZTIN7android4ListINS_15ANetworkSession7Session8FragmentEEE"
++    },
++    {
++     "kind" : "complete_dtor_pointer",
++     "mangled_component_name" : "_ZN7android4ListINS_15ANetworkSession7Session8FragmentEED1Ev"
++    },
++    {
++     "kind" : "deleting_dtor_pointer",
++     "mangled_component_name" : "_ZN7android4ListINS_15ANetworkSession7Session8FragmentEED0Ev"
++    }
++   ]
++  },
++  {
++   "alignment" : 8,
++   "fields" :
++   [
++    {
++     "field_name" : "mpNode",
++     "referenced_type" : "_ZTIPN7android4ListINS_2spINS_15ANetworkSession7SessionEEEE5_NodeE"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android4ListINS_2spINS_15ANetworkSession7SessionEEEE13_ListIteratorIS4_NS5_18NON_CONST_ITERATOREEE",
++   "name" : "android::List<sp<Session>>::_ListIterator<android::sp<android::ANetworkSession::Session>, android::List<sp<Session>>::NON_CONST_ITERATOR>",
++   "record_kind" : "class",
++   "referenced_type" : "_ZTIN7android4ListINS_2spINS_15ANetworkSession7SessionEEEE13_ListIteratorIS4_NS5_18NON_CONST_ITERATOREEE",
++   "self_type" : "_ZTIN7android4ListINS_2spINS_15ANetworkSession7SessionEEEE13_ListIteratorIS4_NS5_18NON_CONST_ITERATOREEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/List.h",
++   "template_args" : [ "_ZTIN7android2spINS_15ANetworkSession7SessionEEE" ]
++  },
++  {
++   "alignment" : 1,
++   "linker_set_key" : "_ZTIN7android4ListINS_2spINS_15ANetworkSession7SessionEEEE18NON_CONST_ITERATORIS4_EE",
++   "name" : "android::List<sp<Session>>::NON_CONST_ITERATOR<android::sp<android::ANetworkSession::Session>>",
++   "referenced_type" : "_ZTIN7android4ListINS_2spINS_15ANetworkSession7SessionEEEE18NON_CONST_ITERATORIS4_EE",
++   "self_type" : "_ZTIN7android4ListINS_2spINS_15ANetworkSession7SessionEEEE18NON_CONST_ITERATORIS4_EE",
++   "size" : 1,
++   "source_file" : "system/core/libutils/include/utils/List.h",
++   "template_args" : [ "_ZTIN7android2spINS_15ANetworkSession7SessionEEE" ]
++  },
++  {
++   "access" : "protected",
++   "alignment" : 8,
++   "fields" :
++   [
++    {
++     "access" : "private",
++     "field_name" : "mVal",
++     "referenced_type" : "_ZTIN7android2spINS_15ANetworkSession7SessionEEE"
++    },
++    {
++     "access" : "private",
++     "field_name" : "mpPrev",
++     "field_offset" : 64,
++     "referenced_type" : "_ZTIPN7android4ListINS_2spINS_15ANetworkSession7SessionEEEE5_NodeE"
++    },
++    {
++     "access" : "private",
++     "field_name" : "mpNext",
++     "field_offset" : 128,
++     "referenced_type" : "_ZTIPN7android4ListINS_2spINS_15ANetworkSession7SessionEEEE5_NodeE"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android4ListINS_2spINS_15ANetworkSession7SessionEEEE5_NodeE",
++   "name" : "android::List<sp<Session>>::_Node",
++   "record_kind" : "class",
++   "referenced_type" : "_ZTIN7android4ListINS_2spINS_15ANetworkSession7SessionEEEE5_NodeE",
++   "self_type" : "_ZTIN7android4ListINS_2spINS_15ANetworkSession7SessionEEEE5_NodeE",
++   "size" : 24,
++   "source_file" : "system/core/libutils/include/utils/List.h"
++  },
++  {
++   "alignment" : 8,
++   "fields" :
++   [
++    {
++     "access" : "private",
++     "field_name" : "mpMiddle",
++     "field_offset" : 64,
++     "referenced_type" : "_ZTIPN7android4ListINS_2spINS_15ANetworkSession7SessionEEEE5_NodeE"
++    }
++   ],
++   "linker_set_key" : "_ZTIN7android4ListINS_2spINS_15ANetworkSession7SessionEEEEE",
++   "name" : "android::List<android::sp<android::ANetworkSession::Session>>",
++   "record_kind" : "class",
++   "referenced_type" : "_ZTIN7android4ListINS_2spINS_15ANetworkSession7SessionEEEEE",
++   "self_type" : "_ZTIN7android4ListINS_2spINS_15ANetworkSession7SessionEEEEE",
++   "size" : 16,
++   "source_file" : "system/core/libutils/include/utils/List.h",
++   "template_args" : [ "_ZTIN7android2spINS_15ANetworkSession7SessionEEE" ],
++   "vtable_components" :
++   [
++    {
++     "kind" : "offset_to_top"
++    },
++    {
++     "kind" : "rtti",
++     "mangled_component_name" : "_ZTIN7android4ListINS_2spINS_15ANetworkSession7SessionEEEEE"
++    },
++    {
++     "kind" : "complete_dtor_pointer",
++     "mangled_component_name" : "_ZN7android4ListINS_2spINS_15ANetworkSession7SessionEEEED1Ev"
++    },
++    {
++     "kind" : "deleting_dtor_pointer",
++     "mangled_component_name" : "_ZN7android4ListINS_2spINS_15ANetworkSession7SessionEEEED0Ev"
++    }
++   ]
++  },
+   {
+    "alignment" : 8,
+    "fields" :
+@@ -22696,6 +26111,16 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "template_args" : [ "_ZTIN7android13ALooperRoster11HandlerInfoE" ]
+   },
++  {
++   "alignment" : 1,
++   "linker_set_key" : "_ZTIN7android6traitsINS_16key_value_pair_tINS_7AStringES2_EEEE",
++   "name" : "android::traits<android::key_value_pair_t<android::AString, android::AString>>",
++   "referenced_type" : "_ZTIN7android6traitsINS_16key_value_pair_tINS_7AStringES2_EEEE",
++   "self_type" : "_ZTIN7android6traitsINS_16key_value_pair_tINS_7AStringES2_EEEE",
++   "size" : 1,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "template_args" : [ "_ZTIN7android16key_value_pair_tINS_7AStringES1_EE" ]
++  },
+   {
+    "alignment" : 1,
+    "linker_set_key" : "_ZTIN7android6traitsINS_16key_value_pair_tINS_7String8ES2_EEEE",
+@@ -22716,6 +26141,19 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "template_args" : [ "_ZTIN7android16key_value_pair_tIiNS_13ALooperRoster11HandlerInfoEEE" ]
+   },
++  {
++   "alignment" : 1,
++   "linker_set_key" : "_ZTIN7android6traitsINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE",
++   "name" : "android::traits<android::key_value_pair_t<int, android::sp<android::ANetworkSession::Session>>>",
++   "referenced_type" : "_ZTIN7android6traitsINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE",
++   "self_type" : "_ZTIN7android6traitsINS_16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEEEE",
++   "size" : 1,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "template_args" :
++   [
++    "_ZTIN7android16key_value_pair_tIiNS_2spINS_15ANetworkSession7SessionEEEEE"
++   ]
++  },
+   {
+    "alignment" : 1,
+    "linker_set_key" : "_ZTIN7android6traitsINS_16key_value_pair_tIjNS_12MetaDataBase10typed_dataEEEEE",
+@@ -22736,6 +26174,16 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "template_args" : [ "_ZTIN7android16key_value_pair_tIjjEE" ]
+   },
++  {
++   "alignment" : 1,
++   "linker_set_key" : "_ZTIN7android6traitsINS_2spINS_15ANetworkSession7SessionEEEEE",
++   "name" : "android::traits<android::sp<android::ANetworkSession::Session>>",
++   "referenced_type" : "_ZTIN7android6traitsINS_2spINS_15ANetworkSession7SessionEEEEE",
++   "self_type" : "_ZTIN7android6traitsINS_2spINS_15ANetworkSession7SessionEEEEE",
++   "size" : 1,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "template_args" : [ "_ZTIN7android2spINS_15ANetworkSession7SessionEEE" ]
++  },
+   {
+    "alignment" : 1,
+    "linker_set_key" : "_ZTIN7android6traitsINS_2spINS_7ALooperEEEEE",
+@@ -22756,6 +26204,16 @@
+    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
+    "template_args" : [ "_ZTIN7android4ListINS_7AStringEEE" ]
+   },
++  {
++   "alignment" : 1,
++   "linker_set_key" : "_ZTIN7android6traitsINS_7AStringEEE",
++   "name" : "android::traits<android::AString>",
++   "referenced_type" : "_ZTIN7android6traitsINS_7AStringEEE",
++   "self_type" : "_ZTIN7android6traitsINS_7AStringEEE",
++   "size" : 1,
++   "source_file" : "system/core/libutils/include/utils/TypeHelpers.h",
++   "template_args" : [ "_ZTIN7android7AStringE" ]
++  },
+   {
+    "alignment" : 1,
+    "linker_set_key" : "_ZTIN7android6traitsINS_7String8EEE",
+@@ -26304,6 +29762,15 @@
+  ],
+  "rvalue_reference_types" :
+  [
++  {
++   "alignment" : 8,
++   "linker_set_key" : "_ZTION7android2spINS_13ParsedMessageEEE",
++   "name" : "android::sp<android::ParsedMessage> &&",
++   "referenced_type" : "_ZTIN7android2spINS_13ParsedMessageEEE",
++   "self_type" : "_ZTION7android2spINS_13ParsedMessageEEE",
++   "size" : 8,
++   "source_file" : "system/core/libutils/include/utils/StrongPointer.h"
++  },
+   {
+    "alignment" : 8,
+    "linker_set_key" : "_ZTION7android2spINS_7ABufferEEE",
+-- 
+2.34.1
+

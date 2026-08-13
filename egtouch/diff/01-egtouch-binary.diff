@@ -1,0 +1,158 @@
+diff --git a/device/softwinner/apollo/apollo_p2.mk b/device/softwinner/apollo/apollo_p2.mk
+index 2533592c70..ad44852af45da04991504787a07a4ab1fa613c16 100644
+--- a/device/softwinner/apollo/apollo_p2.mk
++++ b/device/softwinner/apollo/apollo_p2.mk
+@@ -40,6 +40,20 @@ PRODUCT_PACKAGES += \
+     tinymix \
+     tinypcminfo
+ 
++# eGalax eGTouch daemon + config files
++PRODUCT_PACKAGES += \
++    eGTouchD \
++    eGTouchA.ini \
++    eGalaxTouch_VirtualDevice.idc \
++
++# Stage libstdc++.so and liblog.so into /vendor/lib64 so the dynamic
++# linker can resolve them when launching eGTouchD. Declared as
++# cc_prebuilt_library_shared modules in
++# device/softwinner/apollo/common/eGTouch/Android.bp.
++PRODUCT_PACKAGES += \
++    libstdc++.eGTouchD \
++    liblog.eGTouchD
++
+ PRODUCT_PACKAGES += \
+     DeviceTest
+ 
+diff --git a/device/softwinner/apollo/common/system/init.sun50iw9p1.rc b/device/softwinner/apollo/common/system/init.sun50iw9p1.rc
+index db8d1c4e7f..cd40d31581 100644
+--- a/device/softwinner/apollo/common/system/init.sun50iw9p1.rc
++++ b/device/softwinner/apollo/common/system/init.sun50iw9p1.rc
+@@ -58,11 +58,72 @@ on post-fs-data
+     setprop vold.post_fs_data_done 1
+     chmod 666 /sys/kernel/tracing/trace
+ 
++    # --- eGalax eGTouch daemon staging ---
++    # eGTouchD reads /data/eGTouchA.ini by default per its own documentation.
++    # Stage a baseline copy on first boot; user can edit the one in /data.
++    # Directory is 0777 so eGTouchD can create its debug log file
++    # (tmpDrvLog) when launched by init.
++    mkdir /data/eGalax 0777 system system
++    exec - system system -- /system/bin/cp -f /vendor/etc/eGTouchA.ini /data/eGTouchA.ini
++    chmod 0664 /data/eGTouchA.ini
++    chown system system /data/eGTouchA.ini
++    # NOTE: libstdc++.so and liblog.so are now packaged directly into
++    # /vendor/lib64 by the Android.mk rule that installs eGTouchD's runtime
++    # dependencies. No symlink dance is needed at boot.
++
++    # Create the FIFOs used by eGTouchD to talk to eGalaxCalibrator.
++    # eGTouchD opens the FIFO by name; both sides run as system so the FIFO
++    # only needs to be group-readable.
++    exec - system system -- /system/bin/mknod /data/eGalax/egalax_tool_in p
++    exec - system system -- /system/bin/mknod /data/eGalax/egalax_tool_out p
++    chown system system /data/eGalax/egalax_tool_in
++    chown system system /data/eGalax/egalax_tool_out
++    chmod 0660 /data/eGalax/egalax_tool_in
++    chmod 0660 /data/eGalax/egalax_tool_out
++
++    # Force re-label /data/eGalax and its children so the egalax_data_file
++    # SELinux type from file_contexts is applied. Without this the dir and
++    # FIFOs keep the default system_data_file label and AVC denials fire
++    # for egtouchd / priv_app / platform_app.
++    restorecon -R /data/eGalax
++    restorecon /data/eGTouchA.ini
++
++    # eGTouchD wants to access /dev/input/event* (raw touch) and /dev/uhid
++    # (creates virtual input devices). Open the relevant nodes so the daemon
++    # can open them without running as full root.
++    chmod 0660 /dev/uhid
++    chown system input /dev/uhid
++    chmod 0660 /dev/input/event4
++    chmod 0660 /dev/input/event5
++    chown system input /dev/input/event4
++    chown system input /dev/input/event5
++
+ on boot
+     write /proc/bootevent "INIT:boot"
+     chown system system /sys/kernel/debug/sync/sw_sync
+     chmod 0660 /sys/kernel/debug/sync/sw_sync
+ 
++    # --- Debug access for APK: open GPIO sysfs and uarts to world (0666) ---
++    chmod 0666 /dev/ttyS0
++    chmod 0666 /dev/ttyS1
++    chmod 0666 /dev/ttyS2
++    chmod 0666 /dev/ttyS3
++    chmod 0666 /dev/ttyS4
++    chmod 0666 /dev/ttyS5
++    chmod 0666 /dev/ttyAS0
++    chmod 0666 /dev/ttyAS1
++    chmod 0666 /dev/ttyAS2
++    chmod 0666 /dev/ttyAS3
++    chmod 0666 /sys/class/gpio/export
++    chmod 0666 /sys/class/gpio/unexport
++
++    # libgpiod character device nodes
++    chmod 0666 /dev/gpiochip0
++    chmod 0666 /dev/gpiochip1
++    chmod 0666 /dev/gpiochip2
++    chmod 0666 /dev/gpiochip3
++    chmod 0666 /dev/gpiochip4
++
+     # Read one page at a time for swap (default is 8)
+     write /proc/sys/vm/page-cluster 0
+ 
+@@ -112,3 +173,55 @@ on property:sys.boot_completed=1
+     # Tweak background writeout
+     write /proc/sys/vm/dirty_expire_centisecs 200
+     write /proc/sys/vm/dirty_background_ratio  5
++
++    # --- Debug access for APK: late fix-up of GPIO sysfs and resistive TP nodes ---
++    # Re-chmod GPIO chip nodes (in case late-loaded driver created new ones)
++    chmod 0666 /dev/gpiochip0
++    chmod 0666 /dev/gpiochip1
++    chmod 0666 /dev/gpiochip2
++    chmod 0666 /dev/gpiochip3
++    chmod 0666 /dev/gpiochip4
++    chmod 0666 /dev/gpiochip5
++    chmod 0666 /sys/class/gpio/export
++    chmod 0666 /sys/class/gpio/unexport
++
++    # Resistive touch panel sysfs (common paths on Allwinner / vendor BSPs).
++    # Wildcards will no-op if the node does not exist on this build.
++    chmod 0666 /sys/board_info/ctp/ctp_calibration
++    chmod 0666 /sys/board_info/ctp/calibration
++    chmod 0666 /sys/devices/platform/sunxi-rtp/calibration
++    chmod 0666 /sys/devices/virtual/input/input*/ctp_calibration
++    chmod 0666 /sys/devices/virtual/input/input*/calibration
++    chmod 0666 /sys/devices/virtual/input/input*/position
++    chmod 0666 /sys/devices/virtual/input/input*/uevent
++
++    # Open all exported GPIO slots to world (any gpio number the kernel allocated)
++    chmod 0666 /sys/class/gpio/gpio*/value
++    chmod 0666 /sys/class/gpio/gpio*/direction
++    chmod 0666 /sys/class/gpio/gpio*/edge
++    chmod 0666 /sys/class/gpio/gpio*/active_low
++
++    # Re-apply chmod on uhid (in case udev recreated it) and start eGTouchD
++    chmod 0660 /dev/uhid
++    chown system input /dev/uhid
++    start egtouchd
++
++    # Sanity log so you can verify on the serial console
++    exec - system system -- /vendor/bin/log -t PermissiveFix "GPIO/UART/TP perms relaxed (0666) for debug APK"
++
++# --- eGalax eGTouch daemon ---
++# Reads /data/eGTouchA.ini (staged by post-fs-data above).
++# Talks to eGalaxCalibrator through FIFOs at /data/eGalax/egalax_tool_in/out
++# (created in post-fs-data above). Needs access to /dev/uhid (creates virtual
++# input devices) and /dev/input/event* (reads raw HID events).
++# Started after boot_completed so the input devices have settled.
++service egtouchd /vendor/bin/eGTouchD -f
++    class main
++    # eGTouchD's daemon mode requires root privileges — it refuses to
++    # enter the endless-scan loop with a non-root uid.
++    user root
++    group system input
++    oneshot
++    disabled
++    # Pin the SELinux domain so eGTouchD doesn't inherit init's domain.
++    seclabel u:r:egtouchd:s0

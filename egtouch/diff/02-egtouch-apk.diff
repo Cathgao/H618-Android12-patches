@@ -1,0 +1,16 @@
+diff --git a/vendor/aw/homlet/homlet.mk b/vendor/aw/homlet/homlet.mk
+index db2950056c..f08cc381f7 100644
+--- a/vendor/aw/homlet/homlet.mk
++++ b/vendor/aw/homlet/homlet.mk
+@@ -135,3 +135,11 @@ PRODUCT_PACKAGES += \
+ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+     persist.logd.RotateSizeKBytes=200000 \
+     persist.logd.logpersistd.size=2
++
++# eGalax calibration tool — paired with the eGTouchD daemon. The APK keeps
++# the original EETI signature so eGTouchD can authenticate it. Installed
++# to /system/app (unprivileged). The companion eGTouchD binary and config
++# live under device/softwinner/apollo/common/eGTouch/ and are pulled in
++# via device/softwinner/apollo/apollo_p2.mk.
++PRODUCT_PACKAGES += \
++    eGalaxCalibrator

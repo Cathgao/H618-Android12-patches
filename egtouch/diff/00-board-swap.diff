@@ -1,0 +1,18 @@
+diff --git a/device/softwinner/.BoardConfig.mk b/device/softwinner/.BoardConfig.mk
+index 321e29efa6..ec94ffdb4d 120000
+--- a/device/softwinner/.BoardConfig.mk
++++ b/device/softwinner/.BoardConfig.mk
+@@ -1 +1 @@
+-BoardConfig-kickpi-k2b-tablet.mk
+\ No newline at end of file
++BoardConfig-kickpi-k2c-tablet.mk
+\ No newline at end of file
+diff --git a/longan/device/config/chips/h618/configs/p2/sys_config.fex b/longan/device/config/chips/h618/configs/p2/sys_config.fex
+index 76873c685f..8b52feec0a 120000
+--- a/longan/device/config/chips/h618/configs/p2/sys_config.fex
++++ b/longan/device/config/chips/h618/configs/p2/sys_config.fex
+@@ -1 +1 @@
+-../../../../../../../device/softwinner/sys_config-k2b.fex
+\ No newline at end of file
++../../../../../../../device/softwinner/sys_config-k2c.fex
+\ No newline at end of file

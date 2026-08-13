@@ -1,0 +1,68 @@
+# eGalax eGTouch daemon (eGTouchD) — vendor sepolicy
+# Based on EETI's official SELinux guide (SELinux_EETI_Android_7.pdf /
+# SELinux_EETI_Android_Q.pdf). Communication with the calibration APK
+# goes through FIFOs at /data/eGalax/ instead of a unix stream socket,
+# which avoids the coredomain sock_file neverallow.
+#
+# Run as system uid (init.rc: service egtouchd).
+
+# Type declarations live in system/sepolicy/public/file.te so platform
+# neverallow rules can reference them. Only the allow rules are here.
+
+# FIFO namespace under /data/eGalax/ — both daemon and APK access this.
+
+init_daemon_domain(egtouchd)
+
+# Run shell utilities if needed
+# NOTE: shell_exec/toolbox_exec are gated by system neverallows
+# (public/domain.te:938 / 1006) — vendor domains cannot execute system
+# binaries. Drop these lines.
+# allow egtouchd shell_exec:file ...   # DISABLED: violates neverallow
+# allow egtouchd toolbox_exec:file ... # DISABLED: violates neverallow
+
+# /proc
+allow egtouchd proc:file { open read getattr };
+
+# /sys — broad access via the neverallow exception we add to domain.te
+allow egtouchd sysfs:dir { open read search };
+allow egtouchd sysfs:file { open read write getattr };
+allow egtouchd sysfs:lnk_file { getattr };
+allow egtouchd rootfs:lnk_file { getattr };
+
+# /dev nodes
+# NOTE: device:chr_file is gated by neverallow public/domain.te:465
+# (only specific device types like uhid_device / input_device are allowed).
+# So drop the broad device:chr_file and rely on the specific types.
+# allow egtouchd device:chr_file { open read write ioctl };  # DISABLED
+allow egtouchd uhid_device:chr_file { open read write ioctl };
+allow egtouchd input_device:dir { open read search };
+allow egtouchd input_device:chr_file { getattr setattr };
+
+# FIFO namespace under /data/eGalax
+allow egtouchd egalax_data_file:dir { open read write add_name remove_name search };
+allow egtouchd egalax_data_file:file { open read write getattr unlink create ioctl };
+allow egtouchd egalax_data_file:fifo_file { open read write getattr create setattr };
+
+# Self-management
+# NOTE: do NOT include dac_override / dac_read_search — those capabilities
+# are gated by a system neverallow (~dac_override_allowed) that requires
+# the domain to be in the dac_override_allowed whitelist. eGTouchD runs
+# as uid=system so it doesn't need to bypass DAC.
+allow egtouchd self:capability { fsetid kill };
+
+# Reading /vendor/etc/eGTouchA.ini (the stage copy)
+allow egtouchd vendor_configs_file:dir search;
+allow egtouchd vendor_configs_file:file r_file_perms;
+
+# uevent for input device hotplug
+allow egtouchd self:netlink_kobject_uevent_socket { create read getopt setopt bind };
+
+# --- APK side: eGalaxCalibrator ---
+#
+# The eGalaxCalibrator APK is platform-signed and installed to /system/priv-app.
+# Depending on seapp_contexts it may run in either priv_app or platform_app
+# domain. Grant FIFO access to both so the calibration tool works either way.
+allow priv_app egalax_data_file:fifo_file { open read write };
+allow priv_app egalax_data_file:dir { open read write search };
+allow platform_app egalax_data_file:fifo_file { open read write };
+allow platform_app egalax_data_file:dir { open read write search };

@@ -1,0 +1,67 @@
+diff --git a/device/softwinner/apollo/common/media/audio/audio_policy_configuration.xml b/device/softwinner/apollo/common/media/audio/audio_policy_configuration.xml
+index fa75e78c32f3dbec830c8bc14c0424a8a1efb964..fe98d4b6a459c07cfdd181cef058c1c8e00e6e5e 100644
+--- a/device/softwinner/apollo/common/media/audio/audio_policy_configuration.xml
++++ b/device/softwinner/apollo/common/media/audio/audio_policy_configuration.xml
+@@ -127,10 +127,60 @@
+         <!-- Remote Submix Audio HAL -->
+         <xi:include href="r_submix_audio_policy_configuration.xml"/>
+ 
++        <!-- USB Audio HAL -->
++        <module name="usb" halVersion="2.0">
++            <mixPorts>
++                <mixPort name="usb_accessory output" role="source">
++                    <profile name="" format="AUDIO_FORMAT_PCM_16_BIT"
++                             samplingRates="44100" channelMasks="AUDIO_CHANNEL_OUT_STEREO"/>
++                </mixPort>
++                <mixPort name="usb_device output" role="source">
++                    <profile name="" format="dynamic"
++                             samplingRates="dynamic" channelMasks="dynamic"/>
++                </mixPort>
++                <mixPort name="usb_device input" role="sink">
++                    <profile name="" format="dynamic"
++                             samplingRates="dynamic" channelMasks="dynamic"/>
++                </mixPort>
++            </mixPorts>
++            <devicePorts>
++                <devicePort tagName="USB Host Out" type="AUDIO_DEVICE_OUT_USB_ACCESSORY" role="sink">
++                    <profile name="" format="AUDIO_FORMAT_PCM_16_BIT"
++                             samplingRates="44100" channelMasks="AUDIO_CHANNEL_OUT_STEREO"/>
++                </devicePort>
++                <devicePort tagName="USB Device Out" type="AUDIO_DEVICE_OUT_USB_DEVICE" role="sink">
++                    <profile name="" format="dynamic"
++                             samplingRates="dynamic" channelMasks="dynamic"/>
++                </devicePort>
++                <devicePort tagName="USB Headset Out" type="AUDIO_DEVICE_OUT_USB_HEADSET" role="sink">
++                    <profile name="" format="dynamic"
++                             samplingRates="dynamic" channelMasks="dynamic"/>
++                </devicePort>
++                <devicePort tagName="USB Device In" type="AUDIO_DEVICE_IN_USB_DEVICE" role="source">
++                    <profile name="" format="dynamic"
++                             samplingRates="dynamic" channelMasks="dynamic"/>
++                </devicePort>
++                <devicePort tagName="USB Headset In" type="AUDIO_DEVICE_IN_USB_HEADSET" role="source">
++                    <profile name="" format="dynamic"
++                             samplingRates="dynamic" channelMasks="dynamic"/>
++                </devicePort>
++            </devicePorts>
++            <routes>
++                <route type="mix" sink="USB Host Out"
++                       sources="usb_accessory output"/>
++                <route type="mix" sink="USB Device Out"
++                       sources="usb_device output"/>
++                <route type="mix" sink="USB Headset Out"
++                       sources="usb_device output"/>
++                <route type="mix" sink="usb_device input"
++                       sources="USB Device In,USB Headset In"/>
++            </routes>
++        </module>
++
+     </modules>
+ 
+     <!-- Volume section -->
+     <xi:include href="audio_policy_volumes_drc.xml"/>
+     <xi:include href="default_volume_tables.xml"/>
+ 
+-</audioPolicyConfiguration>
++</audioPolicyConfiguration>
+\ No newline at end of file

@@ -1,0 +1,220 @@
+From d227a7ada923851df1ce33a9d3b6230ed1c18f40 Mon Sep 17 00:00:00 2001
+From: gao <gao@local>
+Date: Tue, 11 Aug 2026 11:03:46 +0800
+Subject: [PATCH 3/5] feat: lock display + UVC camera HIDL chain to 32-bit
+
+These services load 32-bit Allwinner HALs via dlopen at runtime, so
+they must be 32-bit themselves.
+
+- hardware/aw/display/hwc-hal/Android.mk: hwcomposer.apollo pinned
+  compile_multilib:32. The HAL links libawhdr10p (next item).
+- hardware/aw/display/hwc-hal/hdr10p/Android.bp: libawhdr10p was
+  declared with arm+arm64 pointing at the same androideabi_32 .a;
+  Soong then tried to link a 32-bit archive into aarch64 ELF
+  binaries and produced ld.lld 'incompatible with aarch64linux'.
+  Collapsed to a single srcs + compile_multilib:32.
+- hardware/aw/camera/1_0/Android.mk: camera.apollo locked 32-bit
+  (Libve_Decoder2.c uses libvdecoder/libvencoder).
+
+HIDL services that dlopen the HALs above:
+- android.hardware.graphics.composer@2.2-service (hardware/aw/display):
+  the AOSP passthrough wrapper loads hwcomposer.$(TARGET_BOARD_PLATFORM).so.
+- android.hardware.graphics.allocator@2.0-service (hardware/aw/gpu):
+  loads gralloc.apollo.so.
+- camera.device@3.4/3.5/3.6-external-impl: UVC external-camera
+  chain, Product uses external-service (PRODUCT_HAS_UVC_CAMERA=true).
+- camera.provider@2.4-external/impl + provider@2.5-external:
+  external-service consumer; -impl pulls in the 32-bit device
+  implementations above.
+- camera.provider@2.4-service and friends stay multi-lib because
+  they don't link 32-bit-only deps; the 64-bit service binary
+  reaches the 32-bit HALs over Binder/HIDL via the 32-bit
+  external-service variant.
+---
+ hardware/aw/camera/1_0/Android.mk                  |  4 ++++
+ hardware/aw/display/hwc-hal/Android.mk             |  6 ++++++
+ hardware/aw/display/hwc-hal/hdr10p/Android.bp      | 14 ++++++--------
+ .../camera/device/3.4/default/Android.bp           |  4 ++++
+ .../camera/device/3.5/default/Android.bp           |  4 ++++
+ .../camera/device/3.6/default/Android.bp           |  4 ++++
+ .../camera/provider/2.4/default/Android.bp         | 10 ++++++++++
+ .../camera/provider/2.5/default/Android.bp         |  4 ++++
+ .../graphics/allocator/2.0/default/Android.bp      |  5 +++++
+ .../graphics/composer/2.2/default/Android.mk       |  7 +++++++
+ 10 files changed, 54 insertions(+), 8 deletions(-)
+
+diff --git a/hardware/aw/camera/1_0/Android.mk b/hardware/aw/camera/1_0/Android.mk
+index 998c57e3e4..4eb1bb1c57 100644
+--- a/hardware/aw/camera/1_0/Android.mk
++++ b/hardware/aw/camera/1_0/Android.mk
+@@ -846,6 +846,10 @@ LOCAL_SHARED_LIBRARIES += $(CAMERA_SHARED_LIBRARIES)
+ LOCAL_CFLAGS += -Wno-error=format-security
+ LOCAL_MODULE := camera.$(TARGET_BOARD_PLATFORM)
+ 
++# Libve_Decoder2.c uses the cedarc VE decoder (libvdecoder/libvencoder), which
++# only ships as 32-bit Android prebuilts, so this HAL is 32-bit only.
++LOCAL_MULTILIB := 32
++
+ LOCAL_MODULE_TAGS := optional
+ include $(BUILD_SHARED_LIBRARY)
+ 
+diff --git a/hardware/aw/display/hwc-hal/Android.mk b/hardware/aw/display/hwc-hal/Android.mk
+index fcdf9862ed..2073e28005 100644
+--- a/hardware/aw/display/hwc-hal/Android.mk
++++ b/hardware/aw/display/hwc-hal/Android.mk
+@@ -23,6 +23,12 @@ LOCAL_MODULE               := hwcomposer.$(TARGET_BOARD_PLATFORM)
+ LOCAL_PROPRIETARY_MODULE   := true
+ LOCAL_MODULE_RELATIVE_PATH := hw
+ 
++# The libhdr10p.a prebuilt under hwc-hal/hdr10p/ is 32-bit ARM only
++# (Android.bp there mistakenly points the same archive at both arm and
++# arm64). Keep the whole display HAL 32-bit; the HWC service is reached
++# from 64-bit clients over Binder, same as codec2 / mediaserver.
++LOCAL_MULTILIB := 32
++
+ LOCAL_C_INCLUDES += \
+ 		hardware/aw/display \
+ 		hardware/aw/display/include  \
+diff --git a/hardware/aw/display/hwc-hal/hdr10p/Android.bp b/hardware/aw/display/hwc-hal/hdr10p/Android.bp
+index 6b37861d41..11b561249e 100755
+--- a/hardware/aw/display/hwc-hal/hdr10p/Android.bp
++++ b/hardware/aw/display/hwc-hal/hdr10p/Android.bp
+@@ -20,13 +20,11 @@ cc_prebuilt_library_static {
+     defaults: [
+     ],
+ 
+-    arch: {
+-        arm: {
+-            srcs: ["libhdr10p.a"],
+-        },
+-        arm64: {
+-            srcs: ["libhdr10p.a"],
+-        },
+-    },
++    // libhdr10p.a is a 32-bit ARM archive only. The original bp mistakenly
++    // also pointed the same file at arm64, which Soong then links into
++    // aarch64 binaries and causes "incompatible with aarch64linux" errors.
++    // Lock to 32-bit; hwcomposer.apollo (the only consumer) is now also 32.
++    compile_multilib: "32",
++    srcs: ["libhdr10p.a"],
+ }
+ 
+diff --git a/hardware/interfaces/camera/device/3.4/default/Android.bp b/hardware/interfaces/camera/device/3.4/default/Android.bp
+index db68ec9885..0ff7594bb9 100644
+--- a/hardware/interfaces/camera/device/3.4/default/Android.bp
++++ b/hardware/interfaces/camera/device/3.4/default/Android.bp
+@@ -121,4 +121,8 @@ cc_library_shared {
+     export_shared_lib_headers: [
+         "libfmq",
+     ],
++
++    // Libve_Decoder2.c uses the cedarc VE decoder, which only ships as
++    // 32-bit Android prebuilts.
++    compile_multilib: "32",
+ }
+diff --git a/hardware/interfaces/camera/device/3.5/default/Android.bp b/hardware/interfaces/camera/device/3.5/default/Android.bp
+index c8823892cf..38cfb577d1 100644
+--- a/hardware/interfaces/camera/device/3.5/default/Android.bp
++++ b/hardware/interfaces/camera/device/3.5/default/Android.bp
+@@ -115,4 +115,8 @@ cc_library_shared {
+     export_shared_lib_headers: [
+         "libfmq",
+     ],
++
++    // Follows camera.device@3.4-external-impl, which is 32-bit-only because
++    // it decodes MJPEG through the cedarc VE prebuilts.
++    compile_multilib: "32",
+ }
+diff --git a/hardware/interfaces/camera/device/3.6/default/Android.bp b/hardware/interfaces/camera/device/3.6/default/Android.bp
+index ea4d60e3c1..d9d75ce251 100644
+--- a/hardware/interfaces/camera/device/3.6/default/Android.bp
++++ b/hardware/interfaces/camera/device/3.6/default/Android.bp
+@@ -77,4 +77,8 @@ cc_library_shared {
+     export_shared_lib_headers: [
+         "libfmq",
+     ],
++
++    // Follows camera.device@3.4/3.5-external-impl, which are 32-bit-only
++    // because they decode MJPEG through the cedarc VE prebuilts.
++    compile_multilib: "32",
+ }
+diff --git a/hardware/interfaces/camera/provider/2.4/default/Android.bp b/hardware/interfaces/camera/provider/2.4/default/Android.bp
+index fb61dd35b7..507d55cc05 100644
+--- a/hardware/interfaces/camera/provider/2.4/default/Android.bp
++++ b/hardware/interfaces/camera/provider/2.4/default/Android.bp
+@@ -91,6 +91,12 @@ cc_library_shared {
+     include_dirs: [
+         "frameworks/av/media/libcedarc/include",
+     ],
++
++    // Follows the camera.device@3.x-external-impl libraries, which are
++    // 32-bit-only because they decode MJPEG through the cedarc VE prebuilts.
++    // Its consumer android.hardware.camera.provider@2.4-external-service is
++    // already compile_multilib: "32".
++    compile_multilib: "32",
+ }
+ 
+ cc_library_shared {
+@@ -142,6 +148,10 @@ cc_library_shared {
+     include_dirs: [
+         "frameworks/av/media/libcedarc/include",
+     ],
++
++    // Pulls in camera.device@3.x-external-impl, which is 32-bit-only because
++    // it decodes MJPEG through the cedarc VE prebuilts.
++    compile_multilib: "32",
+ }
+ 
+ cc_defaults {
+diff --git a/hardware/interfaces/camera/provider/2.5/default/Android.bp b/hardware/interfaces/camera/provider/2.5/default/Android.bp
+index 2fcb35ab00..11f9fcd4af 100644
+--- a/hardware/interfaces/camera/provider/2.5/default/Android.bp
++++ b/hardware/interfaces/camera/provider/2.5/default/Android.bp
+@@ -87,6 +87,10 @@ cc_library_shared {
+         "camera.device@3.6-external-impl_headers"
+     ],
+     export_include_dirs: ["."],
++
++    // Follows the camera.device@3.x-external-impl libraries, which are
++    // 32-bit-only because they decode MJPEG through the cedarc VE prebuilts.
++    compile_multilib: "32",
+ }
+ 
+ cc_defaults {
+diff --git a/hardware/interfaces/graphics/allocator/2.0/default/Android.bp b/hardware/interfaces/graphics/allocator/2.0/default/Android.bp
+index 4d17dc3a1b..a1870229e9 100644
+--- a/hardware/interfaces/graphics/allocator/2.0/default/Android.bp
++++ b/hardware/interfaces/graphics/allocator/2.0/default/Android.bp
+@@ -36,6 +36,11 @@ cc_binary {
+     srcs: ["service.cpp"],
+     init_rc: ["android.hardware.graphics.allocator@2.0-service.rc"],
+ 
++    // Allwinner gralloc (gralloc.apollo.so, gralloc.default.so) is only
++    // built as 32-bit; the allocator passthrough dlopens it at runtime, so
++    // this service must run as 32-bit.
++    compile_multilib: "32",
++
+     shared_libs: [
+         "android.hardware.graphics.allocator@2.0",
+         "libhidlbase",
+diff --git a/hardware/interfaces/graphics/composer/2.2/default/Android.mk b/hardware/interfaces/graphics/composer/2.2/default/Android.mk
+index 6f7ef85904..a605f69d1e 100644
+--- a/hardware/interfaces/graphics/composer/2.2/default/Android.mk
++++ b/hardware/interfaces/graphics/composer/2.2/default/Android.mk
+@@ -11,6 +11,13 @@ LOCAL_CFLAGS := -Wall -Werror -DLOG_TAG=\"ComposerHal\"
+ LOCAL_SRC_FILES := service.cpp
+ LOCAL_INIT_RC := android.hardware.graphics.composer@2.2-service.rc
+ LOCAL_HEADER_LIBRARIES := android.hardware.graphics.composer@2.2-passthrough
++
++# The HWC passthrough adapter dlopens hwcomposer.$(TARGET_BOARD_PLATFORM).so
++# at runtime. Allwinner only ships a 32-bit Android blob for that HAL
++# (libawhdr10p.a is 32-bit only, see hardware/aw/display/hwc-hal/hdr10p/),
++# so the service itself must run as 32-bit to dlopen it successfully.
++LOCAL_MULTILIB := 32
++
+ LOCAL_SHARED_LIBRARIES := \
+         android.hardware.graphics.composer@2.1 \
+         android.hardware.graphics.composer@2.2 \
+-- 
+2.34.1
+

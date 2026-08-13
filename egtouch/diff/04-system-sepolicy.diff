@@ -1,0 +1,216 @@
+diff --git a/system/sepolicy/prebuilts/api/31.0/private/compat/26.0/26.0.ignore.cil b/system/sepolicy/prebuilts/api/31.0/private/compat/26.0/26.0.ignore.cil
+index 98d5840f6c..2ed38b6709 100644
+--- a/system/sepolicy/prebuilts/api/31.0/private/compat/26.0/26.0.ignore.cil
++++ b/system/sepolicy/prebuilts/api/31.0/private/compat/26.0/26.0.ignore.cil
+@@ -5,6 +5,9 @@
+ (typeattribute new_objects)
+ (typeattributeset new_objects
+   ( new_objects
++    egalax_data_file
++    egtouchd
++    egtouchd_exec
+     activity_task_service
+     adb_service
+     adbd_exec
+diff --git a/system/sepolicy/prebuilts/api/31.0/private/compat/27.0/27.0.ignore.cil b/system/sepolicy/prebuilts/api/31.0/private/compat/27.0/27.0.ignore.cil
+index 427f4d4d18..176e487ca3 100644
+--- a/system/sepolicy/prebuilts/api/31.0/private/compat/27.0/27.0.ignore.cil
++++ b/system/sepolicy/prebuilts/api/31.0/private/compat/27.0/27.0.ignore.cil
+@@ -5,6 +5,9 @@
+ (typeattribute new_objects)
+ (typeattributeset new_objects
+   ( new_objects
++    egalax_data_file
++    egtouchd
++    egtouchd_exec
+     aac_drc_prop
+     aaudio_config_prop
+     activity_task_service
+diff --git a/system/sepolicy/prebuilts/api/31.0/private/compat/28.0/28.0.ignore.cil b/system/sepolicy/prebuilts/api/31.0/private/compat/28.0/28.0.ignore.cil
+index e7ddf48057..04950f9732 100644
+--- a/system/sepolicy/prebuilts/api/31.0/private/compat/28.0/28.0.ignore.cil
++++ b/system/sepolicy/prebuilts/api/31.0/private/compat/28.0/28.0.ignore.cil
+@@ -5,6 +5,9 @@
+ (typeattribute new_objects)
+ (typeattributeset new_objects
+   ( new_objects
++    egalax_data_file
++    egtouchd
++    egtouchd_exec
+     activity_task_service
+     adb_service
+     apex_data_file
+diff --git a/system/sepolicy/prebuilts/api/31.0/private/compat/29.0/29.0.ignore.cil b/system/sepolicy/prebuilts/api/31.0/private/compat/29.0/29.0.ignore.cil
+index 10790468f1..324fd48447 100644
+--- a/system/sepolicy/prebuilts/api/31.0/private/compat/29.0/29.0.ignore.cil
++++ b/system/sepolicy/prebuilts/api/31.0/private/compat/29.0/29.0.ignore.cil
+@@ -5,6 +5,9 @@
+ (typeattribute new_objects)
+ (typeattributeset new_objects
+   ( new_objects
++    egalax_data_file
++    egtouchd
++    egtouchd_exec
+     aidl_lazy_test_server
+     aidl_lazy_test_server_exec
+     aidl_lazy_test_service
+diff --git a/system/sepolicy/prebuilts/api/31.0/private/compat/30.0/30.0.ignore.cil b/system/sepolicy/prebuilts/api/31.0/private/compat/30.0/30.0.ignore.cil
+index 0c36aed139..ec83b00cf6 100644
+--- a/system/sepolicy/prebuilts/api/31.0/private/compat/30.0/30.0.ignore.cil
++++ b/system/sepolicy/prebuilts/api/31.0/private/compat/30.0/30.0.ignore.cil
+@@ -5,6 +5,9 @@
+ (typeattribute new_objects)
+ (typeattributeset new_objects
+   ( new_objects
++    egalax_data_file
++    egtouchd
++    egtouchd_exec
+     ab_update_gki_prop
+     adbd_config_prop
+     apc_service
+diff --git a/system/sepolicy/prebuilts/api/31.0/public/domain.te b/system/sepolicy/prebuilts/api/31.0/public/domain.te
+index 799a2f1c57..929049e215 100644
+--- a/system/sepolicy/prebuilts/api/31.0/public/domain.te
++++ b/system/sepolicy/prebuilts/api/31.0/public/domain.te
+@@ -834,6 +834,7 @@ full_treble_only(`
+     -coredomain
+     -data_between_core_and_vendor_violators # TODO(b/34980020) Remove once all violators have been cleaned up
+     -vendor_init
++    -egtouchd
+   } {
+     core_data_file_type
+     # libc includes functions like mktime and localtime which attempt to access
+@@ -864,6 +865,7 @@ full_treble_only(`
+     -coredomain
+     -data_between_core_and_vendor_violators
+     -vendor_init
++    -egtouchd
+   } {
+     core_data_file_type
+     -system_data_file # default label for files on /data. Covered below...
+diff --git a/system/sepolicy/prebuilts/api/31.0/public/file.te b/system/sepolicy/prebuilts/api/31.0/public/file.te
+index dc788ac6a3..434243854a 100644
+--- a/system/sepolicy/prebuilts/api/31.0/public/file.te
++++ b/system/sepolicy/prebuilts/api/31.0/public/file.te
+@@ -596,6 +596,13 @@ with_asan(`type asanwrapper_exec, exec_type, file_type;')
+ # Deprecated in SDK version 28
+ type audiohal_data_file, file_type, data_file_type, core_data_file_type;
+ 
++# eGalax eGTouch daemon types — declared here so platform neverallow rules
++# can reference them. The actual allow rules live in device/softwinner/
++# common/sepolicy/vendor/egtouchd.te.
++type egtouchd, domain;
++type egtouchd_exec, exec_type, vendor_file_type, file_type;
++type egalax_data_file, file_type, data_file_type, core_data_file_type;
++
+ # It's a bug to assign the file_type attribute and fs_type attribute
+ # to any type. Do not allow it.
+ #
+diff --git a/system/sepolicy/private/compat/26.0/26.0.ignore.cil b/system/sepolicy/private/compat/26.0/26.0.ignore.cil
+index 98d5840f6c..2ed38b6709 100644
+--- a/system/sepolicy/private/compat/26.0/26.0.ignore.cil
++++ b/system/sepolicy/private/compat/26.0/26.0.ignore.cil
+@@ -5,6 +5,9 @@
+ (typeattribute new_objects)
+ (typeattributeset new_objects
+   ( new_objects
++    egalax_data_file
++    egtouchd
++    egtouchd_exec
+     activity_task_service
+     adb_service
+     adbd_exec
+diff --git a/system/sepolicy/private/compat/27.0/27.0.ignore.cil b/system/sepolicy/private/compat/27.0/27.0.ignore.cil
+index 427f4d4d18..176e487ca3 100644
+--- a/system/sepolicy/private/compat/27.0/27.0.ignore.cil
++++ b/system/sepolicy/private/compat/27.0/27.0.ignore.cil
+@@ -5,6 +5,9 @@
+ (typeattribute new_objects)
+ (typeattributeset new_objects
+   ( new_objects
++    egalax_data_file
++    egtouchd
++    egtouchd_exec
+     aac_drc_prop
+     aaudio_config_prop
+     activity_task_service
+diff --git a/system/sepolicy/private/compat/28.0/28.0.ignore.cil b/system/sepolicy/private/compat/28.0/28.0.ignore.cil
+index e7ddf48057..04950f9732 100644
+--- a/system/sepolicy/private/compat/28.0/28.0.ignore.cil
++++ b/system/sepolicy/private/compat/28.0/28.0.ignore.cil
+@@ -5,6 +5,9 @@
+ (typeattribute new_objects)
+ (typeattributeset new_objects
+   ( new_objects
++    egalax_data_file
++    egtouchd
++    egtouchd_exec
+     activity_task_service
+     adb_service
+     apex_data_file
+diff --git a/system/sepolicy/private/compat/29.0/29.0.ignore.cil b/system/sepolicy/private/compat/29.0/29.0.ignore.cil
+index 10790468f1..324fd48447 100644
+--- a/system/sepolicy/private/compat/29.0/29.0.ignore.cil
++++ b/system/sepolicy/private/compat/29.0/29.0.ignore.cil
+@@ -5,6 +5,9 @@
+ (typeattribute new_objects)
+ (typeattributeset new_objects
+   ( new_objects
++    egalax_data_file
++    egtouchd
++    egtouchd_exec
+     aidl_lazy_test_server
+     aidl_lazy_test_server_exec
+     aidl_lazy_test_service
+diff --git a/system/sepolicy/private/compat/30.0/30.0.ignore.cil b/system/sepolicy/private/compat/30.0/30.0.ignore.cil
+index 0c36aed139..ec83b00cf6 100644
+--- a/system/sepolicy/private/compat/30.0/30.0.ignore.cil
++++ b/system/sepolicy/private/compat/30.0/30.0.ignore.cil
+@@ -5,6 +5,9 @@
+ (typeattribute new_objects)
+ (typeattributeset new_objects
+   ( new_objects
++    egalax_data_file
++    egtouchd
++    egtouchd_exec
+     ab_update_gki_prop
+     adbd_config_prop
+     apc_service
+diff --git a/system/sepolicy/public/domain.te b/system/sepolicy/public/domain.te
+index 799a2f1c57..929049e215 100644
+--- a/system/sepolicy/public/domain.te
++++ b/system/sepolicy/public/domain.te
+@@ -834,6 +834,7 @@ full_treble_only(`
+     -coredomain
+     -data_between_core_and_vendor_violators # TODO(b/34980020) Remove once all violators have been cleaned up
+     -vendor_init
++    -egtouchd
+   } {
+     core_data_file_type
+     # libc includes functions like mktime and localtime which attempt to access
+@@ -864,6 +865,7 @@ full_treble_only(`
+     -coredomain
+     -data_between_core_and_vendor_violators
+     -vendor_init
++    -egtouchd
+   } {
+     core_data_file_type
+     -system_data_file # default label for files on /data. Covered below...
+diff --git a/system/sepolicy/public/file.te b/system/sepolicy/public/file.te
+index dc788ac6a3..434243854a 100644
+--- a/system/sepolicy/public/file.te
++++ b/system/sepolicy/public/file.te
+@@ -596,6 +596,13 @@ with_asan(`type asanwrapper_exec, exec_type, file_type;')
+ # Deprecated in SDK version 28
+ type audiohal_data_file, file_type, data_file_type, core_data_file_type;
+ 
++# eGalax eGTouch daemon types — declared here so platform neverallow rules
++# can reference them. The actual allow rules live in device/softwinner/
++# common/sepolicy/vendor/egtouchd.te.
++type egtouchd, domain;
++type egtouchd_exec, exec_type, vendor_file_type, file_type;
++type egalax_data_file, file_type, data_file_type, core_data_file_type;
++
+ # It's a bug to assign the file_type attribute and fs_type attribute
+ # to any type. Do not allow it.
+ #

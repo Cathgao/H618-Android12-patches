@@ -1,0 +1,306 @@
+import /vendor/etc/init/hw/init.common.rc
+import /vendor/etc/init/hw/init.ram.rc
+
+# import module rc.
+import /vendor/etc/init/hw/init.sun50iw9p1.usb.rc
+
+on early-init
+    chown system system /proc/bootevent
+    chmod 0666 /proc/bootevent
+    write /proc/bootevent "INIT:early-init"
+
+on init
+    # Set permissions for persist partition
+    mkdir /persist 0771 system system
+    mkdir /firmware 0771 system system
+
+    # Support legacy paths
+    symlink /sdcard /mnt/sdcard
+    symlink /sdcard /storage/sdcard0
+
+    # Setup zram options
+    write /sys/block/zram0/comp_algorithm lz4
+    mkdir /oem 0550 system system
+    export PATH /vendor/xbin:/product/bin:/apex/com.android.runtime/bin:/apex/com.android.art/bin:/system_ext/bin:/system/bin:/system/xbin:/odm/bin:/vendor/bin
+
+on late-init
+    write /proc/bootevent "INIT:late-init"
+
+on early-boot
+    # Update dm-verity state and set partition.*.verified properties
+    verity_update_state
+
+    # --- Suppress the kernel's built-in hid-multitouch evdev nodes for
+    # the EETI panel (VID=0eef PID=0001) ---
+    #
+    # The EETI USB touchscreen shows up under two parallel paths: the
+    # kernel's hid-multitouch driver creates /dev/input/eventN that
+    # Android InputManager consumes, and eGTouchD reads /dev/hidrawN for
+    # the same hardware and synthesizes /dev/input/event<N+> via uinput.
+    # When both paths are active, every gesture past the first touch
+    # produces
+    #   "Dropping move event because a pointer for a different device
+    #    is already active in display 0"
+    #   "Permission denied, dropping the motion (isPointer=true)"
+    # and button taps become unreliable.
+    #
+    # We chmod 000 the kernel's evdev nodes (identified by VID=0eef,
+    # PID=0001) so InputManager can never open them. eGTouchD keeps
+    # reading /dev/hidrawN and forwarding through uinput, so the
+    # framework sees exactly one event source per gesture.
+    #
+    # CRITICAL: this must run from `on early-boot` (not boot_completed,
+    # not even `on boot`). On this device (H618 / Apollo-p2 / Android
+    # 12) InputManager initializes inside SystemServer around 8 s
+    # before boot_completed=1 fires, so the chmod must be running well
+    # before that.  Tested on H618 / Apollo-p2 / Android 12.
+    #
+    # The script runs forever (loops with 1s sleep), re-applying the
+    # chmod whenever the kernel re-creates an evdev node (e.g. on USB
+    # hot-plug, after eGalaxCalibrator restarts the eGTouchD service,
+    # etc.).  exec_background is processed by the main init process, so
+    # the script persists across service restarts.
+    #
+    # Tested alternatives that do NOT work and why:
+    #   * chmod 000 once: kernel re-creates the node as 0660 root:input
+    #     on every hotplug; one-shot chmod is undone.
+    #   * echo 0 > authorized: drops hidrawN too, eGTouchD exits, no
+    #     recovery without physical re-plug.
+    #   * unbind from hid-multitouch: HID core re-probes and re-binds
+    #     within ~1s, faster than any shell script can finish.
+    #   * chmod 000 from `on boot` (or boot_completed): InputManager
+    #     has already opened the fds; chmod cannot revoke an open fd,
+    #     and InputDispatcher keeps dropping events.
+    exec_background - root root -- /vendor/bin/disable_eeti_raw.sh
+
+#on early-fs
+#    wait /dev/block/by-name/media_data
+#    mount vfat /dev/block/by-name/media_data /oem ro nosuid nodev utf8,context=u:object_r:oemfs:s0
+
+on fs
+    write /proc/bootevent "INIT:Mount_START"
+    mount_all /vendor/etc/fstab.sun50iw9p1
+    write /proc/bootevent "INIT:Mount_END"
+    swapon_all /vendor/etc/fstab.sun50iw9p1
+    restorecon_recursive /persist
+
+on post-fs
+    write /proc/bootevent "INIT:post-fs"
+
+on late-fs && property:ro.product.first_api_level=30
+    # Wait for keymaster
+    exec_start wait_for_keymaster
+
+on late-fs
+    write /proc/bootevent "INIT:late-fs"
+	insmod /vendor/lib/modules/mali_kbase.ko
+
+on post-fs-data
+    write /proc/bootevent "INIT:post-fs-data"
+    # Set indication (checked by vold) that we have finished this action
+    setprop vold.post_fs_data_done 1
+    chmod 666 /sys/kernel/tracing/trace
+
+    # --- eGalax eGTouch daemon staging ---
+    # eGTouchD reads /data/eGTouchA.ini by default per its own documentation.
+    # Stage a baseline copy on first boot; user can edit the one in /data.
+    # Directory is 0777 so eGTouchD can create its debug log file
+    # (tmpDrvLog) when launched by init.
+    mkdir /data/eGalax 0777 system system
+    exec - system system -- /system/bin/cp -f /vendor/etc/eGTouchA.ini /data/eGTouchA.ini
+    chmod 0664 /data/eGTouchA.ini
+    chown system system /data/eGTouchA.ini
+    # NOTE: libstdc++.so and liblog.so are now packaged directly into
+    # /vendor/lib64 by the Android.mk rule that installs eGTouchD's runtime
+    # dependencies. No symlink dance is needed at boot.
+
+    # Create the FIFOs used by eGTouchD to talk to eGalaxCalibrator.
+    # eGTouchD opens the FIFO by name; both sides run as system so the FIFO
+    # only needs to be group-readable.
+    exec - system system -- /system/bin/mknod /data/eGalax/egalax_tool_in p
+    exec - system system -- /system/bin/mknod /data/eGalax/egalax_tool_out p
+    chown system system /data/eGalax/egalax_tool_in
+    chown system system /data/eGalax/egalax_tool_out
+    chmod 0660 /data/eGalax/egalax_tool_in
+    chmod 0660 /data/eGalax/egalax_tool_out
+
+    # Force re-label /data/eGalax and its children so the egalax_data_file
+    # SELinux type from file_contexts is applied. Without this the dir and
+    # FIFOs keep the default system_data_file label and AVC denials fire
+    # for egtouchd / priv_app / platform_app.
+    restorecon -R /data/eGalax
+    restorecon /data/eGTouchA.ini
+
+    # eGTouchD wants to access /dev/input/event* (raw touch) and /dev/uhid
+    # (creates virtual input devices). Open the relevant nodes so the daemon
+    # can open them without running as full root.
+    chmod 0660 /dev/uhid
+    chown system input /dev/uhid
+    chmod 0660 /dev/input/event4
+    chmod 0660 /dev/input/event5
+    chown system input /dev/input/event4
+    chown system input /dev/input/event5
+
+on boot
+    write /proc/bootevent "INIT:boot"
+    chown system system /sys/kernel/debug/sync/sw_sync
+    chmod 0660 /sys/kernel/debug/sync/sw_sync
+
+    # disable_eeti_raw is already running (started from `on early-boot`
+    # above so it locks the EETI evdev permissions BEFORE system_server
+    # / InputManager probes them). Nothing to do here.
+
+    # --- Debug access for APK: open GPIO sysfs and uarts to world (0666) ---
+    chmod 0666 /dev/ttyS0
+    chmod 0666 /dev/ttyS1
+    chmod 0666 /dev/ttyS2
+    chmod 0666 /dev/ttyS3
+    chmod 0666 /dev/ttyS4
+    chmod 0666 /dev/ttyS5
+    chmod 0666 /dev/ttyAS0
+    chmod 0666 /dev/ttyAS1
+    chmod 0666 /dev/ttyAS2
+    chmod 0666 /dev/ttyAS3
+    chmod 0666 /sys/class/gpio/export
+    chmod 0666 /sys/class/gpio/unexport
+
+    # libgpiod character device nodes
+    chmod 0666 /dev/gpiochip0
+    chmod 0666 /dev/gpiochip1
+    chmod 0666 /dev/gpiochip2
+    chmod 0666 /dev/gpiochip3
+    chmod 0666 /dev/gpiochip4
+
+    # Read one page at a time for swap (default is 8)
+    write /proc/sys/vm/page-cluster 0
+
+on post-fs-data
+    # create file for audio dump data
+    mkdir /data/vendor/hardware/audio_d 0777 audio audio
+    mkdir /data/audio_d 0777 media media
+    chown system system /dev/nsi
+    chmod 0660 /dev/nsi
+
+on charger
+    chown system system /dev/alarm
+    chmod 0660 /dev/alarm
+    mkdir /config/usb_gadget/g1 0770 shell shell
+    mkdir /config/usb_gadget/g1/strings/0x409 0770 shell shell
+    write /config/usb_gadget/g1/idVendor 0x18d1
+    write /config/usb_gadget/g1/idProduct 0x0001
+    mkdir /config/usb_gadget/g1/functions/mass_storage.usb0
+    mkdir /config/usb_gadget/g1/configs/c.1
+    write /config/usb_gadget/g1/configs/c.1/bmAttributes 0xc0
+    write /config/usb_gadget/g1/configs/c.1/MaxPower 500
+    mkdir /config/usb_gadget/g1/configs/c.1/strings/0x409
+    symlink /config/usb_gadget/g1/functions/mass_storage.usb0 /config/usb_gadget/g1/configs/c.1/f1
+    write /config/usb_gadget/g1/UDC "5100000.udc-controller"
+
+on boot
+    chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+    chmod 0660 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+
+    chown system system /sys/class/thermal/thermal_zone0/policy
+    chmod 0660 /sys/class/thermal/thermal_zone0/policy
+
+    chown system system /sys/class/thermal/thermal_zone0/mode
+    chmod 0660 /sys/class/thermal/thermal_zone0/mode
+
+    write /sys/class/disp/disp/attr/runtime_enable 1
+    write /sys/kernel/autohotplug/enable 1
+    write /sys/kernel/autohotplug/boost_all 0
+
+    # Read one page at a time for swap (default is 8)
+    write /proc/sys/vm/page-cluster 0
+
+on property:sys.boot_completed=1
+    insmod /vendor/lib/modules/kheaders.ko
+    write /sys/class/thermal/thermal_zone0/policy power_allocator
+    write /proc/sys/vm/drop_caches 3
+    # Tweak background writeout
+    write /proc/sys/vm/dirty_expire_centisecs 200
+    write /proc/sys/vm/dirty_background_ratio  5
+
+    # --- Debug access for APK: late fix-up of GPIO sysfs and resistive TP nodes ---
+    # Re-chmod GPIO chip nodes (in case late-loaded driver created new ones)
+    chmod 0666 /dev/gpiochip0
+    chmod 0666 /dev/gpiochip1
+    chmod 0666 /dev/gpiochip2
+    chmod 0666 /dev/gpiochip3
+    chmod 0666 /dev/gpiochip4
+    chmod 0666 /dev/gpiochip5
+    chmod 0666 /sys/class/gpio/export
+    chmod 0666 /sys/class/gpio/unexport
+
+    # Resistive touch panel sysfs (common paths on Allwinner / vendor BSPs).
+    # Wildcards will no-op if the node does not exist on this build.
+    chmod 0666 /sys/board_info/ctp/ctp_calibration
+    chmod 0666 /sys/board_info/ctp/calibration
+    chmod 0666 /sys/devices/platform/sunxi-rtp/calibration
+    chmod 0666 /sys/devices/virtual/input/input*/ctp_calibration
+    chmod 0666 /sys/devices/virtual/input/input*/calibration
+    chmod 0666 /sys/devices/virtual/input/input*/position
+    chmod 0666 /sys/devices/virtual/input/input*/uevent
+
+    # Open all exported GPIO slots to world (any gpio number the kernel allocated)
+    chmod 0666 /sys/class/gpio/gpio*/value
+    chmod 0666 /sys/class/gpio/gpio*/direction
+    chmod 0666 /sys/class/gpio/gpio*/edge
+    chmod 0666 /sys/class/gpio/gpio*/active_low
+
+    # Re-apply chmod on uhid (in case udev recreated it) and start eGTouchD
+    chmod 0660 /dev/uhid
+    chown system input /dev/uhid
+
+    # disable_eeti_raw has been running since on early-boot; it
+    # continuously chmod 000s the EETI evdev nodes. The chmod has
+    # taken effect on any nodes the kernel has already created, but
+    # InputManager has long since opened fds on them, so it still
+    # feeds the framework duplicate events.
+    #
+    # To force InputManager to release those fds and re-open only the
+    # virtual devices (event6/event7) created by eGTouchD, we ask the
+    # daemon script to run 'stop' + 'start' on all init-managed
+    # services. This restarts system_server, which re-initializes
+    # InputManager, which re-reads /sys/class/input — at that point
+    # the EETI evdev nodes are 0000 and the virtual ones are 0666,
+    # so InputManager keeps only the virtual ones and the
+    # duplicate-event storm goes away.
+    #
+    # We can't call `stop`/`start` from init.rc directly — those
+    # commands require a service-name argument and `stop` alone would
+    # try to stop "all core services" but verify-then-error out. The
+    # script invokes init's control-message handler via the `su 0`
+    # shell to send the same ctl.stop/ctl.start broadcasts.
+    #
+    # After the restart we kick egtouchd explicitly — it lost its
+    # hidraw fd when system_server tore down and needs a fresh start.
+    exec_background - root root -- /vendor/bin/restart_services.sh
+    start egtouchd
+
+    # Sanity log so you can verify on the serial console
+    exec - system system -- /vendor/bin/log -t PermissiveFix "GPIO/UART/TP perms relaxed (0666) for debug APK"
+
+# --- (disable_eeti_raw is invoked via exec_background from on early-boot
+# above; the vendor_shell_exec label on the script file triggers an
+# automatic domain transition to vendor_shell, authorized by the
+# domain_auto_trans(init, vendor_shell_exec, vendor_shell) rule in
+# vendor/init.te. restart_services.sh is launched below from
+# on property:sys.boot_completed=1 with the same label.)
+
+# --- eGalax eGTouch daemon ---
+# Reads /data/eGTouchA.ini (staged by post-fs-data above).
+# Talks to eGalaxCalibrator through FIFOs at /data/eGalax/egalax_tool_in/out
+# (created in post-fs-data above). Needs access to /dev/uhid (creates virtual
+# input devices) and /dev/input/event* (reads raw HID events).
+# Started after boot_completed so the input devices have settled.
+service egtouchd /vendor/bin/eGTouchD -f
+    class main
+    # eGTouchD's daemon mode requires root privileges — it refuses to
+    # enter the endless-scan loop with a non-root uid.
+    user root
+    group system input
+    oneshot
+    disabled
+    # Pin the SELinux domain so eGTouchD doesn't inherit init's domain.
+    seclabel u:r:egtouchd:s0

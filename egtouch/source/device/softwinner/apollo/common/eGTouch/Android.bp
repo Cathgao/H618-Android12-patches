@@ -1,0 +1,30 @@
+// Bundle libstdc++ and liblog into /vendor/lib64 so eGTouchD can resolve
+// its runtime dependencies. We renamed the SONAMEs of both libraries to
+// "lib*.eGTouchD.so" via patchelf so they don't collide with the system
+// versions; eGTouchD's DT_NEEDED was patched to match.
+
+cc_prebuilt_library_shared {
+    name: "libstdc++.eGTouchD",
+    vendor: true,
+    target: {
+        android_arm64: {
+            srcs: ["libstdc++.eGTouchD.so"],
+        },
+    },
+    strip: {
+        none: true,
+    },
+}
+
+cc_prebuilt_library_shared {
+    name: "liblog.eGTouchD",
+    vendor: true,
+    target: {
+        android_arm64: {
+            srcs: ["liblog.eGTouchD.so"],
+        },
+    },
+    strip: {
+        none: true,
+    },
+}
