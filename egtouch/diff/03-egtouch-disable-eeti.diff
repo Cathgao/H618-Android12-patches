@@ -1,25 +1,24 @@
 diff --git a/device/softwinner/apollo/apollo_p2.mk b/device/softwinner/apollo/apollo_p2.mk
-index ad44852af45da04991504787a07a4ab1fa613c16..2a5441dd9835016fe4905b7cce88d86ca9675336 100644
+index ad44852af4..2a5441dd98 100644
 --- a/device/softwinner/apollo/apollo_p2.mk
 +++ b/device/softwinner/apollo/apollo_p2.mk
-@@ -45,5 +45,7 @@ PRODUCT_PACKAGES += \
+@@ -45,6 +45,8 @@ PRODUCT_PACKAGES += \
      eGTouchD \
      eGTouchA.ini \
      eGalaxTouch_VirtualDevice.idc \
 +    disable_eeti_raw.sh \
 +    restart_services.sh \
-
+ 
  # Stage libstdc++.so and liblog.so into /vendor/lib64 so the dynamic
  # linker can resolve them when launching eGTouchD. Declared as
 diff --git a/device/softwinner/apollo/common/system/init.sun50iw9p1.rc b/device/softwinner/apollo/common/system/init.sun50iw9p1.rc
-index cd40d315819324b49f1882f77a0ccef94ae23d35..c65c3ac7d7693ff20b866585c67a236750a72787 100644
+index 77f59543af..d37ba8446f 100644
 --- a/device/softwinner/apollo/common/system/init.sun50iw9p1.rc
 +++ b/device/softwinner/apollo/common/system/init.sun50iw9p1.rc
-@@ -204,6 +204,52 @@ on property:sys.boot_completed=1
-     # Re-apply chmod on uhid (in case udev recreated it) and start eGTouchD
-     chmod 0660 /dev/uhid
-     chown system input /dev/uhid
-+
+@@ -180,6 +180,51 @@ on property:sys.boot_completed=1
+     write /proc/sys/vm/dirty_expire_centisecs 200
+     write /proc/sys/vm/dirty_background_ratio  5
+ 
 +    # --- Suppress the kernel's built-in hid-multitouch evdev nodes for
 +    # the EETI panel (VID=0eef PID=0001) ---
 +    #
@@ -43,42 +42,42 @@ index cd40d315819324b49f1882f77a0ccef94ae23d35..c65c3ac7d7693ff20b866585c67a2367
 +    # restart_services.sh tears system_server down and brings it back
 +    # up. After the restart InputManager re-reads /sys/class/input and
 +    # only opens the virtual devices (event6 / event7, vendor=0eef
-+    # product=0020 / 0030) created by eGTouchD — the duplicate-event
++    # product=0020 / 0030) created by eGTouchD -- the duplicate-event
 +    # storm is gone.
 +    #
 +    # We use `exec` (not `exec_background`) because the script now does
 +    # a single sweep of /sys/class/input/event*, chmod 000s the EETI
 +    # ones, and exits. No need to keep a watcher running.
-+    exec /vendor/bin/disable_eeti_raw.sh
++    exec - root root -- /vendor/bin/disable_eeti_raw.sh
 +
 +    # disable_eeti_raw.sh has just chmod 000ed the EETI physical
 +    # evdev nodes. The script is no longer running; we now restart
 +    # system_server so InputManager re-reads /sys/class/input and only
 +    # opens the eGTouchD virtual devices.
 +    #
-+    # We can't call `stop`/`start` from init.rc directly — those
++    # We can't call `stop`/`start` from init.rc directly -- those
 +    # commands require a service-name argument and `stop` alone would
 +    # try to stop "all core services" but verify-then-error out. The
 +    # script invokes init's control-message handler via the `su 0`
 +    # shell to send the same ctl.stop/ctl.start broadcasts.
 +    #
-+    # After the restart we kick egtouchd explicitly — it lost its
++    # After the restart we kick egtouchd explicitly -- it lost its
 +    # hidraw fd when system_server tore down and needs a fresh start.
 +    exec_background - root root -- /vendor/bin/restart_services.sh
      start egtouchd
-
+ 
      # Sanity log so you can verify on the serial console
 diff --git a/device/softwinner/common/sepolicy/vendor/file_contexts b/device/softwinner/common/sepolicy/vendor/file_contexts
-index f9efea402b57c5e46e6d2b49e194b6925a189e7d..289b83796f2697f58761ddce1339112868e542e6 100644
+index 289b83796f..8fa4349902 100644
 --- a/device/softwinner/common/sepolicy/vendor/file_contexts
 +++ b/device/softwinner/common/sepolicy/vendor/file_contexts
-@@ -274,3 +274,9 @@
+@@ -259,3 +259,9 @@
  /dev/BTCMD           u:object_r:skwbt_device:s0
  /dev/BTDATA          u:object_r:skwbt_device:s0
  /dev/BTAUDIO         u:object_r:skwbt_device:s0
 +
-+# disable_eeti_raw helper script — runs at boot in vendor_shell domain
++# disable_eeti_raw helper script -- runs at boot in vendor_shell domain
 +/vendor/bin/disable_eeti_raw\.sh        u:object_r:vendor_shell_exec:s0
 +
-+# restart_services.sh — invoked from init at boot_completed
++# restart_services.sh -- invoked from init at boot_completed
 +/vendor/bin/restart_services\.sh        u:object_r:vendor_shell_exec:s0
