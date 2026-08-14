@@ -86,17 +86,33 @@ if [[ ! -d "${REPO_ROOT}/.git" ]]; then
     exit 2
 fi
 
-# Refuse to run if there are pending local changes that would conflict.
+# Refuse to run if our own target files have pending local changes that
+# would conflict.  We check ONLY the paths touched by our own diffs —
+# other dirty files in the working tree are not our concern, because
+# this patch's paths are disjoint from arm64/ and audio_policy/.  Running
+# this after `apply.sh` (which applies arm64 + leaves the tree dirty
+# relative to upstream HEAD) is the expected workflow.
+#
+# We extract the pathspecs from our own diffs so adding a new *.diff
+# automatically extends the guard set — no manual list to maintain.
+#
 # Pass --force to skip this check.
 if [[ "${1:-}" != "--force" ]]; then
-    if ! git -C "${REPO_ROOT}" diff --quiet --no-ext-diff HEAD; then
-        echo "ERROR: working tree has unstaged changes. Run reset.sh first or" >&2
-        echo "       pass --force to attempt apply anyway." >&2
-        exit 2
-    fi
-    if ! git -C "${REPO_ROOT}" diff --quiet --no-ext-diff --cached HEAD; then
-        echo "ERROR: working tree has staged changes. Run reset.sh first." >&2
-        exit 2
+    EGT_PSPEC=()
+    while IFS= read -r p; do
+        [[ -n "${p}" ]] && EGT_PSPEC+=("${p}")
+    done < <(grep -h "^diff --git" "${DIFF_DIR}"/*.diff \
+             | awk '{print $3}' | sed 's|^a/||' | sort -u)
+    if [[ ${#EGT_PSPEC[@]} -gt 0 ]]; then
+        if ! git -C "${REPO_ROOT}" diff --quiet --no-ext-diff HEAD -- "${EGT_PSPEC[@]}"; then
+            echo "ERROR: eGTouch target files have unstaged changes. Run reset.sh first or" >&2
+            echo "       pass --force to attempt apply anyway." >&2
+            exit 2
+        fi
+        if ! git -C "${REPO_ROOT}" diff --quiet --no-ext-diff --cached HEAD -- "${EGT_PSPEC[@]}"; then
+            echo "ERROR: eGTouch target files have staged changes. Run reset.sh first." >&2
+            exit 2
+        fi
     fi
 fi
 
