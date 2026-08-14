@@ -94,15 +94,21 @@ are the source of truth and stay put.
 
 If your build is already on k2c, the diff applies as a no-op.
 
-### 01-egtouch-binary — eGTouchD packaging + init service
+### 01-egtouch-binary — eGTouchD packaging + init service + excluded-input-devices.xml
 - `device/softwinner/apollo/apollo_p2.mk` — adds `eGTouchD`,
-  `eGTouchA.ini`, `eGalaxTouch_VirtualDevice.idc` to PRODUCT_PACKAGES.
+  `eGTouchA.ini`, `eGalaxTouch_VirtualDevice.idc`, `excluded-input-devices.xml`
+  to PRODUCT_PACKAGES.
+- `device/softwinner/apollo/common/eGTouch/excluded-input-devices.xml` —
+  suppresses the kernel's built-in `hid-multitouch` input nodes (`eGalax Inc. USB TouchController...`)
+  so Android EventHub only receives touch events from `eGTouchD`'s virtual device (`uinput`),
+  preventing duplicate input drop / permission denied errors in InputDispatcher.
 - `device/softwinner/apollo/common/system/init.sun50iw9p1.rc` — in
   `post-fs-data`: mkdir `/data/eGalax` (0777), copy `/vendor/etc/eGTouchA.ini`
   to `/data/eGTouchA.ini`, create the two FIFOs
   (`egalax_tool_in`, `egalax_tool_out`), and `restorecon` their labels.
   Declares `service egtouchd /vendor/bin/eGTouchD -f` as `user root` with
   `seclabel u:r:egtouchd:s0` and starts it from `on boot_completed=1`.
+
 
 ### 02-egtouch-apk — eGalaxCalibrator
 - `vendor/aw/homlet/homlet.mk` — adds `eGalaxCalibrator` to PRODUCT_PACKAGES.

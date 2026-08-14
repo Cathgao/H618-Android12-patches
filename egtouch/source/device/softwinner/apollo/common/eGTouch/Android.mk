@@ -44,30 +44,13 @@ include $(BUILD_PREBUILT)
 
 include $(CLEAR_VARS)
 
-# disable_eeti_raw.sh — scans /sys/class/input/event* for the EETI physical
-# USB touchscreen (VID=0eef PID=0001) and chmod 000s the matching
-# /dev/input/event* nodes so the eGTouchD virtual device is the only one
-# Android sees. Runs once at boot via exec_background in init.sun50iw9p1.rc.
-# The source file is checked in with 0755 so BUILD_PREBUILT preserves the
-# executable bit when installing into /vendor/bin.
-LOCAL_MODULE := disable_eeti_raw.sh
-LOCAL_MODULE_CLASS := EXECUTABLES
-LOCAL_MODULE_PATH := $(TARGET_OUT_VENDOR)/bin
-LOCAL_SRC_FILES := disable_eeti_raw.sh
+# excluded-input-devices.xml — suppresses the kernel's built-in hid-multitouch
+# input devices for the EETI USB touch panel (VID=0eef PID=0001) so Android's
+# EventHub only binds to the eGTouchD virtual devices created via uinput.
+LOCAL_MODULE := excluded-input-devices.xml
+LOCAL_MODULE_CLASS := ETC
+LOCAL_MODULE_PATH := $(TARGET_OUT_VENDOR)/etc
+LOCAL_SRC_FILES := excluded-input-devices.xml
 LOCAL_MODULE_TAGS := optional
 include $(BUILD_PREBUILT)
 
-include $(CLEAR_VARS)
-
-# restart_services.sh — invoked once from init.sun50iw9p1.rc at
-# boot_completed to send `su 0 stop` + `su 0 start` to init. This
-# restarts system_server, which forces InputManager to drop the
-# evdev fds it opened before disable_eeti_raw.sh could chmod 000
-# them, so InputManager re-opens only the eGTouchD virtual devices
-# and the duplicate-touch-event storm goes away.
-LOCAL_MODULE := restart_services.sh
-LOCAL_MODULE_CLASS := EXECUTABLES
-LOCAL_MODULE_PATH := $(TARGET_OUT_VENDOR)/bin
-LOCAL_SRC_FILES := restart_services.sh
-LOCAL_MODULE_TAGS := optional
-include $(BUILD_PREBUILT)

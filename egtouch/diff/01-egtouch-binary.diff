@@ -1,8 +1,6 @@
-diff --git a/device/softwinner/apollo/apollo_p2.mk b/device/softwinner/apollo/apollo_p2.mk
-index 2533592c70a24351e505f2c0847f6e57bf97d66f..ad44852af45da04991504787a07a4ab1fa613c16 100644
 --- a/device/softwinner/apollo/apollo_p2.mk
 +++ b/device/softwinner/apollo/apollo_p2.mk
-@@ -40,6 +40,20 @@ PRODUCT_PACKAGES += \
+@@ -40,6 +40,21 @@
      tinymix \
      tinypcminfo
  
@@ -11,6 +9,7 @@ index 2533592c70a24351e505f2c0847f6e57bf97d66f..ad44852af45da04991504787a07a4ab1
 +    eGTouchD \
 +    eGTouchA.ini \
 +    eGalaxTouch_VirtualDevice.idc \
++    excluded-input-devices.xml
 +
 +# Stage libstdc++.so and liblog.so into /vendor/lib64 so the dynamic
 +# linker can resolve them when launching eGTouchD. Declared as
@@ -23,11 +22,9 @@ index 2533592c70a24351e505f2c0847f6e57bf97d66f..ad44852af45da04991504787a07a4ab1
  PRODUCT_PACKAGES += \
      DeviceTest
  
-diff --git a/device/softwinner/apollo/common/system/init.sun50iw9p1.rc b/device/softwinner/apollo/common/system/init.sun50iw9p1.rc
-index db8d1c4e7f3c137f01741e0b56ddcbc8b680dd8d..e3daf6a6e896be8059e5836ce100dcdd4fb245af 100644
 --- a/device/softwinner/apollo/common/system/init.sun50iw9p1.rc
 +++ b/device/softwinner/apollo/common/system/init.sun50iw9p1.rc
-@@ -58,11 +58,78 @@ on post-fs-data
+@@ -58,6 +58,46 @@
      setprop vold.post_fs_data_done 1
      chmod 666 /sys/kernel/tracing/trace
  
@@ -61,12 +58,6 @@ index db8d1c4e7f3c137f01741e0b56ddcbc8b680dd8d..e3daf6a6e896be8059e5836ce100dcdd
 +    restorecon -R /data/eGalax
 +    restorecon /data/eGTouchA.ini
 +
-+    # Clean up the one-shot flag files from the previous boot so that
-+    # restart_services.sh and disable_eeti_raw.sh run fresh on this boot.
-+    rm /data/eGalax/restart_done
-+    rm /data/eGalax/disable_eeti_raw.lock
-+    rm /data/eGalax/eETI.log
-+
 +    # eGTouchD wants to access /dev/input/event* (raw touch) and /dev/uhid
 +    # (creates virtual input devices). Open the relevant nodes so the daemon
 +    # can open them without running as full root.
@@ -80,33 +71,7 @@ index db8d1c4e7f3c137f01741e0b56ddcbc8b680dd8d..e3daf6a6e896be8059e5836ce100dcdd
  on boot
      write /proc/bootevent "INIT:boot"
      chown system system /sys/kernel/debug/sync/sw_sync
-     chmod 0660 /sys/kernel/debug/sync/sw_sync
- 
-+    # --- Debug access for APK: open GPIO sysfs and uarts to world (0666) ---
-+    chmod 0666 /dev/ttyS0
-+    chmod 0666 /dev/ttyS1
-+    chmod 0666 /dev/ttyS2
-+    chmod 0666 /dev/ttyS3
-+    chmod 0666 /dev/ttyS4
-+    chmod 0666 /dev/ttyS5
-+    chmod 0666 /dev/ttyAS0
-+    chmod 0666 /dev/ttyAS1
-+    chmod 0666 /dev/ttyAS2
-+    chmod 0666 /dev/ttyAS3
-+    chmod 0666 /sys/class/gpio/export
-+    chmod 0666 /sys/class/gpio/unexport
-+
-+    # libgpiod character device nodes
-+    chmod 0666 /dev/gpiochip0
-+    chmod 0666 /dev/gpiochip1
-+    chmod 0666 /dev/gpiochip2
-+    chmod 0666 /dev/gpiochip3
-+    chmod 0666 /dev/gpiochip4
-+
-     # Read one page at a time for swap (default is 8)
-     write /proc/sys/vm/page-cluster 0
- 
-@@ -112,3 +179,22 @@ on property:sys.boot_completed=1
+@@ -112,3 +152,25 @@
      # Tweak background writeout
      write /proc/sys/vm/dirty_expire_centisecs 200
      write /proc/sys/vm/dirty_background_ratio  5
