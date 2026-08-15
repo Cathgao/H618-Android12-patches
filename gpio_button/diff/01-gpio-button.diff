@@ -1,0 +1,158 @@
+diff --git a/longan/device/config/chips/h618/configs/p2/linux-5.4/board-k2b.dts b/longan/device/config/chips/h618/configs/p2/linux-5.4/board-k2b.dts
+index 58d3834e1c..0cfece6146 100644
+--- a/longan/device/config/chips/h618/configs/p2/linux-5.4/board-k2b.dts
++++ b/longan/device/config/chips/h618/configs/p2/linux-5.4/board-k2b.dts
+@@ -54,14 +54,14 @@
+ 
+         gpio-keys {
+                 compatible = "gpio-keys";
++                pinctrl-names = "default";
++                pinctrl-0 = <&btn_pi11_pullup>;
+                 status = "okay";
+-                autorepeat;
+ 
+-                power {
+-                        label = "Power Key";
+-                        linux,code = <KEY_POWER>;
+-                        gpio = <&pio PC 2 GPIO_ACTIVE_LOW>;     /* PC7 */
+-                        wakeup-source;
++                custom_btn {
++                        label = "Custom Button";
++                        linux,code = <KEY_F1>;
++                        gpio = <&pio PI 11 GPIO_ACTIVE_LOW>;
+                         debounce-interval = <100>;
+                 };
+         };
+@@ -75,6 +75,18 @@
+                         gpio = <&pio PI 16 GPIO_ACTIVE_HIGH>;
+                         linux,default-trigger = "heartbeat";
+                 };
++
++				pi12_out {
++					label = "pi12_out";
++					gpio = <&pio PI 12 GPIO_ACTIVE_HIGH>;
++					default-state = "on";
++				};
++
++				pi15_out {
++					label = "pi15_out";
++					gpio = <&pio PI 15 GPIO_ACTIVE_HIGH>;
++					default-state = "on";
++				};
+         };
+ };
+ 
+@@ -458,6 +470,12 @@
+ 		drive-strength = <10>;
+ 	};
+ 
++	btn_pi11_pullup: btn_pi11_pullup {
++		pins = "PI11";
++		function = "gpio_in";
++		bias-pull-up;
++	};
++
+ 	pwm5_pin_a: pwm5@0 {
+ 		pins = "PA12";
+ 		function = "pwm5";
+diff --git a/longan/device/config/chips/h618/configs/p2/linux-5.4/board-k2c.dts b/longan/device/config/chips/h618/configs/p2/linux-5.4/board-k2c.dts
+index 799627533a..d870f81a14 100644
+--- a/longan/device/config/chips/h618/configs/p2/linux-5.4/board-k2c.dts
++++ b/longan/device/config/chips/h618/configs/p2/linux-5.4/board-k2c.dts
+@@ -54,14 +54,14 @@
+ 
+         gpio-keys {
+                 compatible = "gpio-keys";
++                pinctrl-names = "default";
++                pinctrl-0 = <&btn_pi11_pullup>;
+                 status = "okay";
+-                autorepeat;
+ 
+-                power {
+-                        label = "Power Key";
+-                        linux,code = <KEY_POWER>;
+-                        gpio = <&pio PC 2 GPIO_ACTIVE_LOW>;     /* PC7 */
+-                        wakeup-source;
++                custom_btn {
++                        label = "Custom Button";
++                        linux,code = <KEY_F1>;
++                        gpio = <&pio PI 11 GPIO_ACTIVE_LOW>;
+                         debounce-interval = <100>;
+                 };
+         };
+@@ -88,6 +88,18 @@
+ 					default-state = "on";
+ 				};
+ 
++				pi12_out {
++					label = "pi12_out";
++					gpio = <&pio PI 12 GPIO_ACTIVE_HIGH>;
++					default-state = "on";
++				};
++
++				pi15_out {
++					label = "pi15_out";
++					gpio = <&pio PI 15 GPIO_ACTIVE_HIGH>;
++					default-state = "on";
++				};
++
+         };
+ };
+ 
+@@ -471,6 +483,12 @@
+ 		drive-strength = <10>;
+ 	};
+ 
++	btn_pi11_pullup: btn_pi11_pullup {
++		pins = "PI11";
++		function = "gpio_in";
++		bias-pull-up;
++	};
++
+ 	pwm1_pin_a: pwm1@0 {
+ 		pins = "PI11";
+ 		function = "pwm1";
+@@ -949,13 +967,10 @@
+ 	};
+ 
+ 	gpio_para {
+-		gpio_num = <6>;
++		gpio_num = <3>;
+ 		gpio_pin_1 = <&pio PH 5 GPIO_ACTIVE_HIGH>;
+ 		gpio_pin_2 = <&pio PH 8 GPIO_ACTIVE_HIGH>;
+ 		gpio_pin_3 = <&pio PH 9 GPIO_ACTIVE_HIGH>;
+-		gpio_pin_4 = <&pio PI 11 GPIO_ACTIVE_HIGH>;
+-		gpio_pin_5 = <&pio PI 12 GPIO_ACTIVE_HIGH>;
+-		gpio_pin_6 = <&pio PI 15 GPIO_ACTIVE_HIGH>;
+ 		status = "okay";
+ 	};
+ };
+@@ -1006,14 +1021,14 @@
+ 	pinctrl-names = "active", "sleep";
+ 	pinctrl-0 = <&pwm1_pin_a>;
+ 	pinctrl-1 = <&pwm1_pin_b>;
+-	status = "okay";
++	status = "disabled";
+ };
+ 
+ &pwm2 {
+ 	pinctrl-names = "active", "sleep";
+ 	pinctrl-0 = <&pwm2_pin_a>;
+ 	pinctrl-1 = <&pwm2_pin_b>;
+-	status = "okay";
++	status = "disabled";
+ };
+ 
+ &pwm5 {
+diff --git a/longan/kernel/linux-5.4/drivers/pinctrl/sunxi/pinctrl-sun50iw9.c b/longan/kernel/linux-5.4/drivers/pinctrl/sunxi/pinctrl-sun50iw9.c
+index d0d6b5a7ba..09cc32d241 100644
+--- a/longan/kernel/linux-5.4/drivers/pinctrl/sunxi/pinctrl-sun50iw9.c
++++ b/longan/kernel/linux-5.4/drivers/pinctrl/sunxi/pinctrl-sun50iw9.c
+@@ -915,6 +915,7 @@ static const struct sunxi_pinctrl_desc sun50iw9_pinctrl_data = {
+ 	.irq_bank_map = sun50iw9_irq_bank_map,
+ 	.io_bias_cfg_variant = BIAS_VOLTAGE_PIO_POW_MODE_CTL,
+ 	.pf_power_source_switch = true,
++	.disable_strict_mode = true,
+ 	.hw_type = SUNXI_PCTL_HW_TYPE_0,
+ };
+ 

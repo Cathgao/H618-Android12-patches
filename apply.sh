@@ -5,28 +5,27 @@
 # tree, individually or all together, in any order.
 #
 # Usage:
-#   ~/h618-patches/apply.sh [--only=arm64|egtouch|audio_policy] [SDK_ROOT]
+#   ~/H618-Android12-patches/apply.sh [--only=arm64|egtouch|audio_policy|livetranslate|gpio_button] [SDK_ROOT]
 #
-# - With no arguments, applies ALL THREE patch sets in this order:
+# - With no arguments, applies ALL FIVE patch sets in this order:
 #     1. arm64        — git am the 5 porting patches (commit-style)
 #     2. egtouch      — git apply the 5 .diff files + copy source/binaries
 #     3. audio_policy — git apply the 1 .diff file (no source/binaries)
-#   The order is irrelevant (the three sets touch disjoint paths);
-#   arm64 goes first only because its README asks you to run
-#   `./build.sh lunch` and a pair of builds afterwards, and it's
-#   useful to surface that step's output before the eGTouch SELinux
-#   work shows up.  audio_policy runs last so its single-file diff
-#   is the most recent working-tree change.
+#     4. livetranslate— copy source/binaries + add to homlet.mk
+#     5. gpio_button  — git apply GPIO button patches (Pin 14 & 16)
+#   The order is irrelevant (the sets touch disjoint paths or append safely).
 #
 # - With --only=arm64, only the arm64 patch set is applied.
 # - With --only=egtouch, only the eGTouch patch set is applied.
 # - With --only=audio_policy, only the audio_policy patch set is applied.
+# - With --only=livetranslate, only the livetranslate patch set is applied.
+# - With --only=gpio_button, only the gpio_button patch set is applied.
 #
-# - SDK_ROOT defaults to ~/h618-android12.0 (or whatever the eGTouch
-#   path-discovery logic resolves to).  Pass an explicit path to override.
+# - SDK_ROOT defaults to ~/h618-android12.0 (or whatever the path-discovery
+#   logic resolves to).  Pass an explicit path to override.
 #
-# See ./arm64/README.md, ./egtouch/README.md and ./audio_policy/README.md
-# for details on each set.
+# See ./arm64/README.md, ./egtouch/README.md, ./audio_policy/README.md,
+# ./livetranslate/README.md and ./gpio_button/README.md for details on each set.
 
 set -euo pipefail
 
@@ -39,9 +38,9 @@ for arg in "$@"; do
         --only=*)
             ONLY="${arg#--only=}"
             case "${ONLY}" in
-                arm64|egtouch|audio_policy) ;;
+                arm64|egtouch|audio_policy|livetranslate|gpio_button) ;;
                 *)
-                    echo "ERROR: --only must be 'arm64', 'egtouch', or 'audio_policy' (got '${ONLY}')" >&2
+                    echo "ERROR: --only must be 'arm64', 'egtouch', 'audio_policy', 'livetranslate', or 'gpio_button' (got '${ONLY}')" >&2
                     exit 2
                     ;;
             esac
@@ -62,8 +61,7 @@ run_arm64() {
     echo "arm64 64-bit porting patches"
     echo "================================================================"
     # Do NOT use exec here — exec would replace the current shell
-    # process so the eGTouch step below would never run when both
-    # sets are applied together.
+    # process so subsequent steps would never run when all sets are applied.
     if [[ -n "${SDK}" ]]; then
         "${HERE}/arm64/apply.sh" "${SDK}"
     else
@@ -76,9 +74,6 @@ run_egtouch() {
     echo "================================================================"
     echo "eGTouch resistive-touch patches"
     echo "================================================================"
-    # egtouch's apply.sh does its own path discovery; an extra SDK arg is
-    # unnecessary, but pass one if the user gave it.  No `exec` for the
-    # same reason as run_arm64 — we want to continue after this returns.
     if [[ -n "${SDK}" ]]; then
         REPO_ROOT="${SDK}" "${HERE}/egtouch/apply.sh"
     else
@@ -91,20 +86,34 @@ run_audio_policy() {
     echo "================================================================"
     echo "audio_policy USB-HAL override patches"
     echo "================================================================"
-    # audio_policy/apply.sh does its own path discovery; same shape as
-    # egtouch.  Order relative to the other two sets is irrelevant (the
-    # three touch disjoint paths); we run it last so its single-file
-    # diff is the most recent change in `git status` output.
-    #
-    # IMPORTANT: audio_policy/apply.sh's dirty-tree check is scoped to
-    # its own target file only — the whole-tree is almost certainly
-    # dirty by this point (arm64 + egtouch both leave changes), but the
-    # audio_policy target is disjoint from those changes and the check
-    # correctly says "go ahead".
     if [[ -n "${SDK}" ]]; then
         REPO_ROOT="${SDK}" "${HERE}/audio_policy/apply.sh"
     else
         "${HERE}/audio_policy/apply.sh"
+    fi
+}
+
+run_livetranslate() {
+    echo
+    echo "================================================================"
+    echo "LiveTranslate privileged system app preinstall patch"
+    echo "================================================================"
+    if [[ -n "${SDK}" ]]; then
+        REPO_ROOT="${SDK}" "${HERE}/livetranslate/apply.sh"
+    else
+        "${HERE}/livetranslate/apply.sh"
+    fi
+}
+
+run_gpio_button() {
+    echo
+    echo "================================================================"
+    echo "GPIO Button (Pin 14 & 16) patch"
+    echo "================================================================"
+    if [[ -n "${SDK}" ]]; then
+        REPO_ROOT="${SDK}" "${HERE}/gpio_button/apply.sh"
+    else
+        "${HERE}/gpio_button/apply.sh"
     fi
 }
 
@@ -113,22 +122,23 @@ if [[ -n "${ONLY}" ]]; then
         arm64) run_arm64 ;;
         egtouch) run_egtouch ;;
         audio_policy) run_audio_policy ;;
+        livetranslate) run_livetranslate ;;
+        gpio_button) run_gpio_button ;;
     esac
     exit 0
 fi
 
-# Default: apply all three.  Order is interchangeable (disjoint paths);
-# we pick arm64 → egtouch → audio_policy so the audio_policy change is
-# the most recent working-tree diff, and to match the existing default
-# flow when audio_policy was the third set to be added.
+# Default: apply all five.
 run_arm64
 run_egtouch
 run_audio_policy
+run_livetranslate
+run_gpio_button
 
 cat <<'EOF'
 
 ============================================================
-All three patch sets applied.  Next:
+All patch sets applied.  Next:
 
   cd ~/h618-android12.0
   ./build.sh lunch              # pick BoardConfig-kickpi-k2c-tablet
@@ -143,5 +153,8 @@ tool is reachable from the launcher.
 After the audio_policy patch has been applied, a USB audio device
 plugged into the on-board USB Type-A port will be enumerated by
 AudioFlinger (verify with `adb shell dumpsys media.audio_policy`).
+
+After the LiveTranslate patch has been applied, LiveTranslate is
+preinstalled under /system/priv-app/LiveTranslate/ with platform signature.
 ============================================================
 EOF

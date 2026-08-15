@@ -64,6 +64,7 @@ git -C "${REPO_ROOT}" checkout -- \
     device/softwinner/common/sepolicy/vendor/file_contexts \
     device/softwinner/common/sepolicy/vendor/untrusted_app.te \
     longan/device/config/chips/h618/configs/p2/sys_config.fex \
+    longan/kernel/linux-5.4/drivers/tty/serial/sunxi-uart.c \
     system/sepolicy/prebuilts/api/31.0/private/compat/26.0/26.0.ignore.cil \
     system/sepolicy/prebuilts/api/31.0/private/compat/27.0/27.0.ignore.cil \
     system/sepolicy/prebuilts/api/31.0/private/compat/28.0/28.0.ignore.cil \

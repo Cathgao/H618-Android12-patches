@@ -3,18 +3,16 @@
 # patch set is requested.
 #
 # Usage:
-#   ~/h618-patches/reset.sh [--only=arm64|egtouch|audio_policy]
+#   ~/H618-Android12-patches/reset.sh [--only=arm64|egtouch|audio_policy|livetranslate|gpio_button]
 #
-# - With no arguments, only the eGTouch changes are reverted.  The
-#   arm64 patches are applied as 5 git commits (see arm64/README.md),
-#   so reverting them is a git operation — see the message printed
-#   at the end.  The audio_policy set modifies one tracked file and
-#   is reverted like the eGTouch set (via its own reset.sh) — but
-#   only when --only=audio_policy (or all) is requested; see below.
+# - With no arguments, reverts eGTouch, audio_policy, livetranslate, and gpio_button changes.
+#   The arm64 patches are applied as 5 git commits (see arm64/README.md),
+#   so reverting them is a git operation — see the message printed at the end.
 # - With --only=egtouch, only the eGTouch changes are reverted.
 # - With --only=arm64, only the git-revert instructions are printed.
-# - With --only=audio_policy, only the audio_policy tracked file is
-#   reverted (via audio_policy/reset.sh).
+# - With --only=audio_policy, only the audio_policy tracked file is reverted.
+# - With --only=livetranslate, only the LiveTranslate preinstall files are reverted.
+# - With --only=gpio_button, only the gpio_button changes are reverted.
 #
 # After running this wrapper, the source tree may still have hand-edits
 # left over; run `git -C ~/h618-android12.0 reset --hard HEAD` if you
@@ -30,9 +28,9 @@ for arg in "$@"; do
         --only=*)
             ONLY="${arg#--only=}"
             case "${ONLY}" in
-                arm64|egtouch|audio_policy) ;;
+                arm64|egtouch|audio_policy|livetranslate|gpio_button) ;;
                 *)
-                    echo "ERROR: --only must be 'arm64', 'egtouch', or 'audio_policy' (got '${ONLY}')" >&2
+                    echo "ERROR: --only must be 'arm64', 'egtouch', 'audio_policy', 'livetranslate', or 'gpio_button' (got '${ONLY}')" >&2
                     exit 2
                     ;;
             esac
@@ -53,7 +51,7 @@ reset_egtouch() {
     echo "================================================================"
     echo "Reverting eGTouch resistive-touch patches"
     echo "================================================================"
-    exec "${HERE}/egtouch/reset.sh"
+    "${HERE}/egtouch/reset.sh"
 }
 
 reset_audio_policy() {
@@ -61,7 +59,23 @@ reset_audio_policy() {
     echo "================================================================"
     echo "Reverting audio_policy USB-HAL override"
     echo "================================================================"
-    exec "${HERE}/audio_policy/reset.sh"
+    "${HERE}/audio_policy/reset.sh"
+}
+
+reset_livetranslate() {
+    echo
+    echo "================================================================"
+    echo "Reverting LiveTranslate preinstall patch"
+    echo "================================================================"
+    "${HERE}/livetranslate/reset.sh"
+}
+
+reset_gpio_button() {
+    echo
+    echo "================================================================"
+    echo "Reverting GPIO Button patches"
+    echo "================================================================"
+    "${HERE}/gpio_button/reset.sh"
 }
 
 reset_arm64_info() {
@@ -108,11 +122,18 @@ case "${ONLY}" in
     audio_policy)
         reset_audio_policy
         ;;
+    livetranslate)
+        reset_livetranslate
+        ;;
+    gpio_button)
+        reset_gpio_button
+        ;;
     "")
-        # Default: revert eGTouch and audio_policy; print arm64
-        # instructions.  Order matches apply.sh's default ordering.
+        # Default: revert eGTouch, audio_policy, livetranslate, and gpio_button; print arm64 instructions.
         reset_egtouch
         reset_audio_policy
+        reset_livetranslate
+        reset_gpio_button
         reset_arm64_info
         ;;
     *)

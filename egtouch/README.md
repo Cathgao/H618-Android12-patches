@@ -132,10 +132,13 @@ inside the APK; re-signing only changes the outer wrapper.
   `egalax_data_file` to the `new_objects` attribute so the
   treble-sepolicy compatibility tests still pass.
 
-### 05-uart-gpio — debug permissions for APK
+### 05-uart-gpio — debug permissions & UART default configuration
+- `longan/kernel/linux-5.4/drivers/tty/serial/sunxi-uart.c` — sets default
+  termios initial baud rate to `115200 8N1` for all `ttyAS` UART controllers,
+  allowing direct serial communication without requiring manual `stty` initialization.
 - `device/softwinner/apollo/common/system/ueventd.sun50iw9p1.rc` —
-  chmod 0666 the `/dev/ttyS*`, `/dev/ttyAS*`, `/dev/gpiochip*` and
-  `/sys/class/gpio/{export,unexport,gpioN/{direction,value,edge,active_low}}`
+  chmod 0666 the `/dev/ttyS*`, `/dev/ttyAS*` (including `/dev/ttyAS4` and `/dev/ttyAS5`),
+  `/dev/gpiochip*` and `/sys/class/gpio/{export,unexport,gpioN/{direction,value,edge,active_low}}`
   so a normal debug APK can read and write them.
 - `device/softwinner/common/sepolicy/vendor/file_contexts` — labels the
   above sysfs and chardev nodes so the perms are enforced.

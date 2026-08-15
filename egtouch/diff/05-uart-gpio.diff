@@ -48,12 +48,11 @@ index 18f7746939..4a2b37a9e5 100644
 +#     no_w — DROP all writes here too. Only read-only attributes survive.
 +#   - serial_device:chr_file: no neverallow against appdomain — write OK.
 +allow untrusted_app serial_device:chr_file { open read write ioctl getattr };
-\ No newline at end of file
 diff --git a/device/softwinner/apollo/common/system/ueventd.sun50iw9p1.rc b/device/softwinner/apollo/common/system/ueventd.sun50iw9p1.rc
-index f096308809..18bd13e73d 100644
+index f096308809..6f187fff11 100644
 --- a/device/softwinner/apollo/common/system/ueventd.sun50iw9p1.rc
 +++ b/device/softwinner/apollo/common/system/ueventd.sun50iw9p1.rc
-@@ -29,6 +29,21 @@ firmware_directories /vendor/etc/firmware/
+@@ -29,6 +29,23 @@ firmware_directories /vendor/etc/firmware/
  /dev/ttyACM0                0777    system      system
  /dev/ttyACM1                0777    system      system
  /dev/ttyACM2                0777    system      system
@@ -72,10 +71,12 @@ index f096308809..18bd13e73d 100644
 +/dev/ttyAS1                0666    system      system
 +/dev/ttyAS2                0666    system      system
 +/dev/ttyAS3                0666    system      system
++/dev/ttyAS4                0666    system      system
++/dev/ttyAS5                0666    system      system
  /dev/gps                    0777    system      system
  /dev/pa_dev                 0777    system      system
  /dev/sunxi_mem              0666    media       media
-@@ -49,6 +64,22 @@ firmware_directories /vendor/etc/firmware/
+@@ -49,6 +66,22 @@ firmware_directories /vendor/etc/firmware/
  /dev/input/*                0660    system      input
  /dev/sunxi_drm_heap         0777    system      graphics
  
@@ -98,3 +99,24 @@ index f096308809..18bd13e73d 100644
 +/sys/class/gpio/gpio[0-9]*/value       0666    system      system
 +/sys/class/gpio/gpio[0-9]*/edge        0666    system      system
 +/sys/class/gpio/gpio[0-9]*/active_low  0666    system      system
+diff --git a/longan/kernel/linux-5.4/drivers/tty/serial/sunxi-uart.c b/longan/kernel/linux-5.4/drivers/tty/serial/sunxi-uart.c
+index d8e6bf374a..1f5e6870c4 100644
+--- a/longan/kernel/linux-5.4/drivers/tty/serial/sunxi-uart.c
++++ b/longan/kernel/linux-5.4/drivers/tty/serial/sunxi-uart.c
+@@ -2247,11 +2247,16 @@ static int __init sunxi_uart_init(void)
+ {
+ 	int ret;
+ 
+ 	ret = uart_register_driver(&sw_uart_driver);
+ 	if (unlikely(ret)) {
+ 		SERIAL_MSG("driver initializied\n");
+ 		return ret;
+ 	}
+ 
++	/* Set default baud rate to 115200 (8N1) for ttyAS devices */
++	sw_uart_driver.tty_driver->init_termios.c_cflag = B115200 | CS8 | CREAD | HUPCL | CLOCAL;
++	sw_uart_driver.tty_driver->init_termios.c_ispeed = 115200;
++	sw_uart_driver.tty_driver->init_termios.c_ospeed = 115200;
++
+ 	return platform_driver_register(&sw_uport_platform_driver);
+ }
