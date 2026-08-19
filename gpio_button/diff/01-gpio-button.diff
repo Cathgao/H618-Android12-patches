@@ -1,5 +1,152 @@
+diff --git a/device/softwinner/apollo/common/system/init.sun50iw9p1.rc b/device/softwinner/apollo/common/system/init.sun50iw9p1.rc
+index db8d1c4e7f..a1f59de35a 100644
+--- a/device/softwinner/apollo/common/system/init.sun50iw9p1.rc
++++ b/device/softwinner/apollo/common/system/init.sun50iw9p1.rc
+@@ -58,11 +58,61 @@ on post-fs-data
+     setprop vold.post_fs_data_done 1
+     chmod 666 /sys/kernel/tracing/trace
+ 
++    # --- eGalax eGTouch daemon staging ---
++    # eGTouchD reads /data/eGTouchA.ini by default per its own documentation.
++    # Stage a baseline copy on first boot; user can edit the one in /data.
++    # Directory is 0777 so eGTouchD can create its debug log file
++    # (tmpDrvLog) when launched by init.
++    mkdir /data/eGalax 0777 system system
++    exec - system system -- /system/bin/cp -f /vendor/etc/eGTouchA.ini /data/eGTouchA.ini
++    chmod 0664 /data/eGTouchA.ini
++    chown system system /data/eGTouchA.ini
++    # NOTE: libstdc++.so and liblog.so are now packaged directly into
++    # /vendor/lib64 by the Android.mk rule that installs eGTouchD's runtime
++    # dependencies. No symlink dance is needed at boot.
++
++    # Create the FIFOs used by eGTouchD to talk to eGalaxCalibrator.
++    # eGTouchD opens the FIFO by name; both sides run as system so the FIFO
++    # only needs to be group-readable.
++    exec - system system -- /system/bin/mknod /data/eGalax/egalax_tool_in p
++    exec - system system -- /system/bin/mknod /data/eGalax/egalax_tool_out p
++    chown system system /data/eGalax/egalax_tool_in
++    chown system system /data/eGalax/egalax_tool_out
++    chmod 0660 /data/eGalax/egalax_tool_in
++    chmod 0660 /data/eGalax/egalax_tool_out
++
++    # Force re-label /data/eGalax and its children so the egalax_data_file
++    # SELinux type from file_contexts is applied. Without this the dir and
++    # FIFOs keep the default system_data_file label and AVC denials fire
++    # for egtouchd / priv_app / platform_app.
++    restorecon -R /data/eGalax
++    restorecon /data/eGTouchA.ini
++
++    # eGTouchD wants to access /dev/input/event* (raw touch) and /dev/uhid
++    # (creates virtual input devices). Open the relevant nodes so the daemon
++    # can open them without running as full root.
++    chmod 0660 /dev/uhid
++    chown system input /dev/uhid
++    chmod 0660 /dev/input/event4
++    chmod 0660 /dev/input/event5
++    chown system input /dev/input/event4
++    chown system input /dev/input/event5
++
+ on boot
+     write /proc/bootevent "INIT:boot"
+     chown system system /sys/kernel/debug/sync/sw_sync
+     chmod 0660 /sys/kernel/debug/sync/sw_sync
+ 
++    # Allow apps to control custom hardware status LEDs (PI12, PI15)
++    chmod 0666 /sys/class/leds/pi12_out/brightness
++    chmod 0666 /sys/class/leds/pi15_out/brightness
++    chmod 0666 /sys/devices/platform/gpio-leds/leds/pi12_out/brightness
++    chmod 0666 /sys/devices/platform/gpio-leds/leds/pi15_out/brightness
++    chown system system /sys/class/leds/pi12_out/brightness
++    chown system system /sys/class/leds/pi15_out/brightness
++    chown system system /sys/devices/platform/gpio-leds/leds/pi12_out/brightness
++    chown system system /sys/devices/platform/gpio-leds/leds/pi15_out/brightness
++
+     # Read one page at a time for swap (default is 8)
+     write /proc/sys/vm/page-cluster 0
+ 
+@@ -112,3 +162,25 @@ on property:sys.boot_completed=1
+     # Tweak background writeout
+     write /proc/sys/vm/dirty_expire_centisecs 200
+     write /proc/sys/vm/dirty_background_ratio  5
++
++    start egtouchd
++
++    # Sanity log so you can verify on the serial console
++    exec - system system -- /vendor/bin/log -t PermissiveFix "GPIO/UART/TP perms relaxed (0666) for debug APK"
++
++# --- eGalax eGTouch daemon ---
++# Reads /data/eGTouchA.ini (staged by post-fs-data above).
++# Talks to eGalaxCalibrator through FIFOs at /data/eGalax/egalax_tool_in/out
++# (created in post-fs-data above). Needs access to /dev/uhid (creates virtual
++# input devices) and /dev/input/event* (reads raw HID events).
++# Started after boot_completed so the input devices have settled.
++service egtouchd /vendor/bin/eGTouchD -f
++    class main
++    # eGTouchD's daemon mode requires root privileges — it refuses to
++    # enter the endless-scan loop with a non-root uid.
++    user root
++    group system input
++    oneshot
++    disabled
++    # Pin the SELinux domain so eGTouchD doesn't inherit init's domain.
++    seclabel u:r:egtouchd:s0
+diff --git a/device/softwinner/apollo/common/system/ueventd.sun50iw9p1.rc b/device/softwinner/apollo/common/system/ueventd.sun50iw9p1.rc
+index f096308809..b591705214 100644
+--- a/device/softwinner/apollo/common/system/ueventd.sun50iw9p1.rc
++++ b/device/softwinner/apollo/common/system/ueventd.sun50iw9p1.rc
+@@ -29,6 +29,23 @@ firmware_directories /vendor/etc/firmware/
+ /dev/ttyACM0                0777    system      system
+ /dev/ttyACM1                0777    system      system
+ /dev/ttyACM2                0777    system      system
++# --- Debug access for APK: all on-chip UARTs open to world (0666) ---
++/dev/ttyS0                 0666    system      system
++/dev/ttyS1                 0666    system      system
++/dev/ttyS2                 0666    system      system
++/dev/ttyS3                 0666    system      system
++/dev/ttyS4                 0666    system      system
++/dev/ttyS5                 0666    system      system
++/dev/ttyS6                 0666    system      system
++/dev/ttyS7                 0666    system      system
++/dev/ttyS8                 0666    system      system
++/dev/ttyS9                 0666    system      system
++/dev/ttyAS0                0666    system      system
++/dev/ttyAS1                0666    system      system
++/dev/ttyAS2                0666    system      system
++/dev/ttyAS3                0666    system      system
++/dev/ttyAS4                0666    system      system
++/dev/ttyAS5                0666    system      system
+ /dev/gps                    0777    system      system
+ /dev/pa_dev                 0777    system      system
+ /dev/sunxi_mem              0666    media       media
+@@ -49,6 +66,26 @@ firmware_directories /vendor/etc/firmware/
+ /dev/input/*                0660    system      input
+ /dev/sunxi_drm_heap         0777    system      graphics
+ 
++# --- Debug access for APK: libgpiod character device nodes ---
++/dev/gpiochip0             0666    system      system
++/dev/gpiochip1             0666    system      system
++/dev/gpiochip2             0666    system      system
++/dev/gpiochip3             0666    system      system
++/dev/gpiochip4             0666    system      system
++
+ # sysfs properties
+ /sys/devices/virtual/input/input*   delay          0660  root   input
+ /dev/cdc-wdm0             0777   radio     radio
++
++# --- Debug access for APK: sysfs GPIO (legacy interface) ---
++/sys/class/gpio/export     0666    system      system
++/sys/class/gpio/unexport   0666    system      system
++/sys/class/gpio/gpio[0-9]*/direction    0666    system      system
++/sys/class/gpio/gpio[0-9]*/direction   0666    system      system
++/sys/class/gpio/gpio[0-9]*/value       0666    system      system
++/sys/class/gpio/gpio[0-9]*/edge        0666    system      system
++/sys/class/gpio/gpio[0-9]*/active_low  0666    system      system
++
++# --- Custom GPIO LEDs (PI12, PI15) ---
++/sys/devices/platform/gpio-leds/leds/pi12_out  brightness  0666  system  system
++/sys/devices/platform/gpio-leds/leds/pi15_out  brightness  0666  system  system
 diff --git a/longan/device/config/chips/h618/configs/p2/linux-5.4/board-k2b.dts b/longan/device/config/chips/h618/configs/p2/linux-5.4/board-k2b.dts
-index 58d3834e1c..0cfece6146 100644
+index 58d3834e1c..a0018ac513 100644
 --- a/longan/device/config/chips/h618/configs/p2/linux-5.4/board-k2b.dts
 +++ b/longan/device/config/chips/h618/configs/p2/linux-5.4/board-k2b.dts
 @@ -54,14 +54,14 @@
@@ -37,7 +184,7 @@ index 58d3834e1c..0cfece6146 100644
 +				pi15_out {
 +					label = "pi15_out";
 +					gpio = <&pio PI 15 GPIO_ACTIVE_HIGH>;
-+					default-state = "on";
++					default-state = "off";
 +				};
          };
  };
@@ -56,7 +203,7 @@ index 58d3834e1c..0cfece6146 100644
  		pins = "PA12";
  		function = "pwm5";
 diff --git a/longan/device/config/chips/h618/configs/p2/linux-5.4/board-k2c.dts b/longan/device/config/chips/h618/configs/p2/linux-5.4/board-k2c.dts
-index 799627533a..d870f81a14 100644
+index 799627533a..ea6e33f18d 100644
 --- a/longan/device/config/chips/h618/configs/p2/linux-5.4/board-k2c.dts
 +++ b/longan/device/config/chips/h618/configs/p2/linux-5.4/board-k2c.dts
 @@ -54,14 +54,14 @@
@@ -93,7 +240,7 @@ index 799627533a..d870f81a14 100644
 +				pi15_out {
 +					label = "pi15_out";
 +					gpio = <&pio PI 15 GPIO_ACTIVE_HIGH>;
-+					default-state = "on";
++					default-state = "off";
 +				};
 +
          };

@@ -34,6 +34,8 @@ echo "==> Reverting GPIO button changes"
 git -C "${REPO_ROOT}" checkout -- \
     longan/device/config/chips/h618/configs/p2/linux-5.4/board-k2b.dts \
     longan/device/config/chips/h618/configs/p2/linux-5.4/board-k2c.dts \
-    longan/kernel/linux-5.4/drivers/pinctrl/sunxi/pinctrl-sun50iw9.c
+    longan/kernel/linux-5.4/drivers/pinctrl/sunxi/pinctrl-sun50iw9.c \
+    device/softwinner/apollo/common/system/init.sun50iw9p1.rc \
+    device/softwinner/apollo/common/system/ueventd.sun50iw9p1.rc
 
 echo "==> Done. GPIO button changes reverted."
